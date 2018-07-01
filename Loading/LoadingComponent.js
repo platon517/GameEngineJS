@@ -1,5 +1,5 @@
-import {AudioPLayer} from "./AudioComponents";
-import {AudioSample} from "./AudioComponents";
+import {AudioPLayer} from "../Audio/AudioComponents";
+import {AudioSample} from "../Audio/AudioComponents";
 
 (() => {
   let player_loading = new Promise(resolve => {
