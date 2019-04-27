@@ -8,7 +8,6 @@ import {readyPressFunction, readyState} from "./scripts/readyStage";
 import {CENTER, LEFT, PIXEL_ENG_FONT, PIXEL_FONT, Text} from "../../Engine/Text/Text";
 import {INTERACT, READY} from "../localization/localization";
 import {local} from "../localization/localization";
-import {startGameAnimation} from "./scripts/startAnimation";
 import {ProgressBar} from "../../Engine/ProgressBar/ProgressBar";
 
 export const EngineVisual = new VisualComponent(gc.originSize.w * gc.mult, gc.originSize.h * gc.mult);
@@ -18,8 +17,8 @@ export class GameObject {
     this.ui = [];
   }
   moveTo(...args){
-    this.sprite.moveTo(...args);
-    this.collider ? this.collider.moveTo(...args) : null;
+    this.sprite && this.sprite.moveTo(...args);
+    this.collider && this.collider.moveTo(...args);
     this.ui.forEach( item => {
       item.moveTo(...args);
     });
@@ -99,6 +98,7 @@ export const bgObject = new ( function() {
     {w: gc.originSize.w * gc.mult, h: gc.originSize.h * gc.mult}
   );
   EngineVisual.renderList.add(this);
+  EngineVisual.renderList.setZIndex(this, 0);
 })();
 
 export const playerPlate = new class extends GameObject {
@@ -488,5 +488,3 @@ export const cigarets = new class extends GameObject {
 
   }
 };
-
-//startGameAnimation();

@@ -38,4 +38,5 @@ function update() {
 
   requestAnimationFrame(update);
 }
-update();
+setTimeout(update, 0);
+//setInterval(update, 10000);

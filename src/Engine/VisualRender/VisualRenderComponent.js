@@ -29,19 +29,31 @@ class RenderList {
     this._sortZIndex();
   }
   draw(ctx){
-    for (let i in this._renderList){
+    const test = false;
+    this._renderList.forEach((item, index) => {
+      if (test) {
+        setTimeout(() => {
+          const obj = item.obj;
+          console.log(obj);
+          obj.sprite.draw(ctx);
 
-      const obj = this._renderList[i].obj;
+          if (obj.ui !== undefined && obj.ui.length !== 0) {
+            obj.ui.map( item => {
+              item.draw(ctx);
+            })
+          }
+        }, index*1000)
+      } else {
+        const obj = item.obj;
+        obj.sprite.draw(ctx);
 
-      obj.sprite.draw(ctx);
-
-      if (obj.ui !== undefined && obj.ui.length !== 0) {
-        obj.ui.map( item => {
-          item.draw(ctx);
-        })
+        if (obj.ui !== undefined && obj.ui.length !== 0) {
+          obj.ui.map( item => {
+            item.draw(ctx);
+          })
+        }
       }
-
-    }
+    });
   }
 }
 
@@ -70,7 +82,6 @@ export class VisualComponent {
 
     const ctx = this.ctx;
     ctx.clearRect(0, 0, gW.width, gW.height);
-
     this.renderList.draw(ctx);
 
     /*
