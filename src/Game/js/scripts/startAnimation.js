@@ -1,9 +1,10 @@
 import {
   cigarets,
-  enemyPlayer1, enemyPlayer2, enemyPlayer3, EngineVisual, folderObject, phoneManager,
+  enemyPlayer1, enemyPlayer2, enemyPlayer3, folderObject, phoneManager,
   readyBlockObject
 } from "../objects_initializing";
 import {gc} from "../game_config";
+import {EngineVisual} from "../objects/EngineVisual";
 
 export const startGameAnimation = () => {
   folderObject.moveTo({x: 142 * gc.mult, y: 82 * gc.mult}, 240);

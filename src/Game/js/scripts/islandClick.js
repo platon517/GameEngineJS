@@ -1,6 +1,6 @@
 import {flag_1, folderObject} from "../objects_initializing";
 import {gc} from "../game_config";
-import {EngineVisual} from "../objects_initializing";
+import {EngineVisual} from "../objects/EngineVisual";
 
 export let selectedIsland = null;
 

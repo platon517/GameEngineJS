@@ -2,17 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cae03eb2-ca2e-4a4f-80ec-5e29079f406f" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/src/Game/js/objects/Cursor.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Game/js/objects/EngineVisual.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Game/js/objects/GameObject.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/antd/dist/antd-with-locales.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/antd/dist/antd-with-locales.min.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/antd/dist/antd.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/antd/dist/antd.min.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/node-sass/vendor/darwin-x64-64/binding.node" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Engine/VisualRender/VisualRenderComponent.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Engine/VisualRender/VisualRenderComponent.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game/js/game_config.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/js/game_config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Engine/Collider/Collider.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Engine/Collider/Collider.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Game/js/objects_initializing.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/js/objects_initializing.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Game/js/scripts/islandClick.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/js/scripts/islandClick.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game/js/scripts/startAnimation.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/js/scripts/startAnimation.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Game/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game/main.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -24,13 +21,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="main.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="main.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Game/main.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="600">
-              <caret line="40" column="20" selection-start-line="40" selection-start-column="20" selection-end-line="40" selection-end-column="20" />
+            <state relative-caret-position="270">
+              <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
               <folding>
-                <element signature="e#0#217#0" expanded="true" />
+                <element signature="e#0#55#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -39,8 +36,50 @@
       <file leaf-file-name="objects_initializing.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Game/js/objects_initializing.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-121">
-              <caret line="10" selection-start-line="10" selection-end-line="10" />
+            <state relative-caret-position="180">
+              <caret line="12" column="16" lean-forward="true" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Cursor.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Game/js/objects/Cursor.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="780">
+              <caret line="52" column="6" selection-start-line="52" selection-start-column="6" selection-end-line="52" selection-end-column="6" />
+              <folding>
+                <element signature="e#0#59#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Collider.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/Engine/Collider/Collider.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1244">
+              <caret column="20" selection-start-column="20" selection-end-column="20" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="EngineVisual.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Game/js/objects/EngineVisual.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
+              <folding>
+                <element signature="e#0#83#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GameObject.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Game/js/objects/GameObject.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="12" column="1" lean-forward="true" selection-start-line="12" selection-start-column="1" selection-end-line="12" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -48,7 +87,7 @@
       <file leaf-file-name="VisualRenderComponent.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Engine/VisualRender/VisualRenderComponent.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6">
+            <state relative-caret-position="705">
               <caret line="47" selection-start-line="47" selection-end-line="47" />
             </state>
           </provider>
@@ -57,8 +96,8 @@
       <file leaf-file-name="islandClick.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Game/js/scripts/islandClick.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-429">
-              <caret line="3" selection-start-line="3" selection-end-line="3" />
+            <state relative-caret-position="15">
+              <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
               <folding>
                 <element signature="e#0#61#0" expanded="true" />
               </folding>
@@ -90,42 +129,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="package.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/package.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="25" selection-start-line="25" selection-end-line="25" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="game_config.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Game/js/game_config.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="9" selection-start-line="2" selection-start-column="9" selection-end-line="2" selection-end-column="9" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="webpack.config.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/webpack.config.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="945">
-              <caret line="63" column="44" selection-start-line="63" selection-start-column="44" selection-end-line="63" selection-end-column="44" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Collider.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Engine/Collider/Collider.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="20" selection-start-column="20" selection-end-column="20" />
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -143,7 +146,6 @@
       <find>freeze</find>
       <find>islandClick</find>
       <find>import {EngineVisual}</find>
-      <find>EngineVisual</find>
       <find>changeNowState</find>
       <find>sprite</find>
       <find>EngineVisual.renderList.add</find>
@@ -161,8 +163,13 @@
       <find>ctx</find>
       <find>new Text</find>
       <find>local</find>
+      <find>enemyPlate</find>
+      <find>mousePos</find>
       <find>cursorObject</find>
       <find>setZIndex</find>
+      <find>EngineVisual</find>
+      <find>VisualComponent</find>
+      <find>cursorObject.co</find>
     </findStrings>
     <replaceStrings>
       <replace>moveTo</replace>
@@ -214,8 +221,11 @@
         <option value="$PROJECT_DIR$/src/Game/js/scripts/islandClick.js" />
         <option value="$PROJECT_DIR$/src/Engine/VisualRender/VisualRenderComponent.js" />
         <option value="$PROJECT_DIR$/src/Game/js/game_config.js" />
-        <option value="$PROJECT_DIR$/src/Game/main.js" />
+        <option value="$PROJECT_DIR$/src/Game/js/objects/GameObject.js" />
         <option value="$PROJECT_DIR$/src/Game/js/objects_initializing.js" />
+        <option value="$PROJECT_DIR$/src/Game/js/objects/EngineVisual.js" />
+        <option value="$PROJECT_DIR$/src/Game/main.js" />
+        <option value="$PROJECT_DIR$/src/Game/js/objects/Cursor.js" />
       </list>
     </option>
   </component>
@@ -271,6 +281,13 @@
               <item name="Game-Components" type="b2602c69:ProjectViewProjectNode" />
               <item name="Game-Components" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="Engine" type="462c0819:PsiDirectoryNode" />
+              <item name="Collider" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Game-Components" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Game-Components" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="Game" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -286,7 +303,7 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="Game" type="462c0819:PsiDirectoryNode" />
               <item name="js" type="462c0819:PsiDirectoryNode" />
-              <item name="scripts" type="462c0819:PsiDirectoryNode" />
+              <item name="objects" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -353,7 +370,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="96003000" />
+    <option name="totallyTimeSpent" value="98387000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -388,33 +405,12 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/Engine/VisualRender/VisualObject.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="1" selection-start-line="18" selection-start-column="1" selection-end-line="18" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Engine/Sprite/Sprite.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="780">
-          <caret line="52" column="8" selection-start-line="52" selection-start-column="8" selection-end-line="52" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Game/js/game_config.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="9" selection-start-line="2" selection-start-column="9" selection-end-line="2" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Game/js/scripts/startAnimation.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="765">
           <caret line="56" selection-start-line="56" selection-end-line="56" />
           <folding>
-            <element signature="e#0#159#0" />
+            <element signature="e#0#159#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -484,7 +480,7 @@
         <state relative-caret-position="765">
           <caret line="56" selection-start-line="56" selection-end-line="56" />
           <folding>
-            <element signature="e#0#159#0" />
+            <element signature="e#0#159#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -631,13 +627,6 @@
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Engine/Collider/Collider.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="20" selection-start-column="20" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/webpack.config.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="945">
@@ -661,8 +650,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Game/js/scripts/islandClick.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-429">
-          <caret line="3" selection-start-line="3" selection-end-line="3" />
+        <state relative-caret-position="15">
+          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
           <folding>
             <element signature="e#0#61#0" expanded="true" />
           </folding>
@@ -691,25 +680,59 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Engine/VisualRender/VisualRenderComponent.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6">
+        <state relative-caret-position="705">
           <caret line="47" selection-start-line="47" selection-end-line="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Game/js/objects_initializing.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-121">
-          <caret line="10" selection-start-line="10" selection-end-line="10" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Game/main.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="600">
-          <caret line="40" column="20" selection-start-line="40" selection-start-column="20" selection-end-line="40" selection-end-column="20" />
+        <state relative-caret-position="270">
+          <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
           <folding>
-            <element signature="e#0#217#0" expanded="true" />
+            <element signature="e#0#55#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Game/js/objects_initializing.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="16" lean-forward="true" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Game/js/objects/EngineVisual.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
+          <folding>
+            <element signature="e#0#83#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Game/js/objects/GameObject.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="1" lean-forward="true" selection-start-line="12" selection-start-column="1" selection-end-line="12" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Game/js/objects/Cursor.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="780">
+          <caret line="52" column="6" selection-start-line="52" selection-start-column="6" selection-end-line="52" selection-end-column="6" />
+          <folding>
+            <element signature="e#0#59#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Engine/Collider/Collider.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1244">
+          <caret column="20" selection-start-column="20" selection-end-column="20" />
         </state>
       </provider>
     </entry>

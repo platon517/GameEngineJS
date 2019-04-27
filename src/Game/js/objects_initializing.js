@@ -3,62 +3,14 @@ import {gc} from "./game_config";
 import {animation_creator} from "./utilities/animation_creator";
 import {Collider} from "../../Engine/Collider/Collider";
 import {FLAG_Z, islandClick, selectedIsland} from "./scripts/islandClick";
-import {VisualComponent} from "../../Engine/VisualRender/VisualRenderComponent";
 import {readyPressFunction, readyState} from "./scripts/readyStage";
 import {CENTER, LEFT, PIXEL_ENG_FONT, PIXEL_FONT, Text} from "../../Engine/Text/Text";
 import {INTERACT, READY} from "../localization/localization";
 import {local} from "../localization/localization";
 import {ProgressBar} from "../../Engine/ProgressBar/ProgressBar";
 
-export const EngineVisual = new VisualComponent(gc.originSize.w * gc.mult, gc.originSize.h * gc.mult);
-
-export class GameObject {
-  constructor(){
-    this.ui = [];
-  }
-  moveTo(...args){
-    this.sprite && this.sprite.moveTo(...args);
-    this.collider && this.collider.moveTo(...args);
-    this.ui.forEach( item => {
-      item.moveTo(...args);
-    });
-    this.pos = args[0];
-  }
-}
-
-export const cursorObject = new class extends GameObject {
-  constructor(){
-    super();
-    this.sprite = new Sprite(
-      'img/cursors/cursor-sprite.png',
-      {x: 0, y: 0},
-      {w: 12, h: 12},
-      {w: 12 * gc.mult, h: 12 * gc.mult}
-    );
-
-    this.setType = (type) => {
-      switch (type) {
-        case 'pointer':
-          cursorObject.sprite.changeNowState({x: 12, y: 0});
-          break;
-        case 'default':
-          cursorObject.sprite.changeNowState({x: 0, y: 0});
-      }
-    };
-
-    EngineVisual.renderList.add(this);
-    EngineVisual.renderList.setZIndex(this, 999);
-    this.collider = new Collider( {x: 0, y: 0}, { w: 12 * gc.mult, h: 12 * gc.mult });
-    this.pos = {x: 0, y:0};
-    this.size = {w: 12 * gc.mult, h: 12 * gc.mult};
-    this.targetElement = null;
-    this.click = () => {
-      if (this.targetElement !== null) {
-        this.targetElement.click();
-      }
-    };
-  }
-};
+import {GameObject} from "./objects/GameObject";
+import {EngineVisual} from "./objects/EngineVisual";
 
 export const menuButton = new class extends GameObject {
   constructor() {
