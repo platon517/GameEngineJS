@@ -1,6 +1,7 @@
-import {flag_1, folderObject} from "../objects_initializing";
 import {gc} from "../game_config";
 import {EngineVisual} from "../objects/EngineVisual";
+import {Folder} from "../objects/Folder";
+import {Flag_1} from "../objects/Flags/Flags";
 
 export let selectedIsland = null;
 
@@ -33,10 +34,10 @@ export const islandsInfo = {
 
 export const islandClick = (island) => {
 
-  const playerFlag = flag_1;
+  const playerFlag = Flag_1;
   if (firstClick) {
-    EngineVisual.renderList.add(playerFlag);
-    EngineVisual.renderList.setZIndex(playerFlag, FLAG_Z);
+    playerFlag.init();
+    playerFlag.setRenderIndex(FLAG_Z);
     playerFlag.moveTo({x: islandsInfo[island.name].x, y: islandsInfo[island.name].y});
     firstClick = false;
   }
@@ -72,9 +73,9 @@ export const islandClick = (island) => {
     EngineVisual.renderList.setZIndex(island, SELECTED_Z);
     island.sprite.changeNowState({x: 96, y: 0});
     selectedIsland = island;
-    folderObject.sprite.playAnimation('nextPage');
+    Folder.sprite.playAnimation('nextPage');
     setTimeout(() => {
       isAbleClick = true;
-    }, folderObject.sprite.getAnimationInfo('nextPage').time);
+    }, Folder.sprite.getAnimationInfo('nextPage').time);
   }
 };

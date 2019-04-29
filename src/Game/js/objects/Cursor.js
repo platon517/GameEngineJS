@@ -14,10 +14,10 @@ const getMousePos = evt => {
   mousePos.x = evt.clientX - rect.left;
   mousePos.y = evt.clientY - rect.top;
 
-  cursorObject.moveTo({x: mousePos.x - 12, y: mousePos.y});
+  CursorObject.moveTo({x: mousePos.x - 12, y: mousePos.y});
 };
 
-export const cursorObject = new class extends GameObject {
+export const CursorObject = new class extends GameObject {
   constructor(){
     super();
     this.sprite = new Sprite(
@@ -29,22 +29,22 @@ export const cursorObject = new class extends GameObject {
 
     EngineVisual.gameWindow.onmousemove = getMousePos.bind(this);
     EngineVisual.gameWindow.onclick = () => {
-      cursorObject.targetElement.click();
+      CursorObject.targetElement.click();
     };
     EngineVisual.gameWindow.onmousedown = () => {
-      cursorObject.targetElement.onMouseDown();
+      CursorObject.targetElement.onMouseDown();
     };
     EngineVisual.gameWindow.onmouseup = () => {
-      cursorObject.targetElement.onMouseUp();
+      CursorObject.targetElement.onMouseUp();
     };
 
     this.setType = (type) => {
       switch (type) {
         case 'pointer':
-          cursorObject.sprite.changeNowState({x: 12, y: 0});
+          CursorObject.sprite.changeNowState({x: 12, y: 0});
           break;
         case 'default':
-          cursorObject.sprite.changeNowState({x: 0, y: 0});
+          CursorObject.sprite.changeNowState({x: 0, y: 0});
       }
     };
 

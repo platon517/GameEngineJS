@@ -1,4 +1,4 @@
-import {cursorObject} from "../../Game/js/objects/Cursor";
+import {CursorObject} from "../../Game/js/objects/Cursor";
 
 export class Collider {
   constructor (pos = {x: 0, y: 0}, size = { w: 0, h: 0 }, offset = { x: 0, y: 0 }) {
@@ -101,18 +101,18 @@ export class Collider {
       }
 
       if (
-        cursorObject.pos.x + cursorObject.size.w / 2 >= this._coords.x + this._offset.x &&
-        cursorObject.pos.x + cursorObject.size.w / 2 <= this._coords.x + this._offset.x + this._size.w &&
-        cursorObject.pos.y >= this._coords.y + this._offset.y &&
-        cursorObject.pos.y <= this._coords.y + this._offset.y + this._size.h
+        CursorObject.pos.x + CursorObject.size.w / 2 >= this._coords.x + this._offset.x &&
+        CursorObject.pos.x + CursorObject.size.w / 2 <= this._coords.x + this._offset.x + this._size.w &&
+        CursorObject.pos.y >= this._coords.y + this._offset.y &&
+        CursorObject.pos.y <= this._coords.y + this._offset.y + this._size.h
       ) {
         if(!this._onMouseEnter.entered) {
           for (let i in this._onMouseEnter.events) {
             this._onMouseEnter.events[i]();
           }
 
-          cursorObject.targetElement = this;
-          cursorObject.setType('pointer');
+          CursorObject.targetElement = this;
+          CursorObject.setType('pointer');
           this._onMouseEnter.entered = true;
         }
       } else {
@@ -120,7 +120,7 @@ export class Collider {
           for (let i in this._onMouseLeave.events) {
             this._onMouseLeave.events[i]();
           }
-          cursorObject.setType('default');
+          CursorObject.setType('default');
           this._onMouseEnter.entered = false;
         }
       }

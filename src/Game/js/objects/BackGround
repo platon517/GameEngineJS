@@ -1,0 +1,19 @@
+import {Sprite} from "../../../Engine/Sprite/Sprite";
+import {gc} from "../game_config";
+import {GameObject} from "./GameObject";
+
+export const BackGround = new class extends GameObject {
+  constructor(){
+    super();
+    this.sprite = new Sprite(
+      'img/background/map.png',
+      {x: 0, y: 0},
+      {w: gc.originSize.w, h: gc.originSize.h},
+      {w: gc.originSize.w * gc.mult, h: gc.originSize.h * gc.mult}
+    );
+    this.setInit(() => {
+      this.render();
+      this.setRenderIndex(0);
+    })
+  }
+};
