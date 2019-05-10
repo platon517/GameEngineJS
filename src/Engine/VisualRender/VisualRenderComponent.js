@@ -58,7 +58,7 @@ class RenderList {
 }
 
 export class VisualComponent {
-  constructor(w, h){
+  constructor(w = 100, h = 100){
     this.gameWindow = document.getElementById("game_window");
 
     const gW = this.gameWindow;
@@ -92,3 +92,4 @@ export class VisualComponent {
   };
 }
 
+export const engineVisual = new VisualComponent(gc.originSize.w * gc.mult, gc.originSize.h * gc.mult);

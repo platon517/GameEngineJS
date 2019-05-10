@@ -1,14 +1,14 @@
-import {EngineVisual} from "./js/objects/EngineVisual";
+import {engineVisual} from "../Engine/VisualRender/VisualRenderComponent";
 import {CoreScene} from "./js/scenes/CoreScene";
 
 CoreScene();
 
 function update() {
-  EngineVisual.update();
+  engineVisual.update();
 
-  EngineVisual.renderList.get().map( item => {
+  engineVisual.renderList.get().map( item => {
     if (item.obj.collider !== undefined) {
-      item.obj.collider.update(EngineVisual.ctx);
+      item.obj.collider.update(engineVisual.ctx);
     }
   });
 

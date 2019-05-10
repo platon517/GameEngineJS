@@ -2,7 +2,7 @@ import {Sprite} from "../../../Engine/Sprite/Sprite";
 import {gc} from "../game_config";
 import {animation_creator} from "../utilities/animation_creator";
 import {GameObject} from "./GameObject";
-import {Collider} from "../../../Engine/Collider/Collider";
+import {Collider, ColliderGroup} from "../../../Engine/Collider/Collider";
 
 export const Folder = new class extends GameObject {
   constructor(){
@@ -16,24 +16,12 @@ export const Folder = new class extends GameObject {
       }
     });
 
-    this.collider = new function () {
-      this.colliderArr = [
-        new Collider({x: 0, y: 0}, {w: 32 * gc.mult, h: 24 * gc.mult}, {x: 14 * gc.mult, y: 16 * gc.mult}),
-        new Collider({x: 0, y: 0}, {w: 30 * gc.mult, h: 20 * gc.mult}, {x: 11 * gc.mult, y: 44 * gc.mult}),
-        new Collider({x: 0, y: 0}, {w: 28 * gc.mult, h: 20 * gc.mult}, {x: 57 * gc.mult, y: 16 * gc.mult}),
-        new Collider({x: 0, y: 0}, {w: 28 * gc.mult, h: 20 * gc.mult}, {x: 57 * gc.mult, y: 42 * gc.mult}),
-      ];
-      this.moveTo = (...args) => {
-        for (let i in this.colliderArr) {
-          this.colliderArr[i].moveTo(...args);
-        }
-      };
-      this.update = (ctx) => {
-        for (let i in this.colliderArr) {
-          this.colliderArr[i].update(ctx);
-        }
-      }
-    };
+    this.collider = new ColliderGroup([
+      [{x: 0, y: 0}, {w: 32 * gc.mult, h: 24 * gc.mult}, {x: 14 * gc.mult, y: 16 * gc.mult}],
+      [{x: 0, y: 0}, {w: 30 * gc.mult, h: 20 * gc.mult}, {x: 11 * gc.mult, y: 44 * gc.mult}],
+      [{x: 0, y: 0}, {w: 28 * gc.mult, h: 20 * gc.mult}, {x: 57 * gc.mult, y: 16 * gc.mult}],
+      [{x: 0, y: 0}, {w: 28 * gc.mult, h: 20 * gc.mult}, {x: 57 * gc.mult, y: 42 * gc.mult}],
+    ]);
 
     this.moveTo({x: 96 * gc.mult, y: 154 * gc.mult});
     this.moveTo({x: 96 * gc.mult, y: 76 * gc.mult}, 300);

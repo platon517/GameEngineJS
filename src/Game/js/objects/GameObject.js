@@ -1,4 +1,4 @@
-import {EngineVisual} from "./EngineVisual";
+import {engineVisual} from "../../../Engine/VisualRender/VisualRenderComponent";
 
 export class GameObject {
   constructor(){
@@ -6,13 +6,13 @@ export class GameObject {
     this._initFunction = () => {};
   }
   render(){
-    EngineVisual.renderList.add(this);
+    engineVisual.renderList.add(this);
   }
   renderClear(){
-    EngineVisual.renderList.delete(this);
+    engineVisual.renderList.delete(this);
   }
   setRenderIndex(index){
-    EngineVisual.renderList.setZIndex(this, index);
+    engineVisual.renderList.setZIndex(this, index);
   }
   setInit(func){
     this._initFunction = func;

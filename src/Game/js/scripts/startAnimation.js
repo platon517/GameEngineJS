@@ -1,6 +1,6 @@
 import {ReadyButton} from "../objects/ReadyButton";
 import {gc} from "../game_config";
-import {EngineVisual} from "../objects/EngineVisual";
+import {engineVisual} from "../../../Engine/VisualRender/VisualRenderComponent";
 import {EnemyPlayer1, EnemyPlayer2, EnemyPlayer3} from "../objects/EnemyPlates/EnemyPlates";
 import {Folder} from "../objects/Folder";
 import {PhoneManager} from "../objects/PhoneManager";
@@ -22,7 +22,7 @@ export const startGameAnimation = () => {
   setTimeout(() => {
     ReadyButton.moveTo({x: 50 * gc.mult, y: 160 * gc.mult}, 240);
     setTimeout(() => {
-      EngineVisual.renderList.delete(ReadyButton);
+      engineVisual.renderList.delete(ReadyButton);
     }, 250)
   }, 140);
 

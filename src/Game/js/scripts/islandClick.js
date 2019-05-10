@@ -1,5 +1,5 @@
 import {gc} from "../game_config";
-import {EngineVisual} from "../objects/EngineVisual";
+import {engineVisual} from "../../../Engine/VisualRender/VisualRenderComponent";
 import {Folder} from "../objects/Folder";
 import {Flag_1} from "../objects/Flags/Flags";
 
@@ -67,10 +67,10 @@ export const islandClick = (island) => {
     }
 
     if (selectedIsland !== null) {
-      EngineVisual.renderList.setZIndex(selectedIsland, NON_SELECTED_Z);
+      engineVisual.renderList.setZIndex(selectedIsland, NON_SELECTED_Z);
       selectedIsland.sprite.changeNowState({x: 0, y: 0})
     }
-    EngineVisual.renderList.setZIndex(island, SELECTED_Z);
+    engineVisual.renderList.setZIndex(island, SELECTED_Z);
     island.sprite.changeNowState({x: 96, y: 0});
     selectedIsland = island;
     Folder.sprite.playAnimation('nextPage');

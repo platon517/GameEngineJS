@@ -1,8 +1,11 @@
 import {Collider} from "../../../Engine/Collider/Collider";
 import {Sprite} from "../../../Engine/Sprite/Sprite";
 import {gc} from "../game_config";
-import {EngineVisual} from "./EngineVisual";
+import {engineVisual} from "../../../Engine/VisualRender/VisualRenderComponent";
 import {GameObject} from "./GameObject";
+
+export const POINTER = 'pointer';
+export const DEFAULT = 'default';
 
 const mousePos = {
   x: 0,
@@ -10,11 +13,16 @@ const mousePos = {
 };
 
 const getMousePos = evt => {
-  let rect = EngineVisual.gameWindow.getBoundingClientRect();
+  let rect = engineVisual.gameWindow.getBoundingClientRect();
   mousePos.x = evt.clientX - rect.left;
   mousePos.y = evt.clientY - rect.top;
 
   CursorObject.moveTo({x: mousePos.x - 12, y: mousePos.y});
+  if (CursorObject.collider.getInteractions().size !== 0) {
+    CursorObject.setType(POINTER);
+  } else {
+    CursorObject.setType(DEFAULT);
+  }
 };
 
 export const CursorObject = new class extends GameObject {
@@ -27,37 +35,45 @@ export const CursorObject = new class extends GameObject {
       {w: 12 * gc.mult, h: 12 * gc.mult}
     );
 
-    EngineVisual.gameWindow.onmousemove = getMousePos.bind(this);
-    EngineVisual.gameWindow.onclick = () => {
-      CursorObject.targetElement.click();
+    this.collider = new Collider(
+      { x: 0, y: 0 },
+      { w: 12 * gc.mult, h: 12 * gc.mult },
+      { x: 0, y: 0 }
+    );
+
+    engineVisual.gameWindow.onmousemove = getMousePos;
+    engineVisual.gameWindow.onclick = () => {
+      this.click();
     };
-    EngineVisual.gameWindow.onmousedown = () => {
+    engineVisual.gameWindow.onmousedown = () => {
       CursorObject.targetElement.onMouseDown();
     };
-    EngineVisual.gameWindow.onmouseup = () => {
+    engineVisual.gameWindow.onmouseup = () => {
       CursorObject.targetElement.onMouseUp();
     };
 
     this.setType = (type) => {
       switch (type) {
-        case 'pointer':
+        case POINTER:
           CursorObject.sprite.changeNowState({x: 12, y: 0});
           break;
-        case 'default':
+        case DEFAULT:
           CursorObject.sprite.changeNowState({x: 0, y: 0});
       }
     };
 
-    EngineVisual.renderList.add(this);
-    EngineVisual.renderList.setZIndex(this, 999);
-    //this.collider = new Collider( {x: 0, y: 0}, { w: 12 * gc.mult, h: 12 * gc.mult });
     this.pos = {x: 0, y:0};
     this.size = {w: 12 * gc.mult, h: 12 * gc.mult};
     this.targetElement = null;
     this.click = () => {
+      this.collider.getInteractions().forEach(item => console.log(item));
       if (this.targetElement !== null) {
         this.targetElement.click();
       }
     };
+    this.setInit(() => {
+      this.render();
+      this.setRenderIndex(999);
+    });
   }
 };
