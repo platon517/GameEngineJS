@@ -1,5 +1,7 @@
 import { engineVisual } from "../VisualRender/VisualRenderComponent";
 import { throttle } from "throttle-debounce";
+import {isCollides} from "../../Game/js/utilities/isCollides";
+import {getCoordsArr} from "../../Game/js/utilities/getCoordsArr";
 
 export class Collider {
   constructor(
@@ -16,26 +18,6 @@ export class Collider {
     this._interactionsObjectsList = new Set();
     this.checkDelay = checkDelay;
     this._events = new Map();
-
-    // LEGACY
-    this._onClick = {
-      events: []
-    };
-    this._onMouseDown = {
-      events: []
-    };
-    this._onMouseUp = {
-      events: []
-    };
-    this._onMouseEnter = {
-      entered: false,
-      events: []
-    };
-    this._onMouseLeave = {
-      events: []
-    };
-    // LEGACY
-
     this.disabled = false;
   }
 
@@ -87,44 +69,19 @@ export class Collider {
   getInteractions() {
     return this._interactions;
   }
-  _isInside(coordinate) {
-    return (
-      coordinate[0] >= this._coords.x + this._offset.x &&
-      coordinate[0] <= this._coords.x + this._offset.x + this._size.w &&
-      coordinate[1] >= this._coords.y + this._offset.y &&
-      coordinate[1] <= this._coords.y + this._offset.y + this._size.h
-    );
-  }
-  _isOutside(selfCoordinate, outerCoordinate) {
-    return (
-      selfCoordinate[0] >= outerCoordinate[0][0] &&
-      selfCoordinate[0] <= outerCoordinate[1][0] &&
-      selfCoordinate[1] >= outerCoordinate[0][1] &&
-      selfCoordinate[1] <= outerCoordinate[2][1]
-    );
-  }
-  _getCoordsObj(data) {
-    const { coords, offset, size } = data;
-    const x1y1 = [coords.x + offset.x, coords.y + offset.y];
-    const x2y1 = [coords.x + offset.x + size.w, coords.y + offset.y];
-    const x1y2 = [coords.x + offset.x, coords.y + offset.y + size.h];
-    const x2y2 = [coords.x + offset.x + size.w, coords.y + offset.y + size.h];
-    return [x1y1, x2y1, x1y2, x2y2];
-  }
-  _isCollides(colliderInfo) {
-    return (
-      this._getCoordsObj(colliderInfo).some(coord => this._isInside(coord)) ||
-      this._getCoordsObj({
-        coords: this._coords,
-        offset: this._offset,
-        size: this._size
-      }).some(coord => this._isOutside(coord, this._getCoordsObj(colliderInfo)))
-    );
-  }
   _checkSingleInteractions(collider){
     if (collider instanceof Collider && collider !== this && !collider.disabled) {
       if (
-        this._isCollides(collider.getInfo())
+        isCollides(
+          getCoordsArr({
+            coords: this._coords,
+            offset: this._offset,
+            size: this._size
+          }),
+          getCoordsArr(
+            collider.getInfo()
+          )
+        )
       ) {
         this.setInteraction(collider);
         collider.setInteraction(this);
