@@ -1,5 +1,5 @@
 import {gc} from "../../game_config";
-import {GameObject} from "../GameObject";
+import {GameObject} from "../../../../Engine/GameObject/GameObject";
 import {CENTER, PIXEL_ENG_FONT, PIXEL_FONT, Text} from "../../../../Engine/Text/Text";
 import {ProgressBar} from "../../../../Engine/ProgressBar/ProgressBar";
 import {INTERACT, local} from "../../../localization/localization";
@@ -71,7 +71,7 @@ class EnemyPlate extends GameObject {
       }
     };
 
-    this.collider.setMouseDown(() => {
+    /*this.collider.setMouseDown(() => {
       pushButton();
     });
 
@@ -81,7 +81,8 @@ class EnemyPlate extends GameObject {
 
     this.collider.setMouseLeave(() => {
       pushBackButton();
-    });
+    });*/
+
     this.setInit(() => {
       this.render();
       this.pic.render();

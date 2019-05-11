@@ -29,29 +29,16 @@ class RenderList {
     this._sortZIndex();
   }
   draw(ctx){
-    const test = false;
-    this._renderList.forEach((item, index) => {
-      if (test) {
-        setTimeout(() => {
-          const obj = item.obj;
-          console.log(obj);
-          obj.sprite.draw(ctx);
+    this._renderList.forEach(item => {
+      const obj = item.obj;
+      obj.sprite.draw(ctx);
+      obj.collider && obj.collider.update(engineVisual.ctx);
+      obj.tick();
 
-          if (obj.ui !== undefined && obj.ui.length !== 0) {
-            obj.ui.map( item => {
-              item.draw(ctx);
-            })
-          }
-        }, index*1000)
-      } else {
-        const obj = item.obj;
-        obj.sprite.draw(ctx);
-
-        if (obj.ui !== undefined && obj.ui.length !== 0) {
-          obj.ui.map( item => {
-            item.draw(ctx);
-          })
-        }
+      if (obj.ui !== undefined && obj.ui.length !== 0) {
+        obj.ui.map( item => {
+          item.draw(ctx);
+        })
       }
     });
   }

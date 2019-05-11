@@ -1,8 +1,9 @@
 import {Sprite} from "../../../Engine/Sprite/Sprite";
 import {gc} from "../game_config";
 import {animation_creator} from "../utilities/animation_creator";
-import {GameObject} from "./GameObject";
+import {GameObject} from "../../../Engine/GameObject/GameObject";
 import {Collider, ColliderGroup} from "../../../Engine/Collider/Collider";
+import {CursorObject} from "./Cursor";
 
 export const Folder = new class extends GameObject {
   constructor(){
@@ -22,6 +23,8 @@ export const Folder = new class extends GameObject {
       [{x: 0, y: 0}, {w: 28 * gc.mult, h: 20 * gc.mult}, {x: 57 * gc.mult, y: 16 * gc.mult}],
       [{x: 0, y: 0}, {w: 28 * gc.mult, h: 20 * gc.mult}, {x: 57 * gc.mult, y: 42 * gc.mult}],
     ]);
+
+    this.collider.addInteractionObject(CursorObject);
 
     this.moveTo({x: 96 * gc.mult, y: 154 * gc.mult});
     this.moveTo({x: 96 * gc.mult, y: 76 * gc.mult}, 300);

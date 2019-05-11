@@ -1,5 +1,5 @@
 import { readyPressFunction, readyState } from "../scripts/readyStage";
-import { selectedIsland } from "../scripts/islandClick";
+import {islandClick, selectedIsland} from "../scripts/islandClick";
 import { gc } from "../game_config";
 import { local, READY } from "../../localization/localization";
 import {
@@ -8,10 +8,13 @@ import {
   IslandThreeOne,
   IslandThreeTwo
 } from "./Islands/Islands";
-import { GameObject } from "./GameObject";
+import { GameObject } from "../../../Engine/GameObject/GameObject";
 import { PIXEL_FONT, Text } from "../../../Engine/Text/Text";
 import { Sprite } from "../../../Engine/Sprite/Sprite";
 import { Collider } from "../../../Engine/Collider/Collider";
+import {CursorObject} from "./Cursor";
+
+import {CLICK} from "./Cursor";
 
 export const ReadyButton = new (class extends GameObject {
   constructor() {
@@ -29,6 +32,8 @@ export const ReadyButton = new (class extends GameObject {
       { x: 3 * gc.mult, y: 27 * gc.mult }
     );
 
+    this.collider.addInteractionObject(CursorObject);
+
     const rightPadding = local === "RU" ? 9 : 11;
 
     const readyText = new Text(READY[local], PIXEL_FONT, 7 * gc.mult, "white", {
@@ -40,7 +45,7 @@ export const ReadyButton = new (class extends GameObject {
 
     this.ui.push(readyText);
 
-    this.collider.setClick(() => {
+    this.collider.setEvent(CLICK, () => {
       if (selectedIsland !== null) {
         readyPressFunction([
           IslandOne,
@@ -59,6 +64,8 @@ export const ReadyButton = new (class extends GameObject {
     });
 
     this.moveTo({ x: 50 * gc.mult, y: 94 * gc.mult });
-    this.setInit(() => this.render());
+    this.setInit(() => {
+      this.render();
+    });
   }
 })();

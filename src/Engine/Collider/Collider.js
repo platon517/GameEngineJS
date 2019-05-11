@@ -13,6 +13,9 @@ export class Collider {
     this._coords = pos;
     this._nowMoving = null;
     this._interactions = new Set();
+    this._interactionsObjectsList = new Set();
+    this.checkDelay = checkDelay;
+    this._events = new Map();
 
     // LEGACY
     this._onClick = {
@@ -35,6 +38,7 @@ export class Collider {
 
     this.disabled = false;
   }
+
   moveTo(pos = { x: 0, y: 0 }, time = null) {
     if (time) {
       const startTime = new Date().getTime();
@@ -49,42 +53,18 @@ export class Collider {
       this._coords = pos;
     }
   }
-  setClick(func) {
-    this._onClick.events.push(func);
+
+  setEvent(name, func){
+    this._events.set(name, func);
   }
-  setMouseDown(func) {
-    this._onMouseDown.events.push(func);
+  deleteEvent(name){
+    this._events.delete(name);
   }
-  setMouseUp(func) {
-    this._onMouseUp.events.push(func);
+  callEvent(name, args = []){
+    this._events.get(name)(...args)
   }
-  setMouseEnter(func) {
-    this._onMouseEnter.events.push(func);
-  }
-  setMouseLeave(func) {
-    this._onMouseLeave.events.push(func);
-  }
-  onMouseUp() {
-    if (this._onMouseEnter.entered) {
-      for (let i in this._onMouseUp.events) {
-        this._onMouseUp.events[i]();
-      }
-    }
-  }
-  onMouseDown() {
-    if (this._onMouseEnter.entered) {
-      for (let i in this._onMouseDown.events) {
-        this._onMouseDown.events[i]();
-      }
-    }
-  }
-  click() {
-    if (this._onMouseEnter.entered) {
-      for (let i in this._onClick.events) {
-        this._onClick.events[i]();
-      }
-    }
-  }
+
+
   getInfo() {
     return {
       coords: this._coords,
@@ -97,6 +77,12 @@ export class Collider {
   }
   deleteInteraction(object) {
     this._interactions.delete(object);
+  }
+  addInteractionObject(object){
+    this._interactionsObjectsList.add(object);
+  }
+  deleteInteractionObject(object){
+    this._interactionsObjectsList.delete(object);
   }
   getInteractions() {
     return this._interactions;
@@ -136,7 +122,7 @@ export class Collider {
     );
   }
   _checkSingleInteractions(collider){
-    if (collider instanceof Collider && collider !== this) {
+    if (collider instanceof Collider && collider !== this && !collider.disabled) {
       if (
         this._isCollides(collider.getInfo())
       ) {
@@ -148,32 +134,40 @@ export class Collider {
         collider.getInteractions().has(this)
       ) {
         this.deleteInteraction(collider);
-        collider.deleteInteraction(collider);
+        collider.deleteInteraction(this);
         //console.log('out');
       }
     }
   }
   _checkInteractions = throttle(this.checkDelay, () => {
-    if (!this.disabled) {
-      const objects = engineVisual.renderList.get();
-      objects.forEach(object => {
-        const collider = object.obj.collider;
-        if (collider instanceof ColliderGroup) {
-          collider.arr.forEach(item => {
-            this._checkSingleInteractions(item);
-          })
-        } else {
-          this._checkSingleInteractions(collider);
-        }
-      });
+    let objects, fromRenderList;
+
+    if (this._interactionsObjectsList.size !== 0){
+      objects = this._interactionsObjectsList;
+      fromRenderList = false;
+    } else {
+      objects = engineVisual.renderList.get();
+      fromRenderList = true;
     }
+
+    objects.forEach(object => {
+      //console.log('collision checking');
+      if (!object) return false;
+      const collider = fromRenderList ? object.obj.collider : object.collider;
+      if (collider instanceof ColliderGroup) {
+        collider.arr.forEach(item => {
+          this._checkSingleInteractions(item);
+        })
+      } else {
+        this._checkSingleInteractions(collider);
+      }
+    });
   });
   update(ctx) {
     const { _size, _offset, _nowMoving, disabled } = this;
 
-    this._checkInteractions();
-
     if (!disabled) {
+      this._checkInteractions();
       if (_nowMoving) {
         const nowTime = new Date().getTime();
         const startTime = _nowMoving.startTime;
@@ -190,31 +184,6 @@ export class Collider {
           this._coords = pos;
         }
       }
-
-      /*if (
-        CursorObject.pos.x + CursorObject.size.w / 2 >= this._coords.x + this._offset.x &&
-        CursorObject.pos.x + CursorObject.size.w / 2 <= this._coords.x + this._offset.x + this._size.w &&
-        CursorObject.pos.y >= this._coords.y + this._offset.y &&
-        CursorObject.pos.y <= this._coords.y + this._offset.y + this._size.h
-      ) {
-        if(!this._onMouseEnter.entered) {
-          for (let i in this._onMouseEnter.events) {
-            this._onMouseEnter.events[i]();
-          }
-
-          CursorObject.targetElement = this;
-          CursorObject.setType('pointer');
-          this._onMouseEnter.entered = true;
-        }
-      } else {
-        if(this._onMouseEnter.entered) {
-          for (let i in this._onMouseLeave.events) {
-            this._onMouseLeave.events[i]();
-          }
-          CursorObject.setType('default');
-          this._onMouseEnter.entered = false;
-        }
-      }*/
 
       const render_rect = true;
       if (render_rect) {
@@ -234,7 +203,12 @@ export class Collider {
 export class ColliderGroup {
   constructor(arr){
     this.arr = arr.map(info => new Collider(...info));
-    console.log(this.arr);
+  }
+  addInteractionObject(object){
+    this.arr.forEach(collider => collider.addInteractionObject(object))
+  }
+  deleteInteractionObject(object){
+    this.arr.forEach(collider => collider.deleteInteractionObject(object))
   }
   moveTo = (...args) => {
     for (let i in this.arr) {

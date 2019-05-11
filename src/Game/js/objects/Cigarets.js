@@ -1,6 +1,6 @@
 import {Sprite} from "../../../Engine/Sprite/Sprite";
 import {gc} from "../game_config";
-import {GameObject} from "./GameObject";
+import {GameObject} from "../../../Engine/GameObject/GameObject";
 
 export const Cigarets = new class extends GameObject {
   constructor(){

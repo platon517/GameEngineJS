@@ -1,7 +1,7 @@
 import {Sprite} from "../../../Engine/Sprite/Sprite";
 import {gc} from "../game_config";
 import {animation_creator} from "../utilities/animation_creator";
-import {GameObject} from "./GameObject";
+import {GameObject} from "../../../Engine/GameObject/GameObject";
 import {Collider} from "../../../Engine/Collider/Collider";
 
 export const PhoneManager = new class extends GameObject {

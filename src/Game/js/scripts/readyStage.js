@@ -31,9 +31,7 @@ export const readyPressFunction = (islands) => {
   if(!readyState.gameStarted){
     readyState.isPlayerReady = !readyState.isPlayerReady;
     islands.forEach(item => {
-      if (item !== selectedIsland) {
-        item.collider.disabled = readyState.isPlayerReady;
-      }
+      item.collider.disabled = readyState.isPlayerReady;
     });
     if(readyState.isPlayerReady){
       readyState.countdown = countdown();

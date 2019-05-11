@@ -1,7 +1,7 @@
 import {Sprite} from "../../../Engine/Sprite/Sprite";
 import {CENTER, PIXEL_ENG_FONT, Text} from "../../../Engine/Text/Text";
 import {gc} from "../game_config";
-import {GameObject} from "./GameObject";
+import {GameObject} from "../../../Engine/GameObject/GameObject";
 import {ProgressBar} from "../../../Engine/ProgressBar/ProgressBar";
 
 const Picture = new class extends GameObject {
