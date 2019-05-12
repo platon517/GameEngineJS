@@ -34,8 +34,8 @@ export const CursorObject = new class extends GameObject {
 
     this.collider = new Collider(
       { x: 0, y: 0 },
-      { w: 12 * gc.mult, h: 12 * gc.mult },
-      { x: 0, y: 0 }
+      { w: 3 * gc.mult, h: 3 * gc.mult },
+      { x: 3 * gc.mult, y: 0 }
     );
 
     engineVisual.gameWindow.onmousemove = getMousePos;
@@ -68,7 +68,7 @@ export const CursorObject = new class extends GameObject {
 
     this.setInit(() => {
       this.render();
-      this.setRenderIndex(999);
+      this.setRenderIndex(3);
       this.addTickEvent(() => {
         if (this.collider.getInteractions().size !== 0) {
           CursorObject.setType(POINTER);

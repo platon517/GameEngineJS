@@ -48,7 +48,6 @@ export const IslandTwo = new (class extends GameObject {
       { w: 96, h: 96 },
       { w: 96 * gc.mult, h: 96 * gc.mult }
     );
-    this.render();
 
     this.collider = new Collider(
       { x: 0, y: 0 },
@@ -65,6 +64,10 @@ export const IslandTwo = new (class extends GameObject {
     this.name = "right";
 
     this.moveTo({ x: 110 * gc.mult, y: -16 * gc.mult });
+
+    this.setInit(() => {
+      this.render();
+    });
   }
 })();
 
