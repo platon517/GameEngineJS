@@ -11,6 +11,7 @@ export class Sprite {
     this._canvasObject = new Image();
     this._idle = url;
     this._canvasObject.src = this._idle;
+    this._idleCoords = inner_coords;
     this._nowMoving = null;
     this._nowAnimation = null;
     this._animations = {
@@ -28,7 +29,6 @@ export class Sprite {
     };
 
     this._innerSize = inner_size;
-    this._innerCoords = inner_coords;
     this._size = size;
     this._coords = {
       x: 0,
@@ -36,7 +36,7 @@ export class Sprite {
     };
     this._offset = offset;
 
-    this._nowState = this._innerCoords;
+    this._nowState = this._idleCoords;
   }
 
   changeNowState(newState = { x: 0, y: 0 }) {
@@ -68,8 +68,12 @@ export class Sprite {
   }
 
   stopAnimation() {
-    this._nowState = this._innerCoords;
+    this._nowState = this._idleCoords;
     this._nowAnimation = null;
+  }
+
+  setIdleCoords(coords = {x: 0, y: 0}){
+    this._idleCoords = coords;
   }
 
   getAnimationInfo(name) {
@@ -85,8 +89,8 @@ export class Sprite {
       _size,
       _nowAnimation,
       _animations,
-      _innerCoords,
-      _nowMoving
+      _nowMoving,
+      _idleCoords
     } = this;
 
     if (_nowAnimation) {
@@ -103,12 +107,14 @@ export class Sprite {
       } else {
         if (_nowAnimation.loop) {
           this.playAnimation(_nowAnimation.name, true);
+          _nowState = animation.frames[0];
         } else {
-          _nowState = _innerCoords;
+          _nowState = _idleCoords;
           this._nowAnimation = null;
         }
       }
     }
+
 
     if (_nowMoving) {
       const nowTime = new Date().getTime();

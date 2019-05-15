@@ -54,6 +54,7 @@ export class VisualComponent {
     window.onkeyup = e => this._releaseKey(e);
     
     this._keysEvents = {};
+    this._keysReleaseEvents = {};
     this._keysPressed = new Set();
 
     const gW = this.gameWindow;
@@ -73,14 +74,35 @@ export class VisualComponent {
   }
 
   addKeysEvent(keyCode, func){
-    this._keysEvents[keyCode] ?
-      this._keysEvents[keyCode].push(func)
-      :
-      this._keysEvents[keyCode] = [func];
+    if (!Array.isArray(keyCode)){
+      keyCode = [keyCode];
+    }
+    keyCode.forEach(key => {
+      this._keysEvents[key] ?
+        this._keysEvents[key].push(func)
+        :
+        this._keysEvents[key] = [func];
+    });
+  }
+
+  addKeysReleaseEvent(keyCode, func){
+    if (!Array.isArray(keyCode)){
+      keyCode = [keyCode];
+    }
+    keyCode.forEach(key => {
+      this._keysReleaseEvents[key] ?
+        this._keysReleaseEvents[key].push(func)
+        :
+        this._keysReleaseEvents[key] = [func];
+    });
   }
 
   _callKeysEvents(code){
     this._keysEvents[code] && this._keysEvents[code].forEach(event => event());
+  }
+
+  _callKeysReleaseEvents(code){
+    this._keysReleaseEvents[code] && this._keysReleaseEvents[code].forEach(event => event());
   }
   
   _pushKey(e){
@@ -98,6 +120,9 @@ export class VisualComponent {
     let lastCalledTime = 0;
     let startTime = new Date().getTime();
     let count = 0;
+
+    let lastKeysPressed = [];
+
     return () => {
       count += 1;
       const time = new Date().getTime();
@@ -108,11 +133,17 @@ export class VisualComponent {
       }
       const deltaTime = time - lastCalledTime;
       const skippedFrames = Math.round(deltaTime / FPS_RATE_DELTA);
-       this._keysPressed.forEach(key => {
+      this._keysPressed.forEach(key => {
         for (let i = 0; i < skippedFrames; i++) {
           this._callKeysEvents(key);
         }
       });
+      lastKeysPressed.forEach(key => {
+        if (![...this._keysPressed].some(item => item === key)) {
+          this._callKeysReleaseEvents(key);
+        }
+      });
+      lastKeysPressed = [...this._keysPressed];
       lastCalledTime = time;
     }
   })();

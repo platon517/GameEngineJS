@@ -7,23 +7,22 @@ import {ShadowMask} from "../objects/Crypt/ShadowMask";
 import {StatueLeft, StatueRight} from "../objects/Crypt/Statues";
 import {CoffinClosedLeft, CoffinClosedRight, CoffinOpened} from "../objects/Crypt/Coffin";
 import {PlayerCharacter} from "../chars/lich/Lich";
+import {Scene} from "../../../Engine/Scene/Scene";
+import {Camera} from "../../../Engine/Camera/Camera";
 
-export const CoreScene = () => {
-  const objects = [
-    Walls,
-    WallsTop,
-    Floor,
-    StairsTop,
-    StairsBottom,
-    TorchLeft,
-    TorchRight,
-    ShadowMask,
-    StatueLeft,
-    StatueRight,
-    CoffinClosedLeft,
-    CoffinClosedRight,
-    CoffinOpened,
-    PlayerCharacter
-  ];
-  objects.forEach(object => object.init());
-};
+export const CoreScene = new Scene(128, 128, [
+  Walls,
+  WallsTop,
+  Floor,
+  StairsTop,
+  StairsBottom,
+  TorchLeft,
+  TorchRight,
+  ShadowMask,
+  StatueLeft,
+  StatueRight,
+  CoffinClosedLeft,
+  CoffinClosedRight,
+  CoffinOpened,
+  PlayerCharacter,
+], Camera);

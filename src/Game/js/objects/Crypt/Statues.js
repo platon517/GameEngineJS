@@ -2,6 +2,7 @@ import {GameObject} from "../../../../Engine/GameObject/GameObject";
 import {gc} from "../../game_config";
 import {Sprite} from "../../../../Engine/Sprite/Sprite";
 import {Collider} from "../../../../Engine/Collider/Collider";
+import {BLOCK, PlayerCharacter} from "../../chars/lich/Lich";
 
 class Statue extends GameObject {
   constructor(coords, destroyed = false){
@@ -16,9 +17,12 @@ class Statue extends GameObject {
 
     this.collider = new Collider(
       { x: 0, y: 0 },
-      { w: 10 * gc.mult, h: 10 * gc.mult },
-      { x: 3 * gc.mult, y: 19 * gc.mult },
+      { w: 12 * gc.mult, h: 12 * gc.mult },
+      { x: 2 * gc.mult, y: 18 * gc.mult },
     );
+    this.collider.addInteractionObject(PlayerCharacter);
+
+    this.collider.type = BLOCK;
 
     this.moveTo(coords);
 

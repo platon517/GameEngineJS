@@ -1,7 +1,7 @@
 import {engineVisual} from "../Engine/VisualRender/VisualRenderComponent";
 import {CoreScene} from "./js/scenes/CoreScene";
 
-CoreScene();
+CoreScene.init();
 
 function update() {
   engineVisual.update();

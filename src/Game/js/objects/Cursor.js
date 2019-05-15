@@ -69,13 +69,14 @@ export const CursorObject = new class extends GameObject {
     this.setInit(() => {
       this.render();
       this.setRenderIndex(3);
-      this.addTickEvent(() => {
-        if (this.collider.getInteractions().size !== 0) {
-          CursorObject.setType(POINTER);
-        } else {
-          CursorObject.setType(DEFAULT);
-        }
-      })
     });
+  }
+  tick(){
+    super.tick();
+    if (this.collider.getInteractions().size !== 0) {
+      CursorObject.setType(POINTER);
+    } else {
+      CursorObject.setType(DEFAULT);
+    }
   }
 };

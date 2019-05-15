@@ -1,6 +1,8 @@
 import {GameObject} from "../../../../Engine/GameObject/GameObject";
 import {gc} from "../../game_config";
 import {Sprite} from "../../../../Engine/Sprite/Sprite";
+import {Collider} from "../../../../Engine/Collider/Collider";
+import {BLOCK, PlayerCharacter} from "../../chars/lich/Lich";
 
 class Coffin extends GameObject {
   constructor(coords, open = false){
@@ -12,7 +14,16 @@ class Coffin extends GameObject {
       { w: 32 * gc.mult, h: 32 * gc.mult },
     );
 
-    this.sprite.moveTo(coords);
+    this.collider = new Collider(
+      { x: 0, y: 0 },
+      { w: 20 * gc.mult, h: 9 * gc.mult },
+      { x: 6 * gc.mult, y: 13 * gc.mult },
+    );
+    this.collider.addInteractionObject(PlayerCharacter);
+
+    this.collider.type = BLOCK;
+
+    this.moveTo(coords);
 
     this.setInit(() => {
       this.render();
@@ -21,6 +32,6 @@ class Coffin extends GameObject {
   }
 }
 
-export const CoffinClosedLeft = new Coffin({x: 16 * gc.mult, y: 96 * gc.mult});
-export const CoffinClosedRight = new Coffin({x: 80 * gc.mult, y: 96 * gc.mult});
+export const CoffinClosedLeft = new Coffin({x: 10 * gc.mult, y: 96 * gc.mult});
+export const CoffinClosedRight = new Coffin({x: 86 * gc.mult, y: 96 * gc.mult});
 export const CoffinOpened = new Coffin({x: 48 * gc.mult, y: 96 * gc.mult}, true);
