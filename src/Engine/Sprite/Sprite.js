@@ -80,6 +80,13 @@ export class Sprite {
     return this._animations[name];
   }
 
+  getCoords(){
+    return this._coords;
+  }
+  getSize(){
+    return this._size;
+  }
+
   draw(ctx) {
     let {
       _canvasObject,

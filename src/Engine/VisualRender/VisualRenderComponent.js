@@ -5,6 +5,7 @@ const FPS_RATE_DELTA = 1000 / 60;
 class RenderList {
   constructor(){
     this._renderList = [];
+    this._isDirty = false;
   }
   get(){
     return this._renderList;
@@ -25,12 +26,17 @@ class RenderList {
     this._renderList.sort((a, b) => {
       return a.zIndex > b.zIndex ? 1 : -1;
     });
+    this._isDirty = false;
+  }
+  getZIndex(obj){
+    return this._renderList.filter(item => obj === item.obj)[0].zIndex;
   }
   setZIndex(obj, value){
     this._renderList.filter(item => obj === item.obj)[0].zIndex = value;
-    this._sortZIndex();
+    this._isDirty = true;
   }
   draw(ctx){
+    this._isDirty && this._sortZIndex();
     this._renderList.forEach(item => {
       const obj = item.obj;
       obj.sprite.draw(ctx);

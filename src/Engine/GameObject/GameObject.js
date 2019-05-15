@@ -14,7 +14,17 @@ export class GameObject {
     engineVisual.renderList.delete(this);
   }
 
+  getCoords(){
+    return this.sprite && this.sprite.getCoords();
+  }
+  getColliderInfo(){
+    return this.collider && this.collider.getInfo();
+  }
+
   // render index methods
+  getRenderIndex(){
+    return engineVisual.renderList.getZIndex(this);
+  }
   setRenderIndex(index){
     engineVisual.renderList.setZIndex(this, index);
   }

@@ -10,6 +10,7 @@ const IDLE_RIGHT = {x: 528, y: 64};
 const IDLE_LEFT = {x: 0, y: 0};
 
 export const BLOCK = 'BLOCK';
+const Z_INDEX = 6;
 
 class Lich extends GameObject{
   constructor(){
@@ -87,7 +88,7 @@ class Lich extends GameObject{
 
     this.setInit(() => {
       this.render();
-      this.setRenderIndex(3);
+      this.setRenderIndex(Z_INDEX);
     });
   }
 

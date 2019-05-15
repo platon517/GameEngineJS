@@ -3,6 +3,9 @@ import {gc} from "../../game_config";
 import {Sprite} from "../../../../Engine/Sprite/Sprite";
 import {Collider} from "../../../../Engine/Collider/Collider";
 import {BLOCK, PlayerCharacter} from "../../chars/lich/Lich";
+import {zIndexManager} from "../../utilities/zIndexManager";
+
+const Z_INDEX = 7;
 
 class Coffin extends GameObject {
   constructor(coords, open = false){
@@ -27,8 +30,12 @@ class Coffin extends GameObject {
 
     this.setInit(() => {
       this.render();
-      this.setRenderIndex(4);
+      this.setRenderIndex(Z_INDEX);
     });
+  }
+  tick(){
+    super.tick();
+    zIndexManager(Z_INDEX, this, PlayerCharacter)
   }
 }
 

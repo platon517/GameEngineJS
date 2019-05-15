@@ -2,20 +2,22 @@ export const Camera =  {
   _coords: {x: 0, y: 0},
   _params: {w: 128, h: 128},
   _nowMoving: false,
-  _frames: [[0, 0], [128, 128]],
+  _frames: null,
   _setCoords(coords){
     const frames = this._frames;
-    if (coords.x < frames[0][0]) {
-      coords.x = frames[0][0];
-    }
-    if (coords.x + this._params.w > frames[1][0]) {
-      coords.x = frames[1][0] - this._params.w
-    }
-    if (coords.y < frames[0][1]) {
-      coords.y = frames[0][1];
-    }
-    if (coords.y + this._params.h > frames[1][1]) {
-      coords.y = frames[1][1] - this._params.h
+    if (frames){
+      if (coords.x < frames[0][0]) {
+        coords.x = frames[0][0];
+      }
+      if (coords.x + this._params.w > frames[1][0]) {
+        coords.x = frames[1][0] - this._params.w
+      }
+      if (coords.y < frames[0][1]) {
+        coords.y = frames[0][1];
+      }
+      if (coords.y + this._params.h > frames[1][1]) {
+        coords.y = frames[1][1] - this._params.h
+      }
     }
     this._coords = coords;
   },
