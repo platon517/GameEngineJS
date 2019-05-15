@@ -7,5 +7,6 @@ function update() {
   engineVisual.update();
 
   requestAnimationFrame(update);
+  //setTimeout(update, 100);
 }
 setTimeout(update, 0);

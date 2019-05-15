@@ -1,6 +1,7 @@
 import {GameObject} from "../../../../Engine/GameObject/GameObject";
 import {gc} from "../../game_config";
 import {Sprite} from "../../../../Engine/Sprite/Sprite";
+import {Collider} from "../../../../Engine/Collider/Collider";
 
 class Statue extends GameObject {
   constructor(coords, destroyed = false){
@@ -13,7 +14,13 @@ class Statue extends GameObject {
       { w: 16 * gc.mult, h: 32 * gc.mult },
     );
 
-    this.sprite.moveTo(coords);
+    this.collider = new Collider(
+      { x: 0, y: 0 },
+      { w: 10 * gc.mult, h: 10 * gc.mult },
+      { x: 3 * gc.mult, y: 19 * gc.mult },
+    );
+
+    this.moveTo(coords);
 
     this.setInit(() => {
       this.render();

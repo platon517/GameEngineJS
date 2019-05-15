@@ -1,5 +1,7 @@
 import {gc} from "../../Game/js/game_config";
 
+const FPS_RATE_DELTA = 1000 / 60;
+
 class RenderList {
   constructor(){
     this._renderList = [];
@@ -48,6 +50,12 @@ export class VisualComponent {
   constructor(w = 100, h = 100){
     this.gameWindow = document.getElementById("game_window");
 
+    window.onkeydown = e => this._pushKey(e);
+    window.onkeyup = e => this._releaseKey(e);
+    
+    this._keysEvents = {};
+    this._keysPressed = new Set();
+
     const gW = this.gameWindow;
     gW.style.cursor = 'none';
     gW.style.width = `${w}px`;
@@ -64,11 +72,58 @@ export class VisualComponent {
     this.update();
   }
 
+  addKeysEvent(keyCode, func){
+    this._keysEvents[keyCode] ?
+      this._keysEvents[keyCode].push(func)
+      :
+      this._keysEvents[keyCode] = [func];
+  }
+
+  _callKeysEvents(code){
+    this._keysEvents[code] && this._keysEvents[code].forEach(event => event());
+  }
+  
+  _pushKey(e){
+    const code = e.keyCode;
+    //console.log(`${code} is down`);
+    this._keysEvents[code] && this._keysPressed.add(code);
+  }
+  _releaseKey(e){
+    const code = e.keyCode;
+    //console.log(`${code} is up`);
+    this._keysPressed.delete(code);
+  }
+
+  _fpsUpdate = (() => {
+    let lastCalledTime = 0;
+    let startTime = new Date().getTime();
+    let count = 0;
+    return () => {
+      count += 1;
+      const time = new Date().getTime();
+      if (time - startTime >= 1000) {
+        console.log(`fpsUpdates: ${count}`);
+        startTime = new Date().getTime();
+        count = 0;
+      }
+      const deltaTime = time - lastCalledTime;
+      const skippedFrames = Math.round(deltaTime / FPS_RATE_DELTA);
+       this._keysPressed.forEach(key => {
+        for (let i = 0; i < skippedFrames; i++) {
+          this._callKeysEvents(key);
+        }
+      });
+      lastCalledTime = time;
+    }
+  })();
+
   update(){
     const gW = this.gameWindow;
 
     const ctx = this.ctx;
     ctx.clearRect(0, 0, gW.width, gW.height);
+
+    this._fpsUpdate();
     this.renderList.draw(ctx);
 
     /*

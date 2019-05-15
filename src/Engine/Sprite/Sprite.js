@@ -1,3 +1,5 @@
+import {Camera} from "../Camera/Camera";
+
 export class Sprite {
   constructor(
     url = "img/engine-defaults/no-image.png",
@@ -125,14 +127,16 @@ export class Sprite {
       }
     }
 
+    const camCoords = Camera.getCoords();
+
     ctx.drawImage(
       _canvasObject,
       _nowState.x,
       _nowState.y,
       _innerSize.w,
       _innerSize.h,
-      _coords.x + this._offset.x,
-      _coords.y + this._offset.y,
+      _coords.x + this._offset.x + camCoords.x,
+      _coords.y + this._offset.y + camCoords.y,
       _size.w,
       _size.h
     );

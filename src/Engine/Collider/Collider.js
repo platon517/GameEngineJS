@@ -2,6 +2,7 @@ import { engineVisual } from "../VisualRender/VisualRenderComponent";
 import { throttle } from "throttle-debounce";
 import {isCollides} from "../../Game/js/utilities/isCollides";
 import {getCoordsArr} from "../../Game/js/utilities/getCoordsArr";
+import {Camera} from "../Camera/Camera";
 
 export class Collider {
   constructor(
@@ -124,6 +125,7 @@ export class Collider {
     const { _size, _offset, _nowMoving, disabled } = this;
 
     if (!disabled) {
+      const camCoords = Camera.getCoords();
       this._checkInteractions();
       if (_nowMoving) {
         const nowTime = new Date().getTime();
@@ -138,7 +140,10 @@ export class Collider {
         if (pastTime >= time) {
           const pos = _nowMoving.pos;
           this._nowMoving = null;
-          this._coords = pos;
+          this._coords = {
+            x: pos.x + camCoords.x,
+            y: pos.y + camCoords.y
+          };
         }
       }
 
@@ -146,8 +151,8 @@ export class Collider {
       if (render_rect) {
         ctx.beginPath();
         ctx.rect(
-          this._coords.x + this._offset.x,
-          this._coords.y + this._offset.y,
+          this._coords.x + this._offset.x + camCoords.x,
+          this._coords.y + this._offset.y + camCoords.y,
           this._size.w,
           this._size.h
         );
