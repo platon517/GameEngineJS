@@ -133,7 +133,7 @@ export class VisualComponent {
       count += 1;
       const time = new Date().getTime();
       if (time - startTime >= 1000) {
-        console.log(`fpsUpdates: ${count}`);
+        //console.log(`fpsUpdates: ${count}`);
         startTime = new Date().getTime();
         count = 0;
       }

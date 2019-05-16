@@ -14,7 +14,7 @@ export const StairsTop = new (class extends GameObject {
 
     this.setInit(() => {
       this.render();
-      this.setRenderIndex(4);
+      this.setRenderIndex(8);
     });
   }
 })();

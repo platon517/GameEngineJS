@@ -20,12 +20,12 @@ class Statue extends GameObject {
 
     this.collider = new Collider(
       { x: 0, y: 0 },
-      { w: 12 * gc.mult, h: 12 * gc.mult },
-      { x: 2 * gc.mult, y: 18 * gc.mult },
+      { w: 10 * gc.mult, h: 10 * gc.mult },
+      { x: 3 * gc.mult, y: 19 * gc.mult },
     );
     this.collider.addInteractionObject(PlayerCharacter);
 
-    this.collider.type = BLOCK;
+    this.collider.setType(BLOCK);
 
     this.moveTo(coords);
 

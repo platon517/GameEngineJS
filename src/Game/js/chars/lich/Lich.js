@@ -139,7 +139,7 @@ class Lich extends GameObject{
     });
     interactions.forEach(item => {
       if (
-        item.type === BLOCK
+        item.getType() === BLOCK
         &&
         !this._blockedDirections.some(block => block.item === item)
       ) {

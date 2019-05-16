@@ -24,7 +24,7 @@ class Coffin extends GameObject {
     );
     this.collider.addInteractionObject(PlayerCharacter);
 
-    this.collider.type = BLOCK;
+    this.collider.setType(BLOCK);
 
     this.moveTo(coords);
 

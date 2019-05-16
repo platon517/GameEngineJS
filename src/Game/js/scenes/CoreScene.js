@@ -9,6 +9,7 @@ import {CoffinClosedLeft, CoffinClosedRight, CoffinOpened} from "../objects/Cryp
 import {PlayerCharacter} from "../chars/lich/Lich";
 import {Scene} from "../../../Engine/Scene/Scene";
 import {Camera} from "../../../Engine/Camera/Camera";
+import {StairsColumns} from "../objects/Crypt/Stairs/Columns";
 
 Camera.moveTo({x: 0, y: 0});
 Camera.setFrames([[0, 0], [128, 128]]);
@@ -19,6 +20,7 @@ export const CoreScene = new Scene(128, 128, [
   Floor,
   StairsTop,
   StairsBottom,
+  StairsColumns,
   TorchLeft,
   TorchRight,
   ShadowMask,

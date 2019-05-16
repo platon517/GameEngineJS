@@ -19,6 +19,7 @@ export class Collider {
     this._interactionsObjectsList = new Set();
     this.checkDelay = checkDelay;
     this._events = new Map();
+    this._type = null;
     this.disabled = false;
   }
 
@@ -47,6 +48,12 @@ export class Collider {
     this._events.get(name)(...args)
   }
 
+  getType(){
+    return this._type;
+  }
+  setType(type){
+    this._type = type;
+  }
 
   getInfo() {
     return {
@@ -147,7 +154,7 @@ export class Collider {
         }
       }
 
-      const render_rect = true;
+      const render_rect = false;
       if (render_rect) {
         ctx.beginPath();
         ctx.rect(
@@ -177,6 +184,12 @@ export class ColliderGroup {
       this.arr[i].moveTo(...args);
     }
   };
+  setType(type){
+    this.arr.forEach(collider => collider.setType(type));
+  }
+  getGroup(){
+    return this.arr;
+  }
   update = (ctx) => {
     for (let i in this.arr) {
       this.arr[i].update(ctx);

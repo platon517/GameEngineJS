@@ -1,7 +1,7 @@
 export const zIndexManager = (zIndex, target, strongTarget) => {
   const strongTargetInfo = strongTarget.getColliderInfo();
   const targetInfo = target.getColliderInfo();
-  const strongTargetY = strongTargetInfo.coords.y + strongTargetInfo.offset.y + strongTargetInfo.size.h;
+  const strongTargetY = strongTargetInfo.coords.y + strongTargetInfo.offset.y + strongTargetInfo.size.h + 10;
   const targetY = targetInfo.coords.y + targetInfo.offset.y + targetInfo.size.h;
   if ( strongTargetY > targetY ) {
     const newIndex = strongTarget.getRenderIndex() - 1;
