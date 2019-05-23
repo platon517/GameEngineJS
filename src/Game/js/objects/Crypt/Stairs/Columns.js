@@ -20,7 +20,7 @@ export const StairsColumns = new (class extends GameObject {
     this.collider = new Collider(
       { x: 0, y: 0 },
       { w: 2 * gc.mult, h: 1 * gc.mult },
-      { x: 64 * gc.mult, y: 80 * gc.mult },
+      { x: 64 * gc.mult, y: 77 * gc.mult },
     );
     this.collider.addInteractionObject(PlayerCharacter);
 

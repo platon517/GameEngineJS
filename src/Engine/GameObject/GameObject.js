@@ -33,6 +33,7 @@ export class GameObject {
   setInit(func){
     this._initFunction = func;
   }
+
   init(){
     this._initFunction()
   }

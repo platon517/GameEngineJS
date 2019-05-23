@@ -62,9 +62,9 @@ export class Sprite {
     this._animations[prop.title] = prop.config;
   }
 
-  playAnimation(name, loop = false) {
+  playAnimation(name, loop = false, freeze = false) {
     const startTime = new Date().getTime();
-    this._nowAnimation = { name, startTime, loop };
+    this._nowAnimation = { name, startTime, loop, freeze };
   }
 
   stopAnimation() {
@@ -87,7 +87,7 @@ export class Sprite {
     return this._size;
   }
 
-  draw(ctx) {
+  draw(ctx, isImage = true) {
     let {
       _canvasObject,
       _nowState,
@@ -115,6 +115,8 @@ export class Sprite {
         if (_nowAnimation.loop) {
           this.playAnimation(_nowAnimation.name, true);
           _nowState = animation.frames[0];
+        } else if (_nowAnimation.freeze) {
+          _nowState = animation.frames[animation.frames.length - 1];
         } else {
           _nowState = _idleCoords;
           this._nowAnimation = null;
@@ -142,7 +144,7 @@ export class Sprite {
 
     const camCoords = Camera.getCoords();
 
-    ctx.drawImage(
+    isImage && ctx.drawImage(
       _canvasObject,
       _nowState.x,
       _nowState.y,
@@ -153,5 +155,55 @@ export class Sprite {
       _size.w,
       _size.h
     );
+  }
+}
+
+export class SquareSprite extends Sprite {
+  constructor(size = {w: 100, h: 100}, color = 'black'){
+    super();
+    this._size = size;
+    this._color = color;
+    this._alpha = 1;
+  }
+
+  setAlpha(val, time = null) {
+    if (time) {
+      const startTime = new Date().getTime();
+      this._newAlpha = { val, startVal: this._alpha, time, startTime };
+    } else {
+      this._alpha = val;
+    }
+  }
+
+  draw(ctx){
+    super.draw(ctx, false);
+    const camCoords = Camera.getCoords();
+    const lastAlpha = ctx.globalAlpha;
+
+    const _newAlpha = this._newAlpha;
+    if (_newAlpha) {
+      const nowTime = new Date().getTime();
+      const startVal = _newAlpha.startVal;
+      const startTime = _newAlpha.startTime;
+      const pastTime = nowTime - startTime;
+      const time = _newAlpha.time;
+      const val = startVal + (_newAlpha.val / time) * pastTime;
+      this._alpha = val;
+      if (pastTime >= time) {
+        this._newAlpha = null;
+        this._alpha = val;
+      }
+    }
+    ctx.beginPath();
+    ctx.fillStyle = this._color;
+    ctx.globalAlpha = this._alpha;
+    ctx.fillRect(
+      this._coords.x + camCoords.x,
+      this._coords.y + camCoords.y,
+      this._size.w,
+      this._size.h
+    );
+    ctx.globalAlpha = lastAlpha;
+    ctx.stroke();
   }
 }

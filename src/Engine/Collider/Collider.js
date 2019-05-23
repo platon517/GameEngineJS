@@ -48,6 +48,10 @@ export class Collider {
     this._events.get(name)(...args)
   }
 
+  setDisabled(val = true){
+    this.disabled = val;
+  }
+
   getType(){
     return this._type;
   }
@@ -59,7 +63,11 @@ export class Collider {
     return {
       coords: this._coords,
       offset: this._offset,
-      size: this._size
+      size: this._size,
+      center: {
+        x: (this._coords.x + this._offset.x + this._size.w) / 2,
+        y: (this._coords.y + this._offset.y + this._size.h) / 2,
+      }
     };
   }
   setInteraction(object) {
@@ -133,7 +141,6 @@ export class Collider {
 
     if (!disabled) {
       const camCoords = Camera.getCoords();
-      this._checkInteractions();
       if (_nowMoving) {
         const nowTime = new Date().getTime();
         const startTime = _nowMoving.startTime;
@@ -153,10 +160,12 @@ export class Collider {
           };
         }
       }
+      this._checkInteractions();
 
-      const render_rect = false;
+      const render_rect = true;
       if (render_rect) {
         ctx.beginPath();
+        ctx.strokeStyle = "Lime";
         ctx.rect(
           this._coords.x + this._offset.x + camCoords.x,
           this._coords.y + this._offset.y + camCoords.y,
@@ -190,9 +199,12 @@ export class ColliderGroup {
   getGroup(){
     return this.arr;
   }
+  getInteractions() {
+    const interactions = new Set();
+    this.arr.forEach(collider => interactions.add(...collider._interactions))
+    return interactions;
+  }
   update = (ctx) => {
-    for (let i in this.arr) {
-      this.arr[i].update(ctx);
-    }
+    this.arr.forEach(collider => collider.update(ctx));
   }
 }

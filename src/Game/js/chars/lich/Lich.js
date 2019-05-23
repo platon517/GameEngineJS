@@ -75,6 +75,7 @@ class Lich extends GameObject{
     this._walkDirection = null;
     this._walkSpeed = 0;
     this._blockedDirections = [];
+    this._blockedInput = false;
 
     engineVisual.addKeysEvent(37, () => this.walk('x', -1));
 
@@ -92,15 +93,21 @@ class Lich extends GameObject{
     });
   }
 
+  blockInput(val){
+    this._blockedInput = val;
+  }
+
   walk(axisValue = 'x', speed = 1){
 
-    const isForward = speed > 0;
+    if (this._blockedInput) return false;
+
+    const directionIsPositive = speed > 0;
 
     const isBlocked = this._blockedDirections.reduce((isBlocked, item) => {
       return isBlocked || (
         axisValue === item.axisValue
         &&
-        isForward === item.isForward
+        directionIsPositive === item.directionIsPositive
       )
     }, false);
 
@@ -108,7 +115,7 @@ class Lich extends GameObject{
 
     if (!this._walkDirection) {
       if (axisValue === 'x') {
-        this._isLeft = !isForward;
+        this._isLeft = !directionIsPositive;
       }
       this.sprite.playAnimation(this._isLeft ? 'walkLeft' : 'walkRight', true);
       this._walkDirection = axisValue;
@@ -121,7 +128,7 @@ class Lich extends GameObject{
     })
   }
   stopWalk(){
-    if (this._walkDirection) {
+    if (this._walkDirection && !this._blockedInput) {
       if (this._walkDirection === 'x') {
         this.sprite.setIdleCoords(this._walkSpeed < 0 ? IDLE_LEFT : IDLE_RIGHT);
       }
@@ -141,19 +148,25 @@ class Lich extends GameObject{
       if (
         item.getType() === BLOCK
         &&
-        !this._blockedDirections.some(block => block.item === item)
+        !this._blockedDirections.find(block => block.item === item)
       ) {
         this._blockedDirections.push(
           {
             item: item,
             axisValue: this._walkDirection,
-            isForward: this._walkSpeed > 0
+            directionIsPositive:
+              this._walkDirection === 'x' ?
+                item.getInfo().center.x > this.collider.getInfo().center.x
+                :
+                item.getInfo().center.y > this.collider.getInfo().center.y
           }
         );
+        /*
         this.moveTo({
           x: this.sprite._coords.x + (this._walkDirection === 'x' ? this._walkSpeed * -1 : 0),
           y: this.sprite._coords.y + (this._walkDirection === 'y' ? this._walkSpeed * -1 : 0),
         })
+        */
       }
     });
   }
@@ -164,6 +177,17 @@ class Lich extends GameObject{
       x: 56 * gc.mult - args[0].x,
       y: 56 * gc.mult - args[0].y,
     });
+  }
+
+  walkTo(...args){
+    this.moveTo(...args);
+    this.blockInput(true);
+    this.sprite.playAnimation(this._isLeft ? 'walkLeft' : 'walkRight', true);
+    const time = args[1];
+    setTimeout(() => {
+      this.sprite.stopAnimation(this._isLeft ? 'walkLeft' : 'walkRight');
+      this.blockInput(false);
+    }, time)
   }
 
   tick(){

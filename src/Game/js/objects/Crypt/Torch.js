@@ -55,11 +55,11 @@ class Torch extends GameObject {
 
     this.setInit(() => {
       this.render();
-      this.setRenderIndex(3);
+      this.setRenderIndex(4);
       this.sprite.playAnimation('burn', true);
 
       this.arc.render();
-      this.arc.setRenderIndex(4);
+      this.arc.setRenderIndex(5);
 
       this.light.render();
       this.light.setRenderIndex(3);

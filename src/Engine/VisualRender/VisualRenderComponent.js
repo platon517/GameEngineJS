@@ -39,15 +39,17 @@ class RenderList {
     this._isDirty && this._sortZIndex();
     this._renderList.forEach(item => {
       const obj = item.obj;
-      obj.sprite.draw(ctx);
-      obj.collider && obj.collider.update(engineVisual.ctx);
-      obj.tick();
-
+      obj.sprite && obj.sprite.draw(ctx);
       if (obj.ui !== undefined && obj.ui.length !== 0) {
         obj.ui.map( item => {
           item.draw(ctx);
         })
       }
+    });
+    this._renderList.forEach(item => {
+      const obj = item.obj;
+      obj.collider && obj.collider.update(engineVisual.ctx);
+      obj.tick();
     });
   }
 }

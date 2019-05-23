@@ -1,11 +1,15 @@
+import {gc} from "../../Game/js/game_config";
+import {getRandom} from "../../Game/js/utilities/random";
+
 export const Camera =  {
   _coords: {x: 0, y: 0},
   _params: {w: 128, h: 128},
   _nowMoving: false,
   _frames: null,
+  _isShaking: false,
   _setCoords(coords){
     const frames = this._frames;
-    if (frames){
+    if (frames && !this._isShaking){
       if (coords.x < frames[0][0]) {
         coords.x = frames[0][0];
       }
@@ -59,5 +63,20 @@ export const Camera =  {
     } else {
       this._setCoords(pos);
     }
+  },
+  shake(time, power = 1) {
+    this._isShaking = true;
+    const int = setInterval(() => {
+      this.moveTo({
+        x: getRandom(-1 * power, power),
+        y: getRandom(-1 * power, power)
+      }, 50);
+    }, 50);
+    setTimeout(() => {
+      clearInterval(int);
+      this._isShaking = false;
+    }, time);
   }
 };
+
+// Camera.shake(3000);
