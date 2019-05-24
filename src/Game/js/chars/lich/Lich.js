@@ -127,6 +127,7 @@ class Lich extends GameObject{
       y: this.sprite._coords.y + (axisValue === 'y' ? speed * gc.mult : 0)
     })
   }
+
   stopWalk(){
     if (this._walkDirection && !this._blockedInput) {
       if (this._walkDirection === 'x') {
@@ -197,6 +198,7 @@ class Lich extends GameObject{
         this.collider.getInteractions()
       );
     }
+    //console.log(this.collider.getInteractions().size);
   }
 
 }

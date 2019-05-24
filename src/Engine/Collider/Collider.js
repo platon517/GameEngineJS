@@ -112,7 +112,7 @@ export class Collider {
       }
     }
   }
-  _checkInteractions = throttle(this.checkDelay, () => {
+  _checkInteractions = () => {
     let objects, fromRenderList;
 
     if (this._interactionsObjectsList.size !== 0){
@@ -135,7 +135,7 @@ export class Collider {
         this._checkSingleInteractions(collider);
       }
     });
-  });
+  };
   update(ctx) {
     const { _size, _offset, _nowMoving, disabled } = this;
 

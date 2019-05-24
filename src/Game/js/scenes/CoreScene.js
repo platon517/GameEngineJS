@@ -14,6 +14,7 @@ import {BlackScreen} from "../objects/Common/BlackScreen";
 import {EvilEye} from "../chars/evil_eye/EvilEye";
 import {gc} from "../game_config";
 import {HideCollider} from "../objects/Crypt/HideCollider";
+import {TextAreaBottom} from "../ui/TextArea";
 
 Camera.moveTo({x: 0, y: 0});
 Camera.setFrames([[0, 0], [128, 128]]);
@@ -41,4 +42,5 @@ export const CoreScene = new Scene(128, 128, [
   PlayerCharacter,
   HideCollider,
   BlackScreen,
+  TextAreaBottom
 ], Camera);

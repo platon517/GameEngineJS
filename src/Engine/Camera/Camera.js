@@ -79,4 +79,8 @@ export const Camera =  {
   }
 };
 
-// Camera.shake(3000);
+//Camera.shake(3000);
+
+//Camera.moveTo({x: 0, y: 128 * gc.mult}, 5000);
+
+//Camera.setFrames([[0, 0], [128, 128]]);

@@ -11,9 +11,9 @@ export const HideCollider = new (class extends GameObject{
     this._isHide = false;
 
     this.collider = new ColliderGroup([
-      [{ x: 9 * gc.mult, y: 78 * gc.mult }, { w: 10 * gc.mult, h: 10 * gc.mult }],
+      [{ x: 9 * gc.mult, y: 78 * gc.mult }, { w: 10 * gc.mult, h: 8 * gc.mult }],
       [{ x: 60 * gc.mult, y: 118 * gc.mult }, { w: 8 * gc.mult, h: 8 * gc.mult }],
-      [{ x: 109 * gc.mult, y: 78 * gc.mult }, { w: 10 * gc.mult, h: 10 * gc.mult }],
+      [{ x: 109 * gc.mult, y: 78 * gc.mult }, { w: 10 * gc.mult, h: 8 * gc.mult }],
     ]);
     this.collider.addInteractionObject(PlayerCharacter);
 

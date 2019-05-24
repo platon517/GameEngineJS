@@ -84,9 +84,12 @@ export class EvilEye extends GameObject {
   }
   open(){
     this.sprite.playAnimation('open');
-    const delay = this.sprite.getAnimationInfo('open').time;
+    const delay = this.sprite.getAnimationInfo('open', false, true).time;
     setTimeout(() => {
-      this.sprite.playAnimation('idle', true);
+      const currentAnimation = this.sprite.getCurrentAnimation();
+      if (currentAnimation === null || currentAnimation.name === 'open') {
+        this.sprite.playAnimation('idle', true);
+      }
     }, delay);
   }
   tick(){

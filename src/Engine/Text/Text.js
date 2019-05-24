@@ -1,4 +1,5 @@
 import {gc} from "../../Game/js/game_config";
+import {Camera} from "../Camera/Camera";
 
 export const ARIAL_FONT = 'Arial';
 export const PIXEL_FONT = 'pixel';
@@ -14,8 +15,9 @@ export class Text {
     font = ARIAL_FONT,
     size = 30,
     color = 'black',
-    offset = {x: 0, y: 0},
     coords = {x: gc.originSize.w * gc.mult / 2, y: gc.originSize.h * gc.mult / 2},
+    offset = {x: 0, y: 0},
+    areaSize = {w: 128, h: 128}
     ){
     this._text = text;
     this._coords = coords;
@@ -26,6 +28,7 @@ export class Text {
     this._textAllign = LEFT;
     this._nowMoving = null;
     this._offset = offset;
+    this._areaSize = areaSize;
   }
   hide(){
     this._hidden = true;
@@ -59,6 +62,7 @@ export class Text {
     }
   }
   draw(ctx){
+    const camCoords = Camera.getCoords();
     const {
       _text,
       _font,
@@ -97,14 +101,43 @@ export class Text {
           x = _coords.x + this._offset.x - ctx.measureText(_text).width / 2;
           break;
         case LEFT:
-          x = _coords.x  + this._offset.x;
+          x = _coords.x + this._offset.x;
           break;
         case RIGHT:
           x = _coords.x  + this._offset.x - ctx.measureText(_text).width;
           break;
       }
 
-      ctx.fillText(_text, x, _coords.y + this._offset.y);
+      const lineWidth = this._areaSize.w * gc.mult;
+      const wordsArr = _text.split(' ');
+      const lines = [];
+
+      wordsArr.forEach(word => {
+        const lastLine = lines.length - 1;
+        const newLineWidth = ctx.measureText(lines[lastLine]).width + ctx.measureText(word).width;
+        if (lines[lastLine] && (newLineWidth <= lineWidth)) {
+          lines[lastLine] += `${word} `;
+        } else if (!((lines.length + 1) * this._size >= this._areaSize.h * gc.mult)) {
+          lines.push(`${word} `);
+        }
+      });
+
+      lines.forEach((line, index) => {
+        ctx.fillText(line, x + camCoords.x, _coords.y + this._offset.y + camCoords.y + this._size * index );
+      });
+
+      const render_rect = false;
+      if (render_rect) {
+        ctx.beginPath();
+        ctx.strokeStyle = "Red";
+        ctx.rect(
+          this._coords.x + this._offset.x + camCoords.x,
+          this._coords.y + this._offset.y + camCoords.y - this._size,
+          this._areaSize.w * gc.mult,
+          this._areaSize.h * gc.mult
+        );
+        ctx.stroke();
+      }
     }
   }
 }

@@ -67,6 +67,10 @@ export class Sprite {
     this._nowAnimation = { name, startTime, loop, freeze };
   }
 
+  getCurrentAnimation(){
+    return this._nowAnimation;
+  }
+
   stopAnimation() {
     this._nowState = this._idleCoords;
     this._nowAnimation = null;
