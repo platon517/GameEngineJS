@@ -18,13 +18,14 @@ export class TextArea extends GameObject{
 
     const text =
       new Text(
-        TEST[local],
+        '',
         local === 'EN' ? PIXEL_ENG_FONT : PIXEL_FONT,
         (local === 'EN' ? 4 : 4.5) * gc.mult,
         'white',
         {x: 7 * gc.mult, y: 96 * gc.mult},
         {x: 0 * gc.mult, y: 0 * gc.mult},
-        { w: 116, h: 26}
+        { w: 116, h: 26},
+
       );
     text.textAllign(LEFT);
 
@@ -38,3 +39,5 @@ export class TextArea extends GameObject{
 }
 
 export const TextAreaBottom = new TextArea();
+
+TextAreaBottom.ui[0].text(TEST[local], 50);

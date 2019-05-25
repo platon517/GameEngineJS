@@ -1,24 +1,27 @@
-import {gc} from "../../Game/js/game_config";
-import {Camera} from "../Camera/Camera";
+import { gc } from "../../Game/js/game_config";
+import { Camera } from "../Camera/Camera";
 
-export const ARIAL_FONT = 'Arial';
-export const PIXEL_FONT = 'pixel';
-export const PIXEL_ENG_FONT = 'pixel_eng';
+export const ARIAL_FONT = "Arial";
+export const PIXEL_FONT = "pixel";
+export const PIXEL_ENG_FONT = "pixel_eng";
 
-export const CENTER = 'center';
-export const LEFT = 'left';
-export const RIGHT = 'right';
+export const CENTER = "center";
+export const LEFT = "left";
+export const RIGHT = "right";
 
 export class Text {
   constructor(
-    text = 'sample text',
+    text = "sample text",
     font = ARIAL_FONT,
     size = 30,
-    color = 'black',
-    coords = {x: gc.originSize.w * gc.mult / 2, y: gc.originSize.h * gc.mult / 2},
-    offset = {x: 0, y: 0},
-    areaSize = {w: 128, h: 128}
-    ){
+    color = "black",
+    coords = {
+      x: (gc.originSize.w * gc.mult) / 2,
+      y: (gc.originSize.h * gc.mult) / 2
+    },
+    offset = { x: 0, y: 0 },
+    areaSize = { w: 128, h: 128 }
+  ) {
     this._text = text;
     this._coords = coords;
     this._font = font;
@@ -29,25 +32,35 @@ export class Text {
     this._nowMoving = null;
     this._offset = offset;
     this._areaSize = areaSize;
+    this._animation = null;
+    this._renderText = "";
   }
-  hide(){
+  hide() {
     this._hidden = true;
   }
-  show(){
+  show() {
     this._hidden = false;
   }
-  textAllign(type = CENTER){
+  textAllign(type = CENTER) {
     this._textAllign = type;
   }
-  text(text, animation = {type: 'text', time: 0}){
-    if (animation.time === 0) {
+  text(text, letterSpeed = 0) {
+    if (letterSpeed === 0) {
       this._text = text;
+    } else {
+      this._animation = {
+        letterSpeed,
+        finalText: text,
+        startLetterTime: new Date().getTime(),
+        finalTextFormatted: null
+      };
     }
+    this._textFormatted = false;
   }
-  getPos(){
+  getPos() {
     return this._coords;
   }
-  moveTo(pos = {x: 0, y: 0}, time = null){
+  moveTo(pos = { x: 0, y: 0 }, time = null) {
     if (time) {
       const startTime = new Date().getTime();
       const path = {
@@ -56,12 +69,12 @@ export class Text {
         end_x: pos.x - this._coords.x,
         end_y: pos.y - this._coords.y
       };
-      this._nowMoving = {path, pos, time, startTime};
+      this._nowMoving = { path, pos, time, startTime };
     } else {
       this._coords = pos;
     }
   }
-  draw(ctx){
+  draw(ctx) {
     const camCoords = Camera.getCoords();
     const {
       _text,
@@ -73,21 +86,22 @@ export class Text {
       _textAllign,
       _nowMoving
     } = this;
+
     ctx.font = `${_size}px ${_font}`;
     ctx.fillStyle = _color;
-    if(!_hidden){
 
+    if (!_hidden) {
       if (_nowMoving) {
         const nowTime = new Date().getTime();
         const startTime = _nowMoving.startTime;
-        const pastTime = (nowTime - startTime);
+        const pastTime = nowTime - startTime;
         const time = _nowMoving.time;
         const path = _nowMoving.path;
         this._coords = {
-          x: path.start_x + (path.end_x / time * pastTime),
-          y: path.start_y + (path.end_y / time * pastTime),
+          x: path.start_x + (path.end_x / time) * pastTime,
+          y: path.start_y + (path.end_y / time) * pastTime
         };
-        if(pastTime >= time) {
+        if (pastTime >= time) {
           const pos = _nowMoving.pos;
           this._nowMoving = null;
           this._coords = pos;
@@ -104,26 +118,61 @@ export class Text {
           x = _coords.x + this._offset.x;
           break;
         case RIGHT:
-          x = _coords.x  + this._offset.x - ctx.measureText(_text).width;
+          x = _coords.x + this._offset.x - ctx.measureText(_text).width;
           break;
       }
 
-      const lineWidth = this._areaSize.w * gc.mult;
-      const wordsArr = _text.split(' ');
-      const lines = [];
+      if (this._animation) {
+        const nowTime = new Date().getTime();
+        const pastTime = nowTime - this._animation.startLetterTime;
 
-      wordsArr.forEach(word => {
-        const lastLine = lines.length - 1;
-        const newLineWidth = ctx.measureText(lines[lastLine]).width + ctx.measureText(word).width;
-        if (lines[lastLine] && (newLineWidth <= lineWidth)) {
-          lines[lastLine] += `${word} `;
-        } else if (!((lines.length + 1) * this._size >= this._areaSize.h * gc.mult)) {
-          lines.push(`${word} `);
+        if (
+          !this._animation.finalTextFormatted ||
+          this._animation.finalTextFormatted.join("") !==
+            lineSplitter(
+              ctx,
+              this._animation.finalText,
+              camCoords,
+              this._size,
+              this._areaSize
+            )
+        ) {
+          this._animation.finalTextFormatted = lineSplitter(
+            ctx,
+            this._animation.finalText,
+            camCoords,
+            this._size,
+            this._areaSize
+          ).split("");
         }
-      });
 
-      lines.forEach((line, index) => {
-        ctx.fillText(line, x + camCoords.x, _coords.y + this._offset.y + camCoords.y + this._size * index );
+        const lettersRange = Math.floor(pastTime / this._animation.letterSpeed);
+
+        this._renderText = this._animation.finalTextFormatted
+          .slice(0, lettersRange)
+          .join("");
+
+        if (lettersRange >= this._animation.finalTextFormatted.length) {
+          this._text = this._animation.finalText;
+          this._animation = null;
+        }
+
+      } else {
+        this._renderText = lineSplitter(
+          ctx,
+          _text,
+          camCoords,
+          this._size,
+          this._areaSize
+        );
+      }
+
+      this._renderText.split("\n").forEach((line, index) => {
+        ctx.fillText(
+          line,
+          x + camCoords.x,
+          _coords.y + this._offset.y + camCoords.y + this._size * index
+        );
       });
 
       const render_rect = false;
@@ -141,3 +190,34 @@ export class Text {
     }
   }
 }
+
+const lineSplitter = (() => {
+  const cache = new Map();
+  let lastWidth = null;
+  return (ctx, _text, camCoords, _size, _areaSize) => {
+    if (cache.has(_text) && ctx.measureText(_text).width === lastWidth) {
+      return cache.get(_text);
+    }
+
+    const lineWidth = _areaSize.w * gc.mult;
+    const wordsArr = _text.split(" ");
+    const lines = [];
+
+    wordsArr.forEach(word => {
+      const lastLine = lines.length - 1;
+      const newLineWidth =
+        ctx.measureText(lines[lastLine]).width + ctx.measureText(word).width;
+      if (lines[lastLine] && newLineWidth <= lineWidth) {
+        lines[lastLine] += `${word} `;
+      } else if (!((lines.length + 1) * _size >= _areaSize.h * gc.mult)) {
+        lines[lastLine] += `\n`;
+        lines.push(`${word} `);
+      }
+    });
+
+    cache.set(_text, lines.join(""));
+    lastWidth = ctx.measureText(_text).width;
+
+    return lines.join("");
+  };
+})();
