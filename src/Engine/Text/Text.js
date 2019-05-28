@@ -16,14 +16,17 @@ export class Text {
     size = 30,
     color = "black",
     coords = {
-      x: (gc.originSize.w * gc.mult) / 2,
-      y: (gc.originSize.h * gc.mult) / 2
+      x: gc.originSize.w / 2,
+      y: gc.originSize.h / 2
     },
     offset = { x: 0, y: 0 },
-    areaSize = { w: 128, h: 128 }
+    areaSize = { w: 100, h: 100 }
   ) {
     this._text = text;
-    this._coords = coords;
+    this._coords = {
+      x: coords.x * gc.mult,
+      y: coords.y * gc.mult,
+    };
     this._font = font;
     this._color = color;
     this._size = size;
@@ -34,33 +37,82 @@ export class Text {
     this._areaSize = areaSize;
     this._animation = null;
     this._renderText = "";
+    this._pages = 0;
+    this._page = 0;
   }
+
   hide() {
     this._hidden = true;
   }
+
+  getPagesInfo() {
+    return {
+      current: this._page,
+      max: this._pages
+    }
+  }
+
   show() {
     this._hidden = false;
   }
+
   textAllign(type = CENTER) {
     this._textAllign = type;
   }
+
   text(text, letterSpeed = 0) {
-    if (letterSpeed === 0) {
-      this._text = text;
-    } else {
+    this._text = text;
+    if (letterSpeed !== 0) {
       this._animation = {
         letterSpeed,
         finalText: text,
         startLetterTime: new Date().getTime(),
         finalTextFormatted: null
       };
+      this._skippedAnimationSpeed = this._animation.letterSpeed;
+      this._skippedAnimationText = this._animation.finalText;
     }
-    this._textFormatted = false;
   }
+
+  skip() {
+    this._animation = null;
+  }
+
+  next() {
+    if (this._page <= this._pages) {
+      if (!!this._skippedAnimationText) {
+        this._animation = {
+          letterSpeed: this._skippedAnimationSpeed,
+          finalText: this._skippedAnimationText,
+          startLetterTime: new Date().getTime(),
+          finalTextFormatted: null
+        };
+      }
+      this._page += 1;
+    }
+  }
+
+  control(){
+    switch (this._contols) {
+      case END_CONTROL:
+        return this.hide();
+      case NEXT_CONTROL:
+        return this.next();
+    }
+  }
+
   getPos() {
-    return this._coords;
+    return {
+      x: this._coords.x / gc.mult,
+      y: this._coords.y / gc.mult,
+    };
   }
+
   moveTo(pos = { x: 0, y: 0 }, time = null) {
+    pos = {
+      x: pos.x * gc.mult,
+      y: pos.y * gc.mult,
+    };
     if (time) {
       const startTime = new Date().getTime();
       const path = {
@@ -74,6 +126,7 @@ export class Text {
       this._coords = pos;
     }
   }
+
   draw(ctx) {
     const camCoords = Camera.getCoords();
     const {
@@ -87,10 +140,13 @@ export class Text {
       _nowMoving
     } = this;
 
-    ctx.font = `${_size}px ${_font}`;
+    ctx.font = `${_size * gc.mult}px ${_font}`;
     ctx.fillStyle = _color;
 
     if (!_hidden) {
+      const startLine =
+        this._page * Math.floor((this._areaSize.h * gc.mult) / (this._size * gc.mult));
+
       if (_nowMoving) {
         const nowTime = new Date().getTime();
         const startTime = _nowMoving.startTime;
@@ -118,7 +174,11 @@ export class Text {
           x = _coords.x + this._offset.x;
           break;
         case RIGHT:
-          x = _coords.x + this._offset.x - ctx.measureText(_text).width;
+          x =
+            _coords.x +
+            this._areaSize.w * gc.mult +
+            this._offset.x -
+            ctx.measureText(_text).width;
           break;
       }
 
@@ -133,16 +193,18 @@ export class Text {
               ctx,
               this._animation.finalText,
               camCoords,
-              this._size,
-              this._areaSize
+              this._size * gc.mult,
+              this._areaSize,
+              startLine
             )
         ) {
           this._animation.finalTextFormatted = lineSplitter(
             ctx,
             this._animation.finalText,
             camCoords,
-            this._size,
-            this._areaSize
+            this._size * gc.mult,
+            this._areaSize,
+            startLine
           ).split("");
         }
 
@@ -154,34 +216,45 @@ export class Text {
 
         if (lettersRange >= this._animation.finalTextFormatted.length) {
           this._text = this._animation.finalText;
-          this._animation = null;
+          setTimeout(
+            () => (this._animation = null),
+            this._animation.letterSpeed * 2
+          );
         }
-
       } else {
         this._renderText = lineSplitter(
           ctx,
           _text,
           camCoords,
-          this._size,
-          this._areaSize
+          this._size * gc.mult,
+          this._areaSize,
+          startLine
         );
       }
 
-      this._renderText.split("\n").forEach((line, index) => {
-        ctx.fillText(
-          line,
-          x + camCoords.x,
-          _coords.y + this._offset.y + camCoords.y + this._size * index
-        );
-      });
+      const lines = this._renderText.split("\n");
 
-      const render_rect = false;
+      for (let i = 0; i < lines.length; i++) {
+        if (!((i + 1) * _size * gc.mult >= this._areaSize.h * gc.mult)) {
+          ctx.fillText(
+            lines[i],
+            x + camCoords.x,
+            _coords.y + this._offset.y + camCoords.y + this._size * gc.mult * i
+          );
+        }
+      }
+
+      this._pages = Math.ceil(
+        ((lines.length + 1) * this._size * gc.mult) / (this._areaSize.h * gc.mult)
+      );
+
+      const render_rect = true;
       if (render_rect) {
         ctx.beginPath();
         ctx.strokeStyle = "Red";
         ctx.rect(
           this._coords.x + this._offset.x + camCoords.x,
-          this._coords.y + this._offset.y + camCoords.y - this._size,
+          this._coords.y + this._offset.y + camCoords.y - this._size * gc.mult,
           this._areaSize.w * gc.mult,
           this._areaSize.h * gc.mult
         );
@@ -194,14 +267,20 @@ export class Text {
 const lineSplitter = (() => {
   const cache = new Map();
   let lastWidth = null;
-  return (ctx, _text, camCoords, _size, _areaSize) => {
-    if (cache.has(_text) && ctx.measureText(_text).width === lastWidth) {
+  let lastStartLine = null;
+  return (ctx, _text, camCoords, _size, _areaSize, startLine = 0) => {
+    if (
+      cache.has(_text) &&
+      ctx.measureText(_text).width === lastWidth &&
+      startLine === lastStartLine
+    ) {
       return cache.get(_text);
     }
 
+    lastStartLine = startLine;
     const lineWidth = _areaSize.w * gc.mult;
     const wordsArr = _text.split(" ");
-    const lines = [];
+    let lines = [];
 
     wordsArr.forEach(word => {
       const lastLine = lines.length - 1;
@@ -209,11 +288,15 @@ const lineSplitter = (() => {
         ctx.measureText(lines[lastLine]).width + ctx.measureText(word).width;
       if (lines[lastLine] && newLineWidth <= lineWidth) {
         lines[lastLine] += `${word} `;
-      } else if (!((lines.length + 1) * _size >= _areaSize.h * gc.mult)) {
+      } else {
         lines[lastLine] += `\n`;
         lines.push(`${word} `);
       }
     });
+
+    const endLine = startLine + Math.floor((_areaSize.h * gc.mult) / _size);
+
+    lines = lines.slice(startLine, endLine);
 
     cache.set(_text, lines.join(""));
     lastWidth = ctx.measureText(_text).width;

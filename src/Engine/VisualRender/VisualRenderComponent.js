@@ -113,7 +113,7 @@ export class VisualComponent {
   _pushKey(e){
     const code = e.keyCode;
     //console.log(`${code} is down`);
-    this._keysEvents[code] && this._keysPressed.add(code);
+    (this._keysEvents[code] || this._keysReleaseEvents[code]) && this._keysPressed.add(code);
   }
   _releaseKey(e){
     const code = e.keyCode;
