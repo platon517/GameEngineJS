@@ -24,3 +24,8 @@ export const END = {
   RU: 'закончить',
   EN: 'end'
 };
+
+export const GO_AWAY = {
+  RU: 'Бля темно пиздец',
+  EN: 'Blya temno pizdec'
+};

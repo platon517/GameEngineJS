@@ -29,12 +29,15 @@ export class Text {
     };
     this._font = font;
     this._color = color;
-    this._size = size;
+    this._size = size * gc.mult;
     this._hidden = false;
     this._textAllign = LEFT;
     this._nowMoving = null;
     this._offset = offset;
-    this._areaSize = areaSize;
+    this._areaSize = {
+      w: areaSize.w * gc.mult,
+      h: areaSize.h * gc.mult
+    };
     this._animation = null;
     this._renderText = "";
     this._pages = 0;
@@ -50,6 +53,9 @@ export class Text {
       current: this._page,
       max: this._pages
     }
+  }
+  setPages(val){
+    this._pages = val;
   }
 
   show() {
@@ -127,6 +133,56 @@ export class Text {
     }
   }
 
+  lineSplitter = (() => {
+    const cache = new Map();
+    let lastWidth = null;
+    let lastStartLine = null;
+    let firstCalc = true;
+    return (ctx, _text, camCoords, _size, _areaSize, startLine = 0, setPages) => {
+      if (
+        cache.has(_text) &&
+        ctx.measureText(_text).width === lastWidth &&
+        startLine === lastStartLine
+      ) {
+        return cache.get(_text);
+      }
+
+      lastStartLine = startLine;
+      const lineWidth = _areaSize.w;
+      const wordsArr = _text.split(" ");
+      let lines = [];
+
+      wordsArr.forEach(word => {
+        const lastLine = lines.length - 1;
+        const newLineWidth =
+          ctx.measureText(lines[lastLine]).width + ctx.measureText(word).width;
+        if (lines[lastLine] && newLineWidth <= lineWidth) {
+          lines[lastLine] += `${word} `;
+        } else {
+          lines[lastLine] += `\n`;
+          lines.push(`${word} `);
+        }
+      });
+
+      if (firstCalc) {
+        const pagesval = Math.ceil(
+          lines.length > 1 ? ((lines.length) * _size) / _areaSize.h : 0
+        );
+        setPages(pagesval);
+        firstCalc = false;
+      }
+
+      const endLine = startLine + Math.floor(_areaSize.h / _size);
+
+      lines = lines.slice(startLine, endLine);
+
+      cache.set(_text, lines.join(""));
+      lastWidth = ctx.measureText(_text).width;
+
+      return lines.join("");
+    };
+  })();
+
   draw(ctx) {
     const camCoords = Camera.getCoords();
     const {
@@ -140,12 +196,12 @@ export class Text {
       _nowMoving
     } = this;
 
-    ctx.font = `${_size * gc.mult}px ${_font}`;
+    ctx.font = `${_size}px ${_font}`;
     ctx.fillStyle = _color;
 
     if (!_hidden) {
       const startLine =
-        this._page * Math.floor((this._areaSize.h * gc.mult) / (this._size * gc.mult));
+        this._page * Math.floor(this._areaSize.h / (this._size));
 
       if (_nowMoving) {
         const nowTime = new Date().getTime();
@@ -176,7 +232,7 @@ export class Text {
         case RIGHT:
           x =
             _coords.x +
-            this._areaSize.w * gc.mult +
+            this._areaSize.w +
             this._offset.x -
             ctx.measureText(_text).width;
           break;
@@ -189,22 +245,24 @@ export class Text {
         if (
           !this._animation.finalTextFormatted ||
           this._animation.finalTextFormatted.join("") !==
-            lineSplitter(
+            this.lineSplitter(
               ctx,
               this._animation.finalText,
               camCoords,
-              this._size * gc.mult,
+              this._size,
               this._areaSize,
-              startLine
+              startLine,
+              val => this.setPages(val)
             )
         ) {
-          this._animation.finalTextFormatted = lineSplitter(
+          this._animation.finalTextFormatted = this.lineSplitter(
             ctx,
             this._animation.finalText,
             camCoords,
-            this._size * gc.mult,
+            this._size,
             this._areaSize,
-            startLine
+            startLine,
+            val => this.setPages(val)
           ).split("");
         }
 
@@ -222,41 +280,38 @@ export class Text {
           );
         }
       } else {
-        this._renderText = lineSplitter(
+        this._renderText = this.lineSplitter(
           ctx,
           _text,
           camCoords,
-          this._size * gc.mult,
+          this._size,
           this._areaSize,
-          startLine
+          startLine,
+          val => this.setPages(val)
         );
       }
 
       const lines = this._renderText.split("\n");
 
       for (let i = 0; i < lines.length; i++) {
-        if (!((i + 1) * _size * gc.mult >= this._areaSize.h * gc.mult)) {
+        if (!((i + 1) * _size >= this._areaSize.h)) {
           ctx.fillText(
             lines[i],
             x + camCoords.x,
-            _coords.y + this._offset.y + camCoords.y + this._size * gc.mult * i
+            _coords.y + this._offset.y + camCoords.y + this._size * i
           );
         }
       }
 
-      this._pages = Math.ceil(
-        ((lines.length + 1) * this._size * gc.mult) / (this._areaSize.h * gc.mult)
-      );
-
-      const render_rect = true;
+      const render_rect = false;
       if (render_rect) {
         ctx.beginPath();
         ctx.strokeStyle = "Red";
         ctx.rect(
           this._coords.x + this._offset.x + camCoords.x,
-          this._coords.y + this._offset.y + camCoords.y - this._size * gc.mult,
-          this._areaSize.w * gc.mult,
-          this._areaSize.h * gc.mult
+          this._coords.y + this._offset.y + camCoords.y - this._size,
+          this._areaSize.w,
+          this._areaSize.h
         );
         ctx.stroke();
       }
@@ -264,43 +319,3 @@ export class Text {
   }
 }
 
-const lineSplitter = (() => {
-  const cache = new Map();
-  let lastWidth = null;
-  let lastStartLine = null;
-  return (ctx, _text, camCoords, _size, _areaSize, startLine = 0) => {
-    if (
-      cache.has(_text) &&
-      ctx.measureText(_text).width === lastWidth &&
-      startLine === lastStartLine
-    ) {
-      return cache.get(_text);
-    }
-
-    lastStartLine = startLine;
-    const lineWidth = _areaSize.w * gc.mult;
-    const wordsArr = _text.split(" ");
-    let lines = [];
-
-    wordsArr.forEach(word => {
-      const lastLine = lines.length - 1;
-      const newLineWidth =
-        ctx.measureText(lines[lastLine]).width + ctx.measureText(word).width;
-      if (lines[lastLine] && newLineWidth <= lineWidth) {
-        lines[lastLine] += `${word} `;
-      } else {
-        lines[lastLine] += `\n`;
-        lines.push(`${word} `);
-      }
-    });
-
-    const endLine = startLine + Math.floor((_areaSize.h * gc.mult) / _size);
-
-    lines = lines.slice(startLine, endLine);
-
-    cache.set(_text, lines.join(""));
-    lastWidth = ctx.measureText(_text).width;
-
-    return lines.join("");
-  };
-})();

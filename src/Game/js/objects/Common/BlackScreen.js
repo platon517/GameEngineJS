@@ -9,7 +9,7 @@ export const BlackScreen = new (class extends GameObject {
     this.sprite.setAlpha(0);
     this.setInit(() => {
       this.render();
-      this.setRenderIndex(99);
+      this.setRenderIndex(98);
     });
   }
 });

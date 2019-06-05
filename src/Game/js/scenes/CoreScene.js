@@ -42,5 +42,5 @@ export const CoreScene = new Scene(128, 128, [
   PlayerCharacter,
   HideCollider,
   BlackScreen,
-  TextAreaBottom
+  //TextAreaBottom
 ], Camera);

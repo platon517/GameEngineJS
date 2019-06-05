@@ -4,6 +4,8 @@ import {Sprite} from "../../../../../Engine/Sprite/Sprite";
 import {Collider} from "../../../../../Engine/Collider/Collider";
 import {PlayerCharacter} from "../../../chars/lich/Lich";
 import {BlackScreen} from "../../Common/BlackScreen";
+import {TextAreaBottom} from "../../../ui/TextArea";
+import {GO_AWAY, local, TEST} from "../../../../localization/localization";
 
 export const StairsTop = new (class extends GameObject {
   constructor() {
@@ -33,6 +35,27 @@ export const StairsTop = new (class extends GameObject {
   goAway(){
     console.log('went away');
     BlackScreen.sprite.setAlpha(1, 1000);
+    setTimeout(() => {
+      TextAreaBottom.init();
+      TextAreaBottom.ui[0].text(TEST[local], 40);
+    }, 1500);
+
+
+    TextAreaBottom.addEndEvent(() => {
+      setTimeout(() => {
+        TextAreaBottom.init();
+        TextAreaBottom.ui[0].text('НАСТЯ, ПАШЛА НАХУЙ', 40);
+
+        TextAreaBottom.addEndEvent(() => {
+          setTimeout(() => {
+            TextAreaBottom.init();
+            TextAreaBottom.ui[0].text('КЕК ЛОЛ МЕМ', 40);
+          }, 500);
+        });
+
+      }, 500);
+    });
+
     this.wentAway = true;
     PlayerCharacter.walkTo({
       x: PlayerCharacter.getCoords().x,
