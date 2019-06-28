@@ -28,6 +28,7 @@ export class Collider {
     this._events = new Map();
     this._type = null;
     this.disabled = false;
+    this.collides = true;
   }
 
   moveTo(pos = { x: 0, y: 0 }, time = null) {
@@ -167,9 +168,10 @@ export class Collider {
           };
         }
       }
-      this._checkInteractions();
 
-      const render_rect = false;
+      this.collides && this._checkInteractions();
+
+      const render_rect = true;
       if (render_rect) {
         ctx.beginPath();
         ctx.strokeStyle = "Lime";

@@ -1,6 +1,8 @@
 import {GameObject} from "../../../../Engine/GameObject/GameObject";
 import {Sprite} from "../../../../Engine/Sprite/Sprite";
 import {Collider} from "../../../../Engine/Collider/Collider";
+import { MainCursor } from "../Cursor/Cursor";
+import { YarnGrid } from "../Grid/Grid";
 
 export const BLUE = 'BLUE';
 export const GREEN = 'GREEN';
@@ -42,7 +44,11 @@ export class YarnBall extends GameObject {
       { x: 0, y: 0 },
     );
 
+    this.collider.addInteractionObject(MainCursor);
+
     this.moveTo(coords);
+
+    this.selected = false;
 
     this.setInit(() => {
       this.render();
@@ -52,5 +58,12 @@ export class YarnBall extends GameObject {
   }
   tick(){
     super.tick();
+    if (this.collider.getInteractions().has(MainCursor.collider)) {
+      if (!this.selected) {
+        YarnGrid.disableColliders(this);
+        this.sprite.rotate(15);
+        this.selected = true;
+      }
+    }
   }
 }
