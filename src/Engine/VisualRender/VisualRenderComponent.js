@@ -52,7 +52,7 @@ class RenderList {
 }
 
 export class VisualComponent {
-  constructor(w = 100, h = 100){
+  constructor(w = 100, h = 100, srcSize){
     this.gameWindow = document.getElementById("game_window");
 
     window.onkeydown = e => this._pushKey(e);
@@ -67,11 +67,12 @@ export class VisualComponent {
     gW.style.width = `${w}px`;
     gW.style.height = `${h}px`;
     gW.style.letterSpacing = `${0.5 * gc.mult}px`;
-    gW.width = w;
-    gW.height = h;
+    gW.width = srcSize.w;
+    gW.height = srcSize.h;
 
     this.ctx = gW.getContext('2d');
-    this.ctx.imageSmoothingEnabled = false;
+    this.ctx.imageSmoothingEnabled = true;
+    this.ctx.imageSmoothingQuality = 'high';
 
     this.renderList = new RenderList();
 
@@ -170,4 +171,4 @@ export class VisualComponent {
   };
 }
 
-export const engineVisual = new VisualComponent(gc.originSize.w * gc.mult, gc.originSize.h * gc.mult);
+export const engineVisual = new VisualComponent(gc.originSize.w * gc.mult, gc.originSize.h * gc.mult, gc.srcSize);

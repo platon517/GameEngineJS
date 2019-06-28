@@ -1,4 +1,16 @@
 import {Camera} from "../Camera/Camera";
+import { gc } from "../../Game/js/game_config";
+
+function drawRotatedImage(ctx, degrees, image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight) {
+  ctx.save();
+  const deltaX = dx + dWidth / 2;
+  const deltaY = dy + dHeight / 2;
+  ctx.translate(deltaX, deltaY);
+  ctx.rotate(degrees*Math.PI/180);
+  ctx.translate(-deltaX, -deltaY);
+  ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+  ctx.restore();
+}
 
 export class Sprite {
   constructor(
@@ -14,6 +26,7 @@ export class Sprite {
     this._idleCoords = inner_coords;
     this._nowMoving = null;
     this._nowAnimation = null;
+    this._rotation= 0;
     this._animations = {
       example: {
         frames: [
@@ -29,12 +42,18 @@ export class Sprite {
     };
 
     this._innerSize = inner_size;
-    this._size = size;
+    this._size = {
+      w: size.w * gc.mult,
+      h: size.h * gc.mult
+    };
     this._coords = {
       x: 0,
       y: 0
     };
-    this._offset = offset;
+    this._offset = {
+      x: offset.x * gc.mult,
+      y: offset.y * gc.mult
+    };
 
     this._nowState = this._idleCoords;
   }
@@ -91,6 +110,14 @@ export class Sprite {
     return this._size;
   }
 
+  rotate(val){
+    this._rotation = val;
+  }
+
+  getRotation(){
+    return this._rotation;
+  }
+
   draw(ctx, isImage = true) {
     let {
       _canvasObject,
@@ -101,7 +128,8 @@ export class Sprite {
       _nowAnimation,
       _animations,
       _nowMoving,
-      _idleCoords
+      _idleCoords,
+      _rotation
     } = this;
 
     if (_nowAnimation) {
@@ -148,7 +176,7 @@ export class Sprite {
 
     const camCoords = Camera.getCoords();
 
-    isImage && ctx.drawImage(
+    isImage && drawRotatedImage(ctx, _rotation,
       _canvasObject,
       _nowState.x,
       _nowState.y,

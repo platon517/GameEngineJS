@@ -3,6 +3,7 @@ import { throttle } from "throttle-debounce";
 import {isCollides} from "../../Game/js/utilities/isCollides";
 import {getCoordsArr} from "../../Game/js/utilities/getCoordsArr";
 import {Camera} from "../Camera/Camera";
+import { gc } from "../../Game/js/game_config";
 
 export class Collider {
   constructor(
@@ -11,8 +12,14 @@ export class Collider {
     offset = { x: 0, y: 0 },
     checkDelay = 0
   ) {
-    this._size = size;
-    this._offset = offset;
+    this._size = {
+      w: size.w * gc.mult,
+      h: size.h * gc.mult
+    };
+    this._offset = {
+      x: offset.x * gc.mult,
+      y: offset.y * gc.mult
+    };
     this._coords = pos;
     this._nowMoving = null;
     this._interactions = new Set();

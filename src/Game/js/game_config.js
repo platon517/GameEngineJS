@@ -1,4 +1,10 @@
+const w = 1280;
+const h = 2000;
+
+const modifer = 4;
+
 export const gc = {
-  originSize: {w: 128, h: 128},
-  mult: 3,
+  originSize: {w: w / modifer, h: h / modifer},
+  srcSize: {w, h},
+  mult: window.innerWidth / (w / modifer),
 };
