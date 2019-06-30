@@ -1,6 +1,7 @@
 import {GameObject} from "../../../../Engine/GameObject/GameObject";
 import {Collider} from "../../../../Engine/Collider/Collider";
 import { gc } from "../../game_config";
+import {YarnGrid} from "../Grid/Grid";
 
 const Z_INDEX = 99;
 const SIZE = 40;
@@ -27,14 +28,21 @@ export class Cursor extends GameObject {
       this.moveTo(point);
     };
 
+    this.hold = false;
+
     this.setInit(() => {
       this.render();
       this.setRenderIndex(Z_INDEX);
       window.ontouchstart = e => {
+        this.hold = true;
         this.followTouch(e);
       };
       window.ontouchmove = e => {
         this.followTouch(e);
+      };
+      window.ontouchend = e => {
+        this.hold = false;
+        YarnGrid.clearSelection();
       };
     });
 

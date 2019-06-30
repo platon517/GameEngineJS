@@ -174,6 +174,7 @@ export class Collider {
       const render_rect = true;
       if (render_rect) {
         ctx.beginPath();
+        ctx.lineWidth   = 5;
         ctx.strokeStyle = "Lime";
         ctx.rect(
           this._coords.x + this._offset.x + camCoords.x,

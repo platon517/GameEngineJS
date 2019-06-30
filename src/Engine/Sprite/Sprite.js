@@ -6,9 +6,10 @@ function drawRotatedImage(ctx, degrees, image, sx, sy, sWidth, sHeight, dx, dy, 
   const deltaX = dx + dWidth / 2;
   const deltaY = dy + dHeight / 2;
   ctx.translate(deltaX, deltaY);
-  ctx.rotate(degrees*Math.PI/180);
+  ctx.rotate(degrees*Math.PI / 180);
   ctx.translate(-deltaX, -deltaY);
   ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+  ctx.globalAlpha = 1;
   ctx.restore();
 }
 
@@ -27,6 +28,7 @@ export class Sprite {
     this._nowMoving = null;
     this._nowAnimation = null;
     this._rotation= 0;
+    this._alpha = 1;
     this._animations = {
       example: {
         frames: [
@@ -110,12 +112,90 @@ export class Sprite {
     return this._size;
   }
 
-  rotate(val){
-    this._rotation = val;
+  setImageSrc(src){
+    this._idle = src;
+    this._canvasObject.src = this._idle;
+  }
+
+  rotate(val, time = null){
+    if (time) {
+      const startTime = new Date().getTime();
+      const path = {
+        start: this._rotation,
+        end: val - this._rotation,
+      };
+      this._nowRotating = { path, val, time, startTime };
+    } else {
+      this._rotation = val;
+    }
   }
 
   getRotation(){
     return this._rotation;
+  }
+
+  resize = (() =>{
+    let initW, initH, initX, initY;
+    return (val, time = null) => {
+      if (!initW || !initH) {
+        initW = this._size.w;
+        initH = this._size.h;
+      }
+
+      if (this._size.w === initW && this._size.h === initH) {
+        initX = this._offset.x;
+        initY = this._offset.y;
+      }
+
+      const w = initW * val;
+      const h = initH * val;
+
+      const offset = {
+        x: initX - ((w - initW) / 2),
+        y: initY - ((h - initH) / 2)
+      };
+
+      if (time) {
+        const startTime = new Date().getTime();
+
+        const startOffset = {
+          x: this._offset.x,
+          y: this._offset.y
+        };
+
+        const endOffset = {
+          x: (w - this._size.w) / -2,
+          y: (h - this._size.h) / -2
+        };
+
+        const path = {
+          start_w: this._size.w,
+          start_h: this._size.h,
+          end_w: w - this._size.w,
+          end_h: h - this._size.h,
+        };
+        const size = {
+          w,
+          h
+        };
+        this._nowResizing = { path, size, time, startTime, offset, startOffset, endOffset };
+      } else {
+        this._offset = offset;
+        this._size = {
+          w,
+          h
+        };
+      }
+    }
+  })();
+
+  setAlpha(val, time = null) {
+    if (time) {
+      const startTime = new Date().getTime();
+      this._newAlpha = { deltaVal: val - this._alpha, endVal: val, startVal: this._alpha, time, startTime };
+    } else {
+      this._alpha = val;
+    }
   }
 
   draw(ctx, isImage = true) {
@@ -129,15 +209,19 @@ export class Sprite {
       _animations,
       _nowMoving,
       _idleCoords,
-      _rotation
+      _rotation,
+      _nowResizing,
+      _nowRotating,
+      _newAlpha
     } = this;
+
+    const nowTime = new Date().getTime();
 
     if (_nowAnimation) {
       const animation = _animations[_nowAnimation.name];
       const startTime = _nowAnimation.startTime;
       const delta = animation.time / animation.frames.length;
 
-      const nowTime = new Date().getTime();
       const pastTime = nowTime - startTime;
       const nowFrame = Math.floor(pastTime / delta);
 
@@ -158,7 +242,6 @@ export class Sprite {
 
 
     if (_nowMoving) {
-      const nowTime = new Date().getTime();
       const startTime = _nowMoving.startTime;
       const pastTime = nowTime - startTime;
       const time = _nowMoving.time;
@@ -173,6 +256,56 @@ export class Sprite {
         this._coords = pos;
       }
     }
+    if (_nowResizing) {
+      const startTime = _nowResizing.startTime;
+      const pastTime = nowTime - startTime;
+      const time = _nowResizing.time;
+      const path = _nowResizing.path;
+      this._size = {
+        w: path.start_w + (path.end_w / time) * pastTime,
+        h: path.start_h + (path.end_h / time) * pastTime
+      };
+      this._offset = {
+        x: _nowResizing.startOffset.x + (_nowResizing.endOffset.x / time) * pastTime,
+        y: _nowResizing.startOffset.y + (_nowResizing.endOffset.y / time) * pastTime,
+      };
+      if (pastTime >= time) {
+        const size = _nowResizing.size;
+        this._nowResizing = null;
+        this._size = size;
+        this._offset = _nowResizing.offset;
+      }
+    }
+
+    if (_nowRotating) {
+      const startTime = _nowRotating.startTime;
+      const pastTime = nowTime - startTime;
+      const time = _nowRotating.time;
+      const path = _nowRotating.path;
+
+      this._rotation = path.start + (path.end / time) * pastTime;
+
+      if (pastTime >= time) {
+        const rotation = _nowRotating.val;
+        this._nowRotating = null;
+        this._rotation = rotation;
+      }
+    }
+
+    if (_newAlpha) {
+      const startVal = _newAlpha.startVal;
+      const startTime = _newAlpha.startTime;
+      const pastTime = nowTime - startTime;
+      const time = _newAlpha.time;
+      const val = startVal + (_newAlpha.deltaVal / time) * pastTime;
+      this._alpha = val;
+      if (pastTime >= time) {
+        this._alpha = _newAlpha.endVal;
+        this._newAlpha = null;
+      }
+    }
+
+    ctx.globalAlpha = this._alpha;
 
     const camCoords = Camera.getCoords();
 
