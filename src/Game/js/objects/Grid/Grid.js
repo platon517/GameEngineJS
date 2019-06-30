@@ -83,8 +83,6 @@ export class Grid extends GameObject {
         y: parseFloat((Math.min(...yArr) + ((Math.max(...yArr) + BALL_SIZE - Math.min(...yArr)) / 2)).toFixed(0)),
       };
 
-      console.log(center);
-
       let color = null;
 
       this.selection.forEach(ball => {
@@ -95,7 +93,7 @@ export class Grid extends GameObject {
       });
       this.balls = this.balls.filter(ball => !this.selection.has(ball.obj));
 
-      BigYarnBallObj.spawn(center, color);
+      BigYarnBallObj.spawn(center, color, this.selection.size);
 
       this.selection = new Set();
     }

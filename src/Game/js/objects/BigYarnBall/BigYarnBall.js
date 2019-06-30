@@ -8,7 +8,7 @@ const Z_INDEX = 11;
 
 const GROW_ANIM_TIME = 400;
 
-export const BALL_SIZE = 400;
+export const BALL_SIZE = 240;
 
 export class BigYarnBall extends GameObject {
   constructor(coords, color){
@@ -34,7 +34,7 @@ export class BigYarnBall extends GameObject {
     }
   }
 
-  spawn(coords, color){
+  spawn(coords, color, size){
 
 
     this.sprite.setImageSrc(getColorSrc(color));
@@ -49,7 +49,9 @@ export class BigYarnBall extends GameObject {
       y: coords.y - BALL_SIZE / 2,
     });
 
-    this.sprite.resize(0.5);
+    const mult = 1 + size / 5;
+
+    this.sprite.resize(0.5 * mult);
 
     this._clearAnimationPlan();
 
@@ -57,9 +59,9 @@ export class BigYarnBall extends GameObject {
 
     this.sprite.rotate(getRandom(30, 80), GROW_ANIM_TIME);
 
-    this.sprite.resize(1.2, GROW_ANIM_TIME * 0.6, coords);
+    this.sprite.resize(1.2 * mult, GROW_ANIM_TIME * 0.6, coords);
 
-    this._animationPlan = setTimeout(() => this.sprite.resize(1, GROW_ANIM_TIME * 0.4), GROW_ANIM_TIME * 0.6);
+    this._animationPlan = setTimeout(() => this.sprite.resize(1 * mult, GROW_ANIM_TIME * 0.4), GROW_ANIM_TIME * 0.6);
   }
 
   clear(){
