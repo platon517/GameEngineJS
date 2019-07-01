@@ -49,7 +49,7 @@ export class BigYarnBall extends GameObject {
       y: coords.y - BALL_SIZE / 2,
     });
 
-    const mult = Math.max(1.5, size / 3);
+    const mult = Math.min(Math.max(1.5, size / 3), 2.5);
 
     this.sprite.resize(0.5 * mult);
 
