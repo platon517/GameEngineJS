@@ -96,6 +96,9 @@ export class YarnBall extends GameObject {
   tick(){
     super.tick();
     if (this.collider.getInteractions().has(MainCursor.collider)) {
+      if (YarnGrid.selection.size > 0 && [...YarnGrid.selection].pop().color !== this.color) {
+        return false
+      }
       if (MainCursor.hold) {
         if (!this.selected) {
           YarnGrid.disableColliders(this);
@@ -106,7 +109,10 @@ export class YarnBall extends GameObject {
           this.selected = true;
         } else {
           const selectionArr = [...YarnGrid.selection];
-          if ( selectionArr[selectionArr.length - 2] === this ) {
+          if (
+            selectionArr[selectionArr.length - 2] === this &&
+            !selectionArr[selectionArr.length - 1].collider.getInteractions().has(MainCursor.collider)
+          ) {
             const lastBall = selectionArr.pop();
             lastBall.reset();
             YarnGrid.deleteFromSelection(lastBall);

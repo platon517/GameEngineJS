@@ -38,7 +38,11 @@ export class Grid extends GameObject {
 
   }
 
-  disableColliders(target){
+  disableColliders(target = null){
+    if (!target) {
+      this.balls.forEach(ball => ball.obj.collider.disabled = true);
+      return false;
+    }
     this.balls
       .filter(ball => ball.obj !== target)
       .forEach(ball => ball.obj.collider.disabled = true);
@@ -53,9 +57,13 @@ export class Grid extends GameObject {
     nearBalls.forEach(ball => ball.obj.collider.disabled = false);
   }
 
+  enableColliders(){
+    this.balls.forEach(ball => ball.obj.collider.disabled = false);
+  }
+
   addToSelection = ball => {
     this.selection.add(ball);
-    ball.setRenderIndex(100 + this.selection.size);
+    ball.setRenderIndex(10 + this.selection.size);
   };
 
   deleteFromSelection = ball => this.selection.delete(ball);
@@ -65,6 +73,7 @@ export class Grid extends GameObject {
     if (this.selection.size < 2) {
       this.selection.forEach(ball => ball.reset());
       this.selection = new Set();
+      this.enableColliders();
     } else {
       console.log(this.selection.size);
 
@@ -75,7 +84,6 @@ export class Grid extends GameObject {
         const coords = ball.getCoords();
         xArr.push(coords.x);
         yArr.push(coords.y);
-        console.log(coords);
       });
 
       const center = {
@@ -93,11 +101,11 @@ export class Grid extends GameObject {
       });
       this.balls = this.balls.filter(ball => !this.selection.has(ball.obj));
 
+      this.disableColliders();
       BigYarnBallObj.spawn(center, color, this.selection.size);
 
       this.selection = new Set();
     }
-    this.balls.forEach(ball => ball.obj.collider.disabled = false);
   };
 
   tick(){

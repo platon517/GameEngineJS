@@ -42,6 +42,7 @@ export class Collider {
       };
       this._nowMoving = { path, pos, time, startTime };
     } else {
+      this._nowMoving = null;
       this._coords = pos;
     }
   }
@@ -171,7 +172,7 @@ export class Collider {
 
       this.collides && this._checkInteractions();
 
-      const render_rect = true;
+      const render_rect = false;
       if (render_rect) {
         ctx.beginPath();
         ctx.lineWidth   = 5;

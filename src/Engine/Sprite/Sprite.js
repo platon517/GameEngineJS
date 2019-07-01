@@ -1,10 +1,16 @@
 import {Camera} from "../Camera/Camera";
 import { gc } from "../../Game/js/game_config";
 
-function drawRotatedImage(ctx, degrees, image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight) {
+function drawRotatedImage(ctx, degrees, image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight, pivot = null) {
   ctx.save();
-  const deltaX = dx + dWidth / 2;
-  const deltaY = dy + dHeight / 2;
+  let deltaX, deltaY;
+  if (pivot) {
+    deltaX = dx + pivot.x;
+    deltaY = dy + pivot.y;
+  } else {
+    deltaX = dx + dWidth / 2;
+    deltaY = dy + dHeight / 2;
+  }
   ctx.translate(deltaX, deltaY);
   ctx.rotate(degrees*Math.PI / 180);
   ctx.translate(-deltaX, -deltaY);
@@ -27,8 +33,9 @@ export class Sprite {
     this._idleCoords = inner_coords;
     this._nowMoving = null;
     this._nowAnimation = null;
-    this._rotation= 0;
+    this._rotation = 0;
     this._alpha = 1;
+    this._rotationPivot = null;
     this._animations = {
       example: {
         frames: [
@@ -75,6 +82,7 @@ export class Sprite {
       };
       this._nowMoving = { path, pos, time, startTime };
     } else {
+      this._nowMoving = null;
       this._coords = pos;
     }
   }
@@ -117,14 +125,14 @@ export class Sprite {
     this._canvasObject.src = this._idle;
   }
 
-  rotate(val, time = null){
+  rotate(val, time = null, loop = false){
     if (time) {
       const startTime = new Date().getTime();
       const path = {
         start: this._rotation,
         end: val - this._rotation,
       };
-      this._nowRotating = { path, val, time, startTime };
+      this._nowRotating = { path, val, time, startTime, loop };
     } else {
       this._rotation = val;
     }
@@ -189,6 +197,10 @@ export class Sprite {
     }
   })();
 
+  setRotationPivot(pivot){
+    this._rotationPivot = pivot;
+  }
+
   setAlpha(val, time = null) {
     if (time) {
       const startTime = new Date().getTime();
@@ -212,7 +224,8 @@ export class Sprite {
       _rotation,
       _nowResizing,
       _nowRotating,
-      _newAlpha
+      _newAlpha,
+      _rotationPivot
     } = this;
 
     const nowTime = new Date().getTime();
@@ -286,9 +299,24 @@ export class Sprite {
       this._rotation = path.start + (path.end / time) * pastTime;
 
       if (pastTime >= time) {
-        const rotation = _nowRotating.val;
-        this._nowRotating = null;
-        this._rotation = rotation;
+        this._rotation = _nowRotating.val;
+        if (_nowRotating.loop) {
+          this._rotation = 0;
+          const startTime = new Date().getTime();
+          const path = {
+            start: this._rotation,
+            end: _nowRotating.val - this._rotation,
+          };
+          this._nowRotating = {
+            path,
+            val: _nowRotating.val,
+            time,
+            startTime,
+            loop: _nowRotating.loop
+          };
+        } else {
+          this._nowRotating = null;
+        }
       }
     }
 
@@ -309,7 +337,9 @@ export class Sprite {
 
     const camCoords = Camera.getCoords();
 
-    isImage && drawRotatedImage(ctx, _rotation,
+    isImage && drawRotatedImage(
+      ctx,
+      _rotation,
       _canvasObject,
       _nowState.x,
       _nowState.y,
@@ -318,7 +348,8 @@ export class Sprite {
       _coords.x + this._offset.x + camCoords.x,
       _coords.y + this._offset.y + camCoords.y,
       _size.w,
-      _size.h
+      _size.h,
+      _rotationPivot
     );
   }
 }

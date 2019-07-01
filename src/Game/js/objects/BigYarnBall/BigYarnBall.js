@@ -2,9 +2,9 @@ import {GameObject} from "../../../../Engine/GameObject/GameObject";
 import {Sprite} from "../../../../Engine/Sprite/Sprite";
 import {getRandom} from "../../utilities/random";
 import {BLUE, getColorSrc} from "../YarnBall/YarnBall";
-import {Collider} from "../../../../Engine/Collider/Collider";
+import { Paw } from "../PawCollector/PawCollector";
 
-const Z_INDEX = 11;
+const Z_INDEX = 40;
 
 const GROW_ANIM_TIME = 400;
 
@@ -49,7 +49,7 @@ export class BigYarnBall extends GameObject {
       y: coords.y - BALL_SIZE / 2,
     });
 
-    const mult = 1 + size / 5;
+    const mult = Math.max(1.5, size / 3);
 
     this.sprite.resize(0.5 * mult);
 
@@ -61,13 +61,13 @@ export class BigYarnBall extends GameObject {
 
     this.sprite.resize(1.2 * mult, GROW_ANIM_TIME * 0.6, coords);
 
-    this._animationPlan = setTimeout(() => this.sprite.resize(1 * mult, GROW_ANIM_TIME * 0.4), GROW_ANIM_TIME * 0.6);
+    this._animationPlan = setTimeout(() => this.sprite.resize(mult, GROW_ANIM_TIME * 0.4), GROW_ANIM_TIME * 0.6);
+
+    Paw.collectBall(coords, BALL_SIZE * mult);
   }
 
   clear(){
-    this.sprite.setAlpha(0, 200);
-    this.sprite.resize(0.8, 200);
-    setTimeout(() => this.renderClear(), 200);
+    this.renderClear();
   }
 
   tick(){
