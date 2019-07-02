@@ -188,6 +188,7 @@ export class Sprite {
         };
         this._nowResizing = { path, size, time, startTime, offset, startOffset, endOffset };
       } else {
+        this._nowResizing = null;
         this._offset = offset;
         this._size = {
           w,
@@ -206,6 +207,7 @@ export class Sprite {
       const startTime = new Date().getTime();
       this._newAlpha = { deltaVal: val - this._alpha, endVal: val, startVal: this._alpha, time, startTime };
     } else {
+      this._newAlpha = null;
       this._alpha = val;
     }
   }

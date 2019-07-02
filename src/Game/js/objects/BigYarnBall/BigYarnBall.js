@@ -44,10 +44,12 @@ export class BigYarnBall extends GameObject {
     this.render();
     this.setRenderIndex(Z_INDEX);
 
-    this.moveTo({
+    const center = {
       x: coords.x - BALL_SIZE / 2,
       y: coords.y - BALL_SIZE / 2,
-    });
+    };
+
+    this.moveTo(center);
 
     const mult = Math.min(Math.max(1.5, size / 3), 2.5);
 
@@ -59,7 +61,10 @@ export class BigYarnBall extends GameObject {
 
     this.sprite.rotate(getRandom(30, 80), GROW_ANIM_TIME);
 
-    this.sprite.resize(1.2 * mult, GROW_ANIM_TIME * 0.6, coords);
+    this.sprite.resize(1.2 * mult, GROW_ANIM_TIME * 0.6);
+
+    this.moveTo({x: center.x, y: center.y + 150}, 100);
+    setTimeout(() => this.moveTo(center, 100), 100);
 
     this._animationPlan = setTimeout(() => this.sprite.resize(mult, GROW_ANIM_TIME * 0.4), GROW_ANIM_TIME * 0.6);
 

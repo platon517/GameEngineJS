@@ -83,6 +83,45 @@ export class YarnBall extends GameObject {
     this.selected = false;
   }
 
+  setGridPos(pos){
+    this.gridX = pos.x;
+    this.gridY = pos.y;
+  }
+
+  fall(){
+    let y = 1;
+    let distance = 0;
+
+    while(YarnGrid.getBallByPos(this.gridX, this.gridY + y) === undefined && y < YarnGrid.size - this.gridY) {
+      y += 1;
+      distance += 1;
+    }
+    const coords = this.getCoords();
+
+    const topBall = YarnGrid.getBallByPos(this.gridX, this.gridY - 1);
+    const ball = YarnGrid.balls.find(ball => ball.obj === this);
+
+    ball.y += distance;
+    ball.obj.setGridPos({x: ball.x, y: ball.y});
+
+    if (topBall) {
+      topBall.obj.fall();
+    }
+
+    this.moveTo({
+      x: coords.x,
+      y: coords.y + BALL_SIZE * distance
+    }, distance * 100);
+
+    setTimeout(() => {
+      this.sprite.resize(0.9, 100);
+      setTimeout(() => {
+        this.sprite.resize(1, 100);
+      }, 100)
+    }, distance * 100)
+
+  }
+
   clear(center){
     this.sprite.setAlpha(0, 200);
     this.sprite.resize(0.8, 200);
@@ -91,6 +130,11 @@ export class YarnBall extends GameObject {
       y: center.y - BALL_SIZE / 2
     }, 200);
     setTimeout(() => this.renderClear(), 200);
+
+    const topBall = YarnGrid.getBallByPos(this.gridX, this.gridY - 1);
+    if (topBall && !YarnGrid.selection.has(topBall.obj)) {
+      topBall.obj.fall();
+    }
   }
 
   tick(){
@@ -117,7 +161,6 @@ export class YarnBall extends GameObject {
             lastBall.reset();
             YarnGrid.deleteFromSelection(lastBall);
             YarnGrid.disableColliders([...YarnGrid.selection].pop());
-            console.log('back')
           }
         }
       }

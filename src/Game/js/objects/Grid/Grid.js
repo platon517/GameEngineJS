@@ -1,5 +1,5 @@
 import {GameObject} from "../../../../Engine/GameObject/GameObject";
-import { BALL_SIZE, BLUE, GREEN, PINK, PURPLE, YarnBall, YELLOW } from "../YarnBall/YarnBall";
+import { BALL_SIZE, BLUE, getColorSrc, GREEN, PINK, PURPLE, YarnBall, YELLOW } from "../YarnBall/YarnBall";
 import { getRandom } from "../../utilities/random";
 import { gc } from "../../game_config";
 import {MainCursor} from "../Cursor/Cursor";
@@ -19,6 +19,9 @@ export class Grid extends GameObject {
 
     this.selection = new Set();
 
+    this.size = size;
+    this.coords = coords;
+
     for (let y = 0; y < size; y++) {
       for (let x = 0; x < size; x++) {
         const color = getRandomColor();
@@ -28,9 +31,10 @@ export class Grid extends GameObject {
             y: coords.y + BALL_SIZE * y
           }, color);
         ball.sprite.rotate(getRandom(-90, 90));
+        ball.setGridPos({x, y});
         this.balls.push({obj: ball, color, x, y});
       }
-  }
+    }
 
     this.setInit(() => {
       this.balls.forEach(ball => ball.obj.render());
@@ -68,6 +72,47 @@ export class Grid extends GameObject {
 
   deleteFromSelection = ball => this.selection.delete(ball);
 
+  getBallByPos(x, y){
+    return this.balls.find(ball => ball.x === x && ball.y === y);
+  }
+
+  spawnExtraBalls(clearedBalls){
+    for (let y = 0; y < this.size; y++) {
+      for (let x = 0; x < this.size; x++) {
+        if (!this.balls.find(ball => ball.x === x && ball.y === y)) {
+          const color = getRandomColor();
+          const spawnBall = clearedBalls.pop();
+          spawnBall.render();
+          spawnBall.sprite.setImageSrc(getColorSrc(color));
+
+          spawnBall.sprite.setAlpha(0);
+          spawnBall.sprite.resize(1);
+
+          spawnBall.color = color;
+          spawnBall.selected = false;
+
+          const startY = this.coords.y - BALL_SIZE * (this.size - y) - getRandom(0, BALL_SIZE / 2);
+          spawnBall.moveTo({
+            x: this.coords.x  + BALL_SIZE * x,
+            y: startY
+          });
+
+          spawnBall.sprite.setAlpha(1, 200);
+          const endY = this.coords.y + BALL_SIZE * y;
+          spawnBall.moveTo({
+            x: this.coords.x  + BALL_SIZE * x,
+            y: endY
+          }, (endY - startY) / 5);
+
+          spawnBall.sprite.rotate(getRandom(-90, 90));
+          spawnBall.setGridPos({x, y});
+
+          this.balls.push({obj: spawnBall, color, x, y});
+        }
+      }
+    }
+  }
+
   clearSelection = () => {
     MainCursor.moveTo({x: 0, y: 0});
     if (this.selection.size < 2) {
@@ -75,7 +120,6 @@ export class Grid extends GameObject {
       this.selection = new Set();
       this.enableColliders();
     } else {
-      console.log(this.selection.size);
 
       const xArr = [];
       const yArr = [];
@@ -93,18 +137,23 @@ export class Grid extends GameObject {
 
       let color = null;
 
-      this.selection.forEach(ball => {
+      this.balls = this.balls.filter(ball => !this.selection.has(ball.obj));
+      [...this.selection].sort((a, b) => b.gridY - a.gridY).forEach(ball => {
         if (!color) {
           color = ball.color;
         }
         ball.clear(center)
       });
-      this.balls = this.balls.filter(ball => !this.selection.has(ball.obj));
 
       this.disableColliders();
       BigYarnBallObj.spawn(center, color, this.selection.size);
 
+      //console.log(this.selection.size);
+
+      const clearedBalls = [...this.selection];
       this.selection = new Set();
+
+      setTimeout(() => this.spawnExtraBalls(clearedBalls), 200);
     }
   };
 
