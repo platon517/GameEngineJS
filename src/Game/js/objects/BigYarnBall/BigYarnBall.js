@@ -10,7 +10,7 @@ const Z_INDEX = 40;
 const GROW_ANIM_TIME = 400;
 
 export const BALL_SIZE = 60 * gc.modifer;
-export const SHADOW_SIZE = 80 * gc.modifer;
+export const SHADOW_SIZE = 72 * gc.modifer;
 
 export class BigYarnBall extends GameObject {
   constructor(coords, color){
