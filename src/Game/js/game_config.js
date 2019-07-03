@@ -1,10 +1,9 @@
-export const modifer = 4;
-
-const w = window.innerWidth * modifer;
-const h = innerHeight * modifer;
+const w = window.innerWidth * window.devicePixelRatio;
+const h = window.innerHeight * window.devicePixelRatio;
 
 export const gc = {
-  originSize: {w: w / modifer, h: h / modifer},
+  originSize: {w: window.innerWidth, h: window.innerHeight},
   srcSize: {w, h},
-  mult: window.innerWidth / (w / modifer),
+  mult: 1,
+  modifer: window.devicePixelRatio
 };

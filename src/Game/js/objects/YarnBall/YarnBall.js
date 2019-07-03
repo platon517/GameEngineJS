@@ -4,6 +4,7 @@ import {Collider} from "../../../../Engine/Collider/Collider";
 import { MainCursor } from "../Cursor/Cursor";
 import { YarnGrid } from "../Grid/Grid";
 import {getRandom} from "../../utilities/random";
+import { gc } from "../../game_config";
 
 export const BLUE = 'BLUE';
 export const GREEN = 'GREEN';
@@ -13,8 +14,8 @@ export const YELLOW = 'YELLOW';
 const Z_INDEX = 10;
 const GROW_ANIM_TIME = 200;
 
-export const BALL_SIZE = 240;
-export const SHADOW_SIZE = 300;
+export const BALL_SIZE = 60 * gc.modifer;
+export const SHADOW_SIZE = 72 * gc.modifer;
 
 export const getColorSrc = color => {
   switch (color) {

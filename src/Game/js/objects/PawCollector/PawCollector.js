@@ -7,8 +7,8 @@ import { YarnGrid } from "../Grid/Grid";
 
 const Z_INDEX = 41;
 
-const WIDTH = 1500;
-const HEIGH = 375;
+const WIDTH = 375 * gc.modifer;
+const HEIGH = 94 * gc.modifer;
 
 export class PawCollector extends GameObject {
   constructor(coords) {
