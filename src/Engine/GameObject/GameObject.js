@@ -1,51 +1,52 @@
-import {engineVisual} from "../VisualRender/VisualRenderComponent";
+import { engineVisual } from "../VisualRender/VisualRenderComponent";
 
 export class GameObject {
-  constructor(){
+  constructor() {
     this.ui = [];
     this._initFunction = () => {};
   }
 
   // render methods
-  render(){
+  render() {
     engineVisual.renderList.add(this);
   }
-  renderClear(){
+  renderClear() {
     engineVisual.renderList.delete(this);
   }
 
-  getCoords(){
-    return this.sprite && this.sprite.getCoords();
+  getCoords() {
+    return this.sprite && (Array.isArray(this.sprite) ? this.sprite[0].getCoords() : this.sprite.getCoords());
   }
-  getColliderInfo(){
+  getColliderInfo() {
     return this.collider && this.collider.getInfo();
   }
 
   // render index methods
-  getRenderIndex(){
+  getRenderIndex() {
     return engineVisual.renderList.getZIndex(this);
   }
-  setRenderIndex(index){
+  setRenderIndex(index) {
     engineVisual.renderList.setZIndex(this, index);
   }
 
   // init methods
-  setInit(func){
+  setInit(func) {
     this._initFunction = func;
   }
 
-  init(){
-    this._initFunction()
+  init() {
+    this._initFunction();
   }
 
-  tick(){
-  }
+  tick() {}
 
   // move methods
-  moveTo(...args){
+  moveTo(...args) {
     this.collider && this.collider.moveTo(...args);
-    this.sprite && this.sprite.moveTo(...args);
-    this.ui.forEach( item => {
+    this.sprite && (Array.isArray(this.sprite)
+      ? this.sprite.forEach(sprite => sprite.moveTo(...args))
+      : this.sprite.moveTo(...args));
+    this.ui.forEach(item => {
       item.moveTo(...args);
     });
     this.pos = args[0];

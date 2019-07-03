@@ -39,7 +39,7 @@ class RenderList {
     this._isDirty && this._sortZIndex();
     this._renderList.forEach(item => {
       const obj = item.obj;
-      obj.sprite && obj.sprite.draw(ctx);
+      obj.sprite && (Array.isArray(obj.sprite) ? obj.sprite.forEach(sprite => sprite.draw(ctx)) : obj.sprite.draw(ctx));
       obj.collider && obj.collider.update(engineVisual.ctx);
       obj.tick();
       if (obj.ui !== undefined && obj.ui.length !== 0) {

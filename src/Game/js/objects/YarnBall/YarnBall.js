@@ -14,6 +14,7 @@ const Z_INDEX = 10;
 const GROW_ANIM_TIME = 200;
 
 export const BALL_SIZE = 240;
+export const SHADOW_SIZE = 300;
 
 export const getColorSrc = color => {
   switch (color) {
@@ -33,12 +34,21 @@ export const getColorSrc = color => {
 export class YarnBall extends GameObject {
   constructor(coords, color){
     super();
-    this.sprite = new Sprite(
-      getColorSrc(color),
-      { x: 0, y: 0 },
-      { w: 370, h: 370 },
-      { w: BALL_SIZE, h: BALL_SIZE },
-    );
+    this.sprite = [
+      new Sprite(
+        'img/YarnBalls/png/yarn_shadow.png',
+        { x: 0, y: 0 },
+        { w: 500, h: 500 },
+        { w: SHADOW_SIZE, h: SHADOW_SIZE },
+        { x: (BALL_SIZE - SHADOW_SIZE) / 2, y: (BALL_SIZE - SHADOW_SIZE) / 2 },
+      ),
+      new Sprite(
+        getColorSrc(color),
+        { x: 0, y: 0 },
+        { w: 370, h: 370 },
+        { w: BALL_SIZE, h: BALL_SIZE },
+      )
+    ];
 
     this.collider = new Collider(
       { x: 0, y: 0 },
@@ -53,6 +63,9 @@ export class YarnBall extends GameObject {
     this.selected = false;
 
     this.color = color;
+
+    this.sprite[0].resize(0.5);
+    this.sprite[0].setAlpha(0);
 
     this.setInit(() => {
       this.render();
@@ -70,16 +83,32 @@ export class YarnBall extends GameObject {
 
   grow(){
     this._clearAnimationPlan();
-    this.sprite.rotate(this.sprite._rotation + getRandom(15, 45), GROW_ANIM_TIME * 0.6);
-    this.sprite.resize(1.3, GROW_ANIM_TIME * 0.6);
-    this._animationPlan = setTimeout(() => this.sprite.resize(1.2, GROW_ANIM_TIME * 0.4), GROW_ANIM_TIME * 0.6);
+    this.sprite[1].rotate(this.sprite[1]._rotation + getRandom(15, 45), GROW_ANIM_TIME * 0.6);
+
+    this.sprite[0].setAlpha(1, GROW_ANIM_TIME * 0.6);
+    this.sprite[0].resize(1.3, GROW_ANIM_TIME * 0.6);
+    this.sprite[1].resize(1.3, GROW_ANIM_TIME * 0.6);
+
+    this.setRenderIndex(Z_INDEX + YarnGrid.selection.size);
+    this._animationPlan = setTimeout(() => {
+      this.sprite[0].resize(1.2, GROW_ANIM_TIME * 0.4);
+      this.sprite[1].resize(1.2, GROW_ANIM_TIME * 0.4);
+    }, GROW_ANIM_TIME * 0.6);
   }
 
   reset(){
     this._clearAnimationPlan();
-    this.sprite.rotate(this.sprite._rotation + getRandom(-45, 15), GROW_ANIM_TIME * 0.6);
-    this.sprite.resize(0.9, GROW_ANIM_TIME * 0.6);
-    this._animationPlan = setTimeout(() => this.sprite.resize(1, GROW_ANIM_TIME * 0.4), GROW_ANIM_TIME * 0.6);
+    this.sprite[1].rotate(this.sprite[1]._rotation + getRandom(-45, 15), GROW_ANIM_TIME * 0.6);
+
+    this.sprite[0].resize(0.9, GROW_ANIM_TIME * 0.6);
+    this.sprite[1].resize(0.9, GROW_ANIM_TIME * 0.6);
+
+    this.setRenderIndex(Z_INDEX);
+    this._animationPlan = setTimeout(() => {
+      this.sprite[0].setAlpha(0, GROW_ANIM_TIME * 0.4);
+      this.sprite[0].resize(0.5, GROW_ANIM_TIME * 0.4);
+      this.sprite[1].resize(1, GROW_ANIM_TIME * 0.4);
+    }, GROW_ANIM_TIME * 0.6);
     this.selected = false;
   }
 
@@ -114,17 +143,18 @@ export class YarnBall extends GameObject {
     }, distance * 100);
 
     setTimeout(() => {
-      this.sprite.resize(0.9, 100);
+      this.sprite[1].resize(0.9, 100);
       setTimeout(() => {
-        this.sprite.resize(1, 100);
+        this.sprite[1].resize(1, 100);
       }, 100)
     }, distance * 100)
 
   }
 
   clear(center){
-    this.sprite.setAlpha(0, 200);
-    this.sprite.resize(0.8, 200);
+    this.sprite[0].setAlpha(0, 200);
+    this.sprite[1].setAlpha(0, 200);
+    this.sprite[1].resize(1, 200);
     this.moveTo({
       x: center.x - BALL_SIZE / 2,
       y: center.y - BALL_SIZE / 2

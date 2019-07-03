@@ -87,9 +87,9 @@ export class PawCollector extends GameObject {
       BigYarnBallObj.moveTo(
         {
           x: ballEndX,
-          y: BigYarnBallObj.sprite.getCoords().y + deltaH
+          y: BigYarnBallObj.getCoords().y + deltaH
         },
-        Math.abs(ballEndX - BigYarnBallObj.sprite.getCoords().x) / speed
+        Math.abs(ballEndX - BigYarnBallObj.getCoords().x) / speed
       );
     }, time);
     setTimeout(() => {

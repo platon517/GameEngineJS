@@ -30,7 +30,7 @@ export class Grid extends GameObject {
             x: coords.x  + BALL_SIZE * x,
             y: coords.y + BALL_SIZE * y
           }, color);
-        ball.sprite.rotate(getRandom(-90, 90));
+        ball.sprite[1].rotate(getRandom(-90, 90));
         ball.setGridPos({x, y});
         this.balls.push({obj: ball, color, x, y});
       }
@@ -83,10 +83,12 @@ export class Grid extends GameObject {
           const color = getRandomColor();
           const spawnBall = clearedBalls.pop();
           spawnBall.render();
-          spawnBall.sprite.setImageSrc(getColorSrc(color));
+          spawnBall.sprite[1].setImageSrc(getColorSrc(color));
 
-          spawnBall.sprite.setAlpha(0);
-          spawnBall.sprite.resize(1);
+          spawnBall.sprite[0].setAlpha(0);
+          spawnBall.sprite[0].resize(0.5);
+          spawnBall.sprite[1].setAlpha(0);
+          spawnBall.sprite[1].resize(1);
 
           spawnBall.color = color;
           spawnBall.selected = false;
@@ -97,14 +99,15 @@ export class Grid extends GameObject {
             y: startY
           });
 
-          spawnBall.sprite.setAlpha(1, 200);
+          spawnBall.sprite[1].setAlpha(1, 200);
           const endY = this.coords.y + BALL_SIZE * y;
+
           spawnBall.moveTo({
             x: this.coords.x  + BALL_SIZE * x,
             y: endY
           }, (endY - startY) / 5);
 
-          spawnBall.sprite.rotate(getRandom(-90, 90));
+          spawnBall.sprite[1].rotate(getRandom(-90, 90));
           spawnBall.setGridPos({x, y});
 
           this.balls.push({obj: spawnBall, color, x, y});
