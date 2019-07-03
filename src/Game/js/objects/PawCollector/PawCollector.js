@@ -68,7 +68,7 @@ export class PawCollector extends GameObject {
       center.x = center.x - WIDTH + ballSize / 2 - randomDelta;
     }
 
-    const speed = 2.5;
+    const speed = (gc.modifer / 1.5).toFixed(2);
     const time = Math.abs(startX - center.x) / speed;
 
     this.moveTo({ x: startX, y: center.y + deltaH });
