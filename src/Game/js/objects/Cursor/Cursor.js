@@ -4,7 +4,7 @@ import { gc } from "../../game_config";
 import {YarnGrid} from "../Grid/Grid";
 
 const Z_INDEX = 99;
-const SIZE = 40;
+const SIZE = 10 * gc.modifer;
 
 export class Cursor extends GameObject {
   constructor(coords){

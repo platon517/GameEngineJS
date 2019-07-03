@@ -3,13 +3,14 @@ import {Sprite} from "../../../../Engine/Sprite/Sprite";
 import {getRandom} from "../../utilities/random";
 import { BLUE, getColorSrc } from "../YarnBall/YarnBall";
 import { Paw } from "../PawCollector/PawCollector";
+import { gc } from "../../game_config";
 
 const Z_INDEX = 40;
 
 const GROW_ANIM_TIME = 400;
 
-export const BALL_SIZE = 240;
-export const SHADOW_SIZE = 300;
+export const BALL_SIZE = 60 * gc.modifer;
+export const SHADOW_SIZE = 80 * gc.modifer;
 
 export class BigYarnBall extends GameObject {
   constructor(coords, color){
@@ -68,6 +69,8 @@ export class BigYarnBall extends GameObject {
 
     this.sprite[0].resize(0.5);
     this.sprite[1].resize(0.5 * mult);
+
+    this.sprite[0].setAlpha(0);
 
     this._clearAnimationPlan();
 
