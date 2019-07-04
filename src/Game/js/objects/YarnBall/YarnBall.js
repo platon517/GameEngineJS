@@ -158,7 +158,7 @@ export class YarnBall extends GameObject {
     this.sprite[1].resize(1, 200);
     this.moveTo({
       x: center.x - BALL_SIZE / 2,
-      y: center.y - BALL_SIZE / 2
+      y: center.y - BALL_SIZE / 2 + 150
     }, 200);
     setTimeout(() => this.renderClear(), 200);
 

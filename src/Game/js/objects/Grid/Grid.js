@@ -22,6 +22,8 @@ export class Grid extends GameObject {
     this.size = size;
     this.coords = coords;
 
+    this.helpSpawns = 10;
+
     for (let y = 0; y < size; y++) {
       for (let x = 0; x < size; x++) {
         const color = getRandomColor();
@@ -38,6 +40,7 @@ export class Grid extends GameObject {
 
     this.setInit(() => {
       this.balls.forEach(ball => ball.obj.render());
+      this.checkCombos();
     });
 
   }
@@ -76,12 +79,99 @@ export class Grid extends GameObject {
     return this.balls.find(ball => ball.x === x && ball.y === y);
   }
 
+  findPath(ball, balls, dirtyBalls){
+    balls.push(ball);
+    dirtyBalls.push(ball);
+
+    const neighbours = [
+      this.getBallByPos(ball.x - 1, ball.y),
+      this.getBallByPos(ball.x + 1, ball.y),
+      this.getBallByPos(ball.x, ball.y - 1),
+      this.getBallByPos(ball.x, ball.y + 1)
+    ];
+
+    const comboBalls =
+      neighbours
+        .filter(
+          neighbour => (
+            neighbour &&
+            neighbour.color === ball.color &&
+            !dirtyBalls.find(ball => ball === neighbour)
+          )
+        );
+
+    if (comboBalls.length === 0) {
+      return balls;
+    } else {
+      //console.log(comboBalls.map(ball => this.findPath(ball, bufferBalls, bufferDirtyBalls)));
+      const values = comboBalls.map(ball => {
+        const bufferBalls = [...balls];
+        const bufferDirtyBalls = [...bufferBalls];
+        return this.findPath(ball, bufferBalls, bufferDirtyBalls)
+      });
+      return values.sort((a, b) => a.length - b.length)[0];
+    }
+  }
+
+  checkCombos(balls = this.balls){
+    const maxCombosAll =
+      balls.map(ball => {
+        const dirtyBalls = [];
+        const balls = [];
+
+        const size = this.findPath(
+          ball,
+          balls,
+          dirtyBalls
+        ).length;
+
+        return {
+          color: ball.color,
+          size
+        }
+      });
+
+    const maxCombosColor =
+      maxCombosAll.reduce((result, combo) => {
+        if (combo.size > 1) {
+          if (result[combo.color]) {
+            result[combo.color] = Math.max(result[combo.color], combo.size);
+          } else {
+            result[combo.color] = combo.size;
+          }
+        }
+        return result;
+      }, {});
+
+    return maxCombosColor;
+  }
+
   spawnExtraBalls(clearedBalls){
     for (let y = 0; y < this.size; y++) {
       for (let x = 0; x < this.size; x++) {
         if (!this.balls.find(ball => ball.x === x && ball.y === y)) {
-          const color = getRandomColor();
+          let color = getRandomColor();
+
           const spawnBall = clearedBalls.pop();
+          spawnBall.setGridPos({x, y});
+          spawnBall.color = color;
+
+          let isCombo = Object.keys(this.checkCombos([...this.balls, {obj: spawnBall, color, x, y}])).length > 0;
+
+          if (clearedBalls.length === 0 && !isCombo) {
+            if (this.helpSpawns > 0) {
+              while (!isCombo) {
+                color = getRandomColor();
+                spawnBall.color = color;
+                isCombo = Object.keys(this.checkCombos([...this.balls, {obj: spawnBall, color, x, y}])).length > 0;
+              }
+              this.helpSpawns -= 1;
+              console.log(this.helpSpawns);
+            } else {
+              alert('Донать сука!');
+            }
+          }
+
           spawnBall.render();
           spawnBall.sprite[1].setImageSrc(getColorSrc(color));
 
@@ -90,7 +180,6 @@ export class Grid extends GameObject {
           spawnBall.sprite[1].setAlpha(0);
           spawnBall.sprite[1].resize(1);
 
-          spawnBall.color = color;
           spawnBall.selected = false;
 
           const startY = this.coords.y - BALL_SIZE * (this.size - y) - getRandom(0, BALL_SIZE / 2);
@@ -108,12 +197,12 @@ export class Grid extends GameObject {
           }, (endY - startY) / 5);
 
           spawnBall.sprite[1].rotate(getRandom(-90, 90));
-          spawnBall.setGridPos({x, y});
 
           this.balls.push({obj: spawnBall, color, x, y});
         }
       }
     }
+    console.log(this.checkCombos());
   }
 
   clearSelection = () => {
@@ -165,5 +254,9 @@ export class Grid extends GameObject {
   }
 }
 
-const offset = {x: (gc.srcSize.w - BALL_SIZE * 5 ) / 2, y: (gc.srcSize.h - BALL_SIZE * 5 ) / 2};
+const offset = {
+  x: (gc.srcSize.w - BALL_SIZE * 5 ) / 2,
+  y: (gc.srcSize.h - BALL_SIZE * 5 ) - 200
+};
+
 export const YarnGrid = new Grid(offset, 5);
