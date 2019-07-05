@@ -4,6 +4,7 @@ import { getRandom } from "../../utilities/random";
 import { gc } from "../../game_config";
 import {MainCursor} from "../Cursor/Cursor";
 import {BigYarnBallObj} from "../BigYarnBall/BigYarnBall";
+import { GRID_SIZE } from "./gridSize";
 
 const getRandomColor = () => {
   const colorArray = [BLUE, GREEN, PINK, YELLOW, PURPLE];
@@ -12,7 +13,7 @@ const getRandomColor = () => {
 };
 
 export class Grid extends GameObject {
-  constructor(coords, size){
+  constructor(coords, size = 5){
     super();
 
     this.balls = [];
@@ -54,13 +55,7 @@ export class Grid extends GameObject {
       .filter(ball => ball.obj !== target)
       .forEach(ball => ball.obj.collider.disabled = true);
     const targetBall = this.balls.find(ball => ball.obj === target);
-    const nearBalls = this.balls.filter(
-      ball =>
-        ((ball.x === targetBall.x - 1) && (ball.y === targetBall.y) && ball.color === targetBall.color) ||
-        ((ball.x === targetBall.x + 1) && (ball.y === targetBall.y) && ball.color === targetBall.color) ||
-        ((ball.x === targetBall.x) && (ball.y === targetBall.y + 1) && ball.color === targetBall.color) ||
-        ((ball.x === targetBall.x) && (ball.y === targetBall.y - 1) && ball.color === targetBall.color)
-    );
+    const nearBalls = this.getBallNeighbours(targetBall);
     nearBalls.forEach(ball => ball.obj.collider.disabled = false);
   }
 
@@ -79,28 +74,33 @@ export class Grid extends GameObject {
     return this.balls.find(ball => ball.x === x && ball.y === y);
   }
 
+  getBallNeighbours(targetBall){
+    return this.balls.filter(
+      ball =>
+        ((ball.x === targetBall.x - 1) && (ball.y === targetBall.y) && ball.color === targetBall.color) ||
+        ((ball.x === targetBall.x + 1) && (ball.y === targetBall.y) && ball.color === targetBall.color) ||
+        ((ball.x === targetBall.x) && (ball.y === targetBall.y + 1) && ball.color === targetBall.color) ||
+        ((ball.x === targetBall.x) && (ball.y === targetBall.y - 1) && ball.color === targetBall.color)
+    );
+  }
+
   findPath(ball, balls, dirtyBalls){
     balls.push(ball);
     dirtyBalls.push(ball);
 
-    const neighbours = [
-      this.getBallByPos(ball.x - 1, ball.y),
-      this.getBallByPos(ball.x + 1, ball.y),
-      this.getBallByPos(ball.x, ball.y - 1),
-      this.getBallByPos(ball.x, ball.y + 1)
-    ];
+    const neighbours = this.getBallNeighbours(ball);
 
     const comboBalls =
       neighbours
         .filter(
           neighbour => (
             neighbour &&
-            neighbour.color === ball.color &&
             !dirtyBalls.find(ball => ball === neighbour)
           )
         );
 
     if (comboBalls.length === 0) {
+      //console.log(balls);
       return balls;
     } else {
       //console.log(comboBalls.map(ball => this.findPath(ball, bufferBalls, bufferDirtyBalls)));
@@ -109,27 +109,38 @@ export class Grid extends GameObject {
         const bufferDirtyBalls = [...bufferBalls];
         return this.findPath(ball, bufferBalls, bufferDirtyBalls)
       });
-      return values.sort((a, b) => a.length - b.length)[0];
+      return values.sort((a, b) => b.length - a.length)[0];
     }
   }
 
   checkCombos(balls = this.balls){
-    const maxCombosAll =
-      balls.map(ball => {
-        const dirtyBalls = [];
-        const balls = [];
 
-        const size = this.findPath(
-          ball,
-          balls,
-          dirtyBalls
-        ).length;
+    const test = [];
 
-        return {
-          color: ball.color,
-          size
-        }
+    const maxCombosAll = [];
+
+    balls.forEach(ball => {
+
+      if (~test.indexOf(ball)) return false;
+
+      const dirtyBalls = [];
+      const balls = [];
+
+      const path = this.findPath(
+        ball,
+        balls,
+        dirtyBalls
+      );
+
+      test.push(...path);
+
+      const size = path.length;
+
+      maxCombosAll.push({
+        color: ball.color,
+        size
       });
+    });
 
     const maxCombosColor =
       maxCombosAll.reduce((result, combo) => {
@@ -147,61 +158,80 @@ export class Grid extends GameObject {
   }
 
   spawnExtraBalls(clearedBalls){
+
+    const unusedCoords = [];
+
     for (let y = 0; y < this.size; y++) {
       for (let x = 0; x < this.size; x++) {
-        if (!this.balls.find(ball => ball.x === x && ball.y === y)) {
-          let color = getRandomColor();
-
-          const spawnBall = clearedBalls.pop();
-          spawnBall.setGridPos({x, y});
-          spawnBall.color = color;
-
-          let isCombo = Object.keys(this.checkCombos([...this.balls, {obj: spawnBall, color, x, y}])).length > 0;
-
-          if (clearedBalls.length === 0 && !isCombo) {
-            if (this.helpSpawns > 0) {
-              while (!isCombo) {
-                color = getRandomColor();
-                spawnBall.color = color;
-                isCombo = Object.keys(this.checkCombos([...this.balls, {obj: spawnBall, color, x, y}])).length > 0;
-              }
-              this.helpSpawns -= 1;
-              console.log(this.helpSpawns);
-            } else {
-              alert('Донать сука!');
-            }
-          }
-
-          spawnBall.render();
-          spawnBall.sprite[1].setImageSrc(getColorSrc(color));
-
-          spawnBall.sprite[0].setAlpha(0);
-          spawnBall.sprite[0].resize(0.5);
-          spawnBall.sprite[1].setAlpha(0);
-          spawnBall.sprite[1].resize(1);
-
-          spawnBall.selected = false;
-
-          const startY = this.coords.y - BALL_SIZE * (this.size - y) - getRandom(0, BALL_SIZE / 2);
-          spawnBall.moveTo({
-            x: this.coords.x  + BALL_SIZE * x,
-            y: startY
-          });
-
-          spawnBall.sprite[1].setAlpha(1, 200);
-          const endY = this.coords.y + BALL_SIZE * y;
-
-          spawnBall.moveTo({
-            x: this.coords.x  + BALL_SIZE * x,
-            y: endY
-          }, (endY - startY) / 5);
-
-          spawnBall.sprite[1].rotate(getRandom(-90, 90));
-
-          this.balls.push({obj: spawnBall, color, x, y});
-        }
+        unusedCoords.push({x, y});
       }
     }
+
+    this.balls.forEach(ball => {
+      const coord = unusedCoords.find(item => item.x === ball.x && item.y === ball.y);
+      if(coord) {
+        unusedCoords.splice(unusedCoords.indexOf(coord), 1);
+      }
+    });
+
+    clearedBalls.forEach(ball => {
+
+      const newCoords = unusedCoords.pop();
+
+      const {x, y} = newCoords;
+
+      let color = getRandomColor();
+
+      const spawnBall = ball;
+      spawnBall.setGridPos({x, y});
+      spawnBall.color = color;
+
+      if (clearedBalls.length === 0) {
+        let isCombo = Object.keys(this.checkCombos([...this.balls, {obj: spawnBall, color, x, y}])).length > 0;
+
+        if (!isCombo) {
+          if (this.helpSpawns > 0) {
+            while (!isCombo) {
+              color = getRandomColor();
+              spawnBall.color = color;
+              isCombo = Object.keys(this.checkCombos([...this.balls, {obj: spawnBall, color, x, y}])).length > 0;
+            }
+            this.helpSpawns -= 1;
+            console.log(this.helpSpawns);
+          } else {
+            alert('Донать сука!');
+          }
+        }
+      }
+
+      spawnBall.render();
+      spawnBall.sprite[1].setImageSrc(getColorSrc(color));
+
+      spawnBall.sprite[0].setAlpha(0);
+      spawnBall.sprite[0].resize(0.5);
+      spawnBall.sprite[1].setAlpha(0);
+      spawnBall.sprite[1].resize(1);
+
+      spawnBall.selected = false;
+
+      const startY = this.coords.y - BALL_SIZE * (this.size - y) - getRandom(0, BALL_SIZE / 2);
+      spawnBall.moveTo({
+        x: this.coords.x  + BALL_SIZE * x,
+        y: startY
+      });
+
+      spawnBall.sprite[1].setAlpha(1, 200);
+      const endY = this.coords.y + BALL_SIZE * y;
+
+      spawnBall.moveTo({
+        x: this.coords.x  + BALL_SIZE * x,
+        y: endY
+      }, (endY - startY) / 5);
+
+      spawnBall.sprite[1].rotate(getRandom(-90, 90));
+
+      this.balls.push({obj: spawnBall, color, x, y});
+    });
     console.log(this.checkCombos());
   }
 
@@ -255,8 +285,8 @@ export class Grid extends GameObject {
 }
 
 const offset = {
-  x: (gc.srcSize.w - BALL_SIZE * 5 ) / 2,
-  y: (gc.srcSize.h - BALL_SIZE * 5 ) - 200
+  x: (gc.srcSize.w - BALL_SIZE * GRID_SIZE ) / 2,
+  y: (gc.srcSize.h - BALL_SIZE * GRID_SIZE ) - 200
 };
 
-export const YarnGrid = new Grid(offset, 5);
+export const YarnGrid = new Grid(offset, GRID_SIZE);

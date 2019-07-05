@@ -5,6 +5,7 @@ import { MainCursor } from "../Cursor/Cursor";
 import { YarnGrid } from "../Grid/Grid";
 import {getRandom} from "../../utilities/random";
 import { gc } from "../../game_config";
+import { GRID_SIZE } from "../Grid/gridSize";
 
 export const BLUE = 'BLUE';
 export const GREEN = 'GREEN';
@@ -14,8 +15,8 @@ export const YELLOW = 'YELLOW';
 const Z_INDEX = 10;
 const GROW_ANIM_TIME = 200;
 
-export const BALL_SIZE = 60 * gc.modifer;
-export const SHADOW_SIZE = 72 * gc.modifer;
+export const BALL_SIZE = 60 / GRID_SIZE * 5 * gc.modifer;
+export const SHADOW_SIZE = 72 / GRID_SIZE * 5 * gc.modifer;
 
 export const getColorSrc = color => {
   switch (color) {
