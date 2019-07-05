@@ -279,6 +279,14 @@ export class Grid extends GameObject {
     }
   };
 
+  disableBalls(){
+    this.balls.forEach(ball => ball.obj.disabled = true);
+  }
+
+  enableBalls(){
+    this.balls.forEach(ball => ball.obj.disabled = false);
+  }
+
   tick(){
     super.tick();
   }

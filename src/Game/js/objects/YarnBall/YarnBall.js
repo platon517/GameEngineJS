@@ -66,6 +66,8 @@ export class YarnBall extends GameObject {
 
     this.color = color;
 
+    this.disabled = false;
+
     this.sprite[0].resize(0.5);
     this.sprite[0].setAlpha(0);
 
@@ -171,7 +173,7 @@ export class YarnBall extends GameObject {
 
   tick(){
     super.tick();
-    if (this.collider.getInteractions().has(MainCursor.collider)) {
+    if (this.collider.getInteractions().has(MainCursor.collider) && !this.disabled) {
       if (YarnGrid.selection.size > 0 && [...YarnGrid.selection].pop().color !== this.color) {
         return false
       }
