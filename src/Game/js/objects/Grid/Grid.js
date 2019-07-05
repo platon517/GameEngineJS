@@ -174,7 +174,7 @@ export class Grid extends GameObject {
       }
     });
 
-    clearedBalls.forEach(ball => {
+    clearedBalls.forEach((ball, index) => {
 
       const newCoords = unusedCoords.pop();
 
@@ -186,7 +186,7 @@ export class Grid extends GameObject {
       spawnBall.setGridPos({x, y});
       spawnBall.color = color;
 
-      if (clearedBalls.length === 0) {
+      if (index >= clearedBalls.length -1) {
         let isCombo = Object.keys(this.checkCombos([...this.balls, {obj: spawnBall, color, x, y}])).length > 0;
 
         if (!isCombo) {
