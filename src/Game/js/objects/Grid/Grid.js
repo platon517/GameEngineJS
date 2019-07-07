@@ -1,10 +1,8 @@
 import {GameObject} from "../../../../Engine/GameObject/GameObject";
 import { BALL_SIZE, BLUE, getColorSrc, GREEN, PINK, PURPLE, YarnBall, YELLOW } from "../YarnBall/YarnBall";
 import { getRandom } from "../../utilities/random";
-import { gc } from "../../game_config";
-import {MainCursor} from "../Cursor/Cursor";
-import {BigYarnBallObj} from "../BigYarnBall/BigYarnBall";
-import { GRID_SIZE } from "./gridSize";
+import {MainCursor} from "../../scenes/CoreScene";
+import {BigYarnBallObj} from "../../scenes/CoreScene";
 
 const getRandomColor = () => {
   const colorArray = [BLUE, GREEN, PINK, YELLOW, PURPLE];
@@ -235,7 +233,8 @@ export class Grid extends GameObject {
     console.log(this.checkCombos());
   }
 
-  clearSelection = () => {
+  clearSelection = (animation = true) => {
+
     MainCursor.moveTo({x: 0, y: 0});
     if (this.selection.size < 2) {
       this.selection.forEach(ball => ball.reset());
@@ -268,7 +267,7 @@ export class Grid extends GameObject {
       });
 
       this.disableColliders();
-      BigYarnBallObj.spawn(center, color, this.selection.size);
+      animation && BigYarnBallObj.spawn(center, color, this.selection.size);
 
       //console.log(this.selection.size);
 
@@ -280,10 +279,12 @@ export class Grid extends GameObject {
   };
 
   disableBalls(){
+    this.ballsDisabled = true;
     this.balls.forEach(ball => ball.obj.disabled = true);
   }
 
   enableBalls(){
+    this.ballsDisabled = false;
     this.balls.forEach(ball => ball.obj.disabled = false);
   }
 
@@ -291,10 +292,3 @@ export class Grid extends GameObject {
     super.tick();
   }
 }
-
-const offset = {
-  x: (gc.srcSize.w - BALL_SIZE * GRID_SIZE ) / 2,
-  y: (gc.srcSize.h - BALL_SIZE * GRID_SIZE ) - 200
-};
-
-export const YarnGrid = new Grid(offset, GRID_SIZE);

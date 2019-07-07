@@ -2,7 +2,7 @@ import {GameObject} from "../../../../Engine/GameObject/GameObject";
 import {Sprite} from "../../../../Engine/Sprite/Sprite";
 import {getRandom} from "../../utilities/random";
 import { BLUE, getColorSrc } from "../YarnBall/YarnBall";
-import { Paw } from "../PawCollector/PawCollector";
+import {Paw} from "../../scenes/CoreScene";
 import { gc } from "../../game_config";
 
 const Z_INDEX = 40;
@@ -102,5 +102,3 @@ export class BigYarnBall extends GameObject {
     super.tick();
   }
 }
-
-export const BigYarnBallObj = new BigYarnBall({x: 0, y: 0}, BLUE);

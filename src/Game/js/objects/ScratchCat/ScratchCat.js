@@ -2,10 +2,10 @@ import { GameObject } from "../../../../Engine/GameObject/GameObject";
 import { Sprite } from "../../../../Engine/Sprite/Sprite";
 import { gc } from "../../game_config";
 import { getRandom } from "../../utilities/random";
-import { YarnGrid } from "../Grid/Grid";
+import {YarnGrid} from "../../scenes/CoreScene";
 import { BALL_SIZE } from "../YarnBall/YarnBall";
 
-const Z_INDEX = 30;
+const Z_INDEX = 99;
 
 const WIDTH = 200 * gc.modifer;
 const HEIGH = 200 * gc.modifer;
@@ -23,9 +23,10 @@ export class ScratchCat extends GameObject {
     this.moveTo(coords);
 
     this.setInit(() => {
-      this.attack(getRandom(1, 4));
+      // this.attack(getRandom(1, 4));
     });
   }
+
 
   attack(column){
 
@@ -52,21 +53,43 @@ export class ScratchCat extends GameObject {
     }, 150);
 
     setTimeout(() => {
+
+      const speed = 1;
+      const fallTime = (gc.srcSize.h - this.getCoords().y) / speed;
+
       this.sprite.rotate(rotation < 0 ? rotation + 10 : rotation - 10, 1000);
-      this.moveTo({x, y: gc.srcSize.h}, 1000);
+      this.moveTo({x, y: gc.srcSize.h}, fallTime);
 
-      const fallenBalls =
-        YarnGrid.balls.filter(ball => ball.x === column || ball.x === column -1 || ball.x === column + 1);
+      const fallenBallsRows = YarnGrid.balls
+        .filter(ball => ball.x === column || ball.x === column -1 || ball.x === column + 1)
+        .reduce((arr, ball) => {
+          if (arr[ball.y]) {
+            arr[ball.y].push(ball);
+          } else {
+            arr[ball.y] = [ball];
+          }
+          return arr;
+        }, []);
 
-      fallenBalls.forEach(ball => {
-        YarnGrid.selection.add(ball.obj);
+      fallenBallsRows.forEach((row, index) => {
+        setTimeout(() => {
+          const time = 100;
+          row.forEach(ball => ball.obj.sprite[1].setAlpha(0, time));
+          row.forEach(ball =>{
+            YarnGrid.addToSelection(ball.obj);
+            ball.obj.moveTo({
+              x: ball.obj.getCoords().x,
+              y: ball.obj.getCoords().y + BALL_SIZE / 2
+            }, 1000)
+          });
+        }, (index + 1) * (BALL_SIZE / speed));
       });
-      setTimeout(YarnGrid.clearSelection, 500);
 
       setTimeout(() => {
         this.renderClear();
-        YarnGrid.enableBalls();
-      }, 1000);
+        YarnGrid.clearSelection(false);
+        setTimeout(() => YarnGrid.enableBalls(), 200);
+      }, fallTime);
 
     }, 300);
   }
@@ -75,5 +98,3 @@ export class ScratchCat extends GameObject {
     super.tick();
   }
 }
-
-export const ScratchCatObj = new ScratchCat({ x: 0, y: 0 });

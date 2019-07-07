@@ -2,8 +2,8 @@ import { GameObject } from "../../../../Engine/GameObject/GameObject";
 import { Sprite } from "../../../../Engine/Sprite/Sprite";
 import { gc } from "../../game_config";
 import { getRandom } from "../../utilities/random";
-import { BigYarnBallObj } from "../BigYarnBall/BigYarnBall";
-import { YarnGrid } from "../Grid/Grid";
+import {BigYarnBallObj} from "../../scenes/CoreScene";
+import {YarnGrid} from "../../scenes/CoreScene";
 
 const Z_INDEX = 41;
 
@@ -102,5 +102,3 @@ export class PawCollector extends GameObject {
     super.tick();
   }
 }
-
-export const Paw = new PawCollector({ x: gc.srcSize.w, y: -375 });

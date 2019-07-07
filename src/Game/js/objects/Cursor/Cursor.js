@@ -1,7 +1,7 @@
 import {GameObject} from "../../../../Engine/GameObject/GameObject";
 import {Collider} from "../../../../Engine/Collider/Collider";
 import { gc } from "../../game_config";
-import {YarnGrid} from "../Grid/Grid";
+import {YarnGrid} from "../../scenes/CoreScene";
 
 const Z_INDEX = 99;
 const SIZE = 10 * gc.modifer;
@@ -42,7 +42,7 @@ export class Cursor extends GameObject {
       };
       window.ontouchend = e => {
         this.hold = false;
-        YarnGrid.clearSelection();
+        !YarnGrid.ballsDisabled && YarnGrid.clearSelection();
       };
     });
 
@@ -51,5 +51,3 @@ export class Cursor extends GameObject {
     super.tick();
   }
 }
-
-export const MainCursor = new Cursor({x:0, y:0});

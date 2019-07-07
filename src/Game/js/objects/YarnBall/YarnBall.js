@@ -1,8 +1,8 @@
 import {GameObject} from "../../../../Engine/GameObject/GameObject";
 import {Sprite} from "../../../../Engine/Sprite/Sprite";
 import {Collider} from "../../../../Engine/Collider/Collider";
-import { MainCursor } from "../Cursor/Cursor";
-import { YarnGrid } from "../Grid/Grid";
+import {MainCursor} from "../../scenes/CoreScene";
+import {YarnGrid} from "../../scenes/CoreScene";
 import {getRandom} from "../../utilities/random";
 import { gc } from "../../game_config";
 import { GRID_SIZE } from "../Grid/gridSize";
