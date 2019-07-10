@@ -1,8 +1,12 @@
 import {GameObject} from "../../../../Engine/GameObject/GameObject";
-import { BALL_SIZE, BLUE, getColorSrc, GREEN, PINK, PURPLE, YarnBall, YELLOW } from "../YarnBall/YarnBall";
+import { BALL_SIZE, BLUE, getColorSrc, GREEN, PINK, PURPLE, SHADOW_SIZE, YarnBall, YELLOW } from "../YarnBall/YarnBall";
 import { getRandom } from "../../utilities/random";
 import {MainCursor} from "../../scenes/CoreScene";
 import {BigYarnBallObj} from "../../scenes/CoreScene";
+import { Sprite, SquareSprite } from "../../../../Engine/Sprite/Sprite";
+import { gc } from "../../game_config";
+
+const Z_INDEX = 1;
 
 const getRandomColor = () => {
   const colorArray = [BLUE, GREEN, PINK, YELLOW, PURPLE];
@@ -14,12 +18,25 @@ export class Grid extends GameObject {
   constructor(coords, size = 5){
     super();
 
+    const BORDER = 20;
+
+    this.sprite = new SquareSprite(
+      { w: BALL_SIZE * size + BORDER, h: BALL_SIZE * size + BORDER },
+      'white',
+      { x: - BORDER / 2, y: - BORDER / 2 },
+      BALL_SIZE / 2
+    );
+
     this.balls = [];
 
     this.selection = new Set();
 
     this.size = size;
     this.coords = coords;
+
+    this.sprite.setAlpha(0.5);
+
+    this.moveTo({x: coords.x + gc.srcSize.w * 1.5, y: coords.y});
 
     this.helpSpawns = 10;
 
@@ -28,7 +45,7 @@ export class Grid extends GameObject {
         const color = getRandomColor();
         const ball = new YarnBall(
           {
-            x: coords.x  + BALL_SIZE * x,
+            x: coords.x  + BALL_SIZE * x + gc.srcSize.w * 1.5,
             y: coords.y + BALL_SIZE * y
           }, color);
         ball.sprite[1].rotate(getRandom(-90, 90));
@@ -38,10 +55,40 @@ export class Grid extends GameObject {
     }
 
     this.setInit(() => {
-      this.balls.forEach(ball => ball.obj.render());
+      this.render();
+      this.setRenderIndex(Z_INDEX);
+
+      this.balls.forEach(ball => ball.obj.init());
       this.checkCombos();
+      this.spawn();
     });
 
+  }
+
+  spawn(){
+
+    const time = 300;
+    const backTime = 100;
+
+    const overCoords = {x: this.coords.x - 60, y: this.coords.y};
+
+    this.sprite.moveTo(overCoords, time);
+    this.balls.forEach(ball => {
+      ball.obj.moveTo({
+        x: overCoords.x + BALL_SIZE * ball.x,
+        y: overCoords.y + BALL_SIZE * ball.y
+      }, time)
+    });
+
+    setTimeout(() => {
+      this.sprite.moveTo(this.coords, backTime);
+      this.balls.forEach(ball => {
+        ball.obj.moveTo({
+          x: this.coords.x + BALL_SIZE * ball.x,
+          y: this.coords.y + BALL_SIZE * ball.y
+        }, backTime)
+      });
+    }, time);
   }
 
   disableColliders(target = null){
@@ -202,7 +249,7 @@ export class Grid extends GameObject {
         }
       }
 
-      spawnBall.render();
+      spawnBall.init();
       spawnBall.sprite[1].setImageSrc(getColorSrc(color));
 
       spawnBall.sprite[0].setAlpha(0);

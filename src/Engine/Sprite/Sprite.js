@@ -357,11 +357,14 @@ export class Sprite {
 }
 
 export class SquareSprite extends Sprite {
-  constructor(size = {w: 100, h: 100}, color = 'black'){
+  constructor(size = {w: 100, h: 100}, color = 'black', offset = {x: 0, y: 0}, r = 0){
     super();
     this._size = size;
     this._color = color;
     this._alpha = 1;
+    this._radius = r;
+    this._offset = offset;
+    this._nowMoving = null;
   }
 
   setAlpha(val, time = null) {
@@ -373,7 +376,26 @@ export class SquareSprite extends Sprite {
     }
   }
 
+  moveTo(pos = { x: 0, y: 0 }, time = null) {
+    if (time) {
+      const startTime = new Date().getTime();
+      const path = {
+        start_x: this._coords.x,
+        start_y: this._coords.y,
+        end_x: pos.x - this._coords.x,
+        end_y: pos.y - this._coords.y
+      };
+      this._nowMoving = { path, pos, time, startTime };
+    } else {
+      this._nowMoving = null;
+      this._coords = pos;
+    }
+  }
+
   draw(ctx){
+
+    const nowTime = new Date().getTime();
+
     super.draw(ctx, false);
     const camCoords = Camera.getCoords();
     const lastAlpha = ctx.globalAlpha;
@@ -392,16 +414,42 @@ export class SquareSprite extends Sprite {
         this._alpha = val;
       }
     }
+
+    if (this._nowMoving) {
+      const startTime = this._nowMoving.startTime;
+      const pastTime = nowTime - startTime;
+      const time = this._nowMoving.time;
+      const path = this._nowMoving.path;
+      this._coords = {
+        x: path.start_x + (path.end_x / time) * pastTime,
+        y: path.start_y + (path.end_y / time) * pastTime
+      };
+      if (pastTime >= time) {
+        const pos = this._nowMoving.pos;
+        this._nowMoving = null;
+        this._coords = pos;
+      }
+    }
+
+    const r = this._radius;
+    const {w, h} = this._size;
+    let {x, y} = this._coords;
+
+    x += this._offset.x;
+    y += this._offset.y;
+
     ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+
     ctx.fillStyle = this._color;
     ctx.globalAlpha = this._alpha;
-    ctx.fillRect(
-      this._coords.x + camCoords.x,
-      this._coords.y + camCoords.y,
-      this._size.w,
-      this._size.h
-    );
+
     ctx.globalAlpha = lastAlpha;
-    ctx.stroke();
+    ctx.fill();
   }
 }
