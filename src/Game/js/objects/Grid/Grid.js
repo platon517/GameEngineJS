@@ -8,6 +8,8 @@ import { gc } from "../../game_config";
 
 const Z_INDEX = 1;
 
+export const BORDER = 10 * gc.modifer;
+
 const getRandomColor = () => {
   const colorArray = [BLUE, GREEN, PINK, YELLOW, PURPLE];
   const randomNum = getRandom(0, colorArray.length);
@@ -17,8 +19,6 @@ const getRandomColor = () => {
 export class Grid extends GameObject {
   constructor(coords, size = 5){
     super();
-
-    const BORDER = 20;
 
     this.sprite = new SquareSprite(
       { w: BALL_SIZE * size + BORDER, h: BALL_SIZE * size + BORDER },

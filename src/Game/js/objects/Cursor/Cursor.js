@@ -29,6 +29,7 @@ export class Cursor extends GameObject {
     };
 
     this.hold = false;
+    this.hasMoved = false;
 
     this.setInit(() => {
       this.render();
@@ -38,10 +39,12 @@ export class Cursor extends GameObject {
         this.followTouch(e);
       };
       window.ontouchmove = e => {
+        this.hasMoved = true;
         this.followTouch(e);
       };
       window.ontouchend = e => {
         this.hold = false;
+        this.hasMoved = false;
         !YarnGrid.ballsDisabled && YarnGrid.clearSelection();
       };
     });
