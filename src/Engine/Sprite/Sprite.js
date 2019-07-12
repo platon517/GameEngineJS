@@ -212,6 +212,27 @@ export class Sprite {
     }
   }
 
+  setInnerOffset(innerVal, time = null) {
+    if (time) {
+      const startTime = new Date().getTime();
+
+      const startInnerVal = {x: this._nowState.x, y: this._nowState.y};
+      const endInnerVal = innerVal;
+
+      this._newInnerOffset = { startInnerVal, endInnerVal, time, startTime };
+
+    } else {
+      const mult = this._innerSize.w / this._size.w;
+
+      this._newInnerOffset = null;
+      this._nowState = innerVal;
+      this._offset = {
+        x: this._offset.x + innerVal.x / mult,
+        y: this._offset.y + innerVal.y / mult,
+      };
+    }
+  }
+
   draw(ctx, isImage = true) {
     let {
       _canvasObject,
@@ -227,7 +248,8 @@ export class Sprite {
       _nowResizing,
       _nowRotating,
       _newAlpha,
-      _rotationPivot
+      _rotationPivot,
+      _newInnerOffset
     } = this;
 
     const nowTime = new Date().getTime();
@@ -332,6 +354,27 @@ export class Sprite {
       if (pastTime >= time) {
         this._alpha = _newAlpha.endVal;
         this._newAlpha = null;
+      }
+    }
+
+    if (_newInnerOffset) {
+      const startTime = _newInnerOffset.startTime;
+      const pastTime = nowTime - startTime;
+      const time = _newInnerOffset.time;
+
+      this._nowState = {
+        x: _newInnerOffset.startInnerVal.x +
+          ((_newInnerOffset.endInnerVal.x - _newInnerOffset.startInnerVal.x) / time) *
+          pastTime,
+        y: _newInnerOffset.startInnerVal.y +
+          ((_newInnerOffset.endInnerVal.y - _newInnerOffset.startInnerVal.y) / time) *
+          pastTime,
+      };
+
+
+      if (pastTime >= time) {
+        this._nowState = _newInnerOffset.endInnerVal;
+        this._newInnerOffset = null;
       }
     }
 
