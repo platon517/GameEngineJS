@@ -32,6 +32,7 @@ export class Sprite {
     this._canvasObject.src = this._idle;
     this._idleCoords = inner_coords;
     this._nowMoving = null;
+    this._nowOffset = null;
     this._nowAnimation = null;
     this._rotation = 0;
     this._alpha = 1;
@@ -63,7 +64,6 @@ export class Sprite {
       x: offset.x * gc.mult,
       y: offset.y * gc.mult
     };
-
     this._nowState = this._idleCoords;
   }
 
@@ -222,14 +222,28 @@ export class Sprite {
       this._newInnerOffset = { startInnerVal, endInnerVal, time, startTime };
 
     } else {
-      const mult = this._innerSize.w / this._size.w;
-
       this._newInnerOffset = null;
       this._nowState = innerVal;
-      this._offset = {
-        x: this._offset.x + innerVal.x / mult,
-        y: this._offset.y + innerVal.y / mult,
+    }
+  }
+
+  getOffset() {
+    return this._offset;
+  }
+
+  setOffset(pos = { x: 0, y: 0 }, time = null) {
+    if (time) {
+      const startTime = new Date().getTime();
+      const path = {
+        start_x: this._offset.x,
+        start_y: this._offset.y,
+        end_x: pos.x - this._offset.x,
+        end_y: pos.y - this._offset.y
       };
+      this._nowOffset = { path, pos, time, startTime };
+    } else {
+      this._nowOffset = null;
+      this._offset = pos;
     }
   }
 
@@ -249,7 +263,9 @@ export class Sprite {
       _nowRotating,
       _newAlpha,
       _rotationPivot,
-      _newInnerOffset
+      _newInnerOffset,
+      _nowOffset,
+      _offset
     } = this;
 
     const nowTime = new Date().getTime();
@@ -293,6 +309,7 @@ export class Sprite {
         this._coords = pos;
       }
     }
+
     if (_nowResizing) {
       const startTime = _nowResizing.startTime;
       const pastTime = nowTime - startTime;
@@ -371,10 +388,25 @@ export class Sprite {
           pastTime,
       };
 
-
       if (pastTime >= time) {
         this._nowState = _newInnerOffset.endInnerVal;
         this._newInnerOffset = null;
+      }
+    }
+
+    if (_nowOffset) {
+      const startTime = _nowOffset.startTime;
+      const pastTime = nowTime - startTime;
+      const time = _nowOffset.time;
+      const path = _nowOffset.path;
+      this._offset = {
+        x: path.start_x + (path.end_x / time) * pastTime,
+        y: path.start_y + (path.end_y / time) * pastTime
+      };
+      if (pastTime >= time) {
+        const pos = _nowOffset.pos;
+        this._nowOffset = null;
+        this._offset = pos;
       }
     }
 
@@ -390,8 +422,8 @@ export class Sprite {
       _nowState.y,
       _innerSize.w,
       _innerSize.h,
-      _coords.x + this._offset.x + camCoords.x,
-      _coords.y + this._offset.y + camCoords.y,
+      _coords.x + _offset.x + camCoords.x,
+      _coords.y + _offset.y + camCoords.y,
       _size.w,
       _size.h,
       _rotationPivot

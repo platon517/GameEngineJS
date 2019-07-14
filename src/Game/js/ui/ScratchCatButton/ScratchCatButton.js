@@ -25,10 +25,10 @@ export class ScratchCatButton extends GameObject {
       ),
       new Sprite(
         '../../../img/ui/cat_button.png',
-        {x: 0, y: this._maxProgressOffset},
+        {x: 0, y: 0},
         {w: 650, h: 380},
         size,
-        {x: 0, y: size.h}
+        {x: 0, y: 0}
       )
     ];
 
@@ -52,14 +52,23 @@ export class ScratchCatButton extends GameObject {
     this.setInit(() => {
       this.render();
       this.setRenderIndex(Z_INDEX);
+
+      this.sprite[1].setInnerOffset(
+        {
+          x: 0,
+          y: this._maxProgressOffset
+        }
+      );
+      this.sprite[1].setOffset(
+        {
+          x: 0,
+          y: this.sprite[1].getSize().h
+        }
+      );
     });
   }
 
   addProgress(val){
-
-    if (this._progress <= 0) {
-      this.startY = this.sprite[1].getCoords().y;
-    }
 
     if (this._progress < 100) {
 
@@ -74,10 +83,10 @@ export class ScratchCatButton extends GameObject {
           y: this._maxProgressOffset - this._maxProgressOffset * this._progress / 100
         }, time
       );
-      this.sprite[1].moveTo(
+      this.sprite[1].setOffset(
         {
-          x: this.sprite[1].getCoords().x,
-          y: this.sprite[1].getCoords().y - this.sprite[1].getSize().h * delta / 100
+          x: 0,
+          y: this.sprite[1].getOffset().y - this.sprite[1].getSize().h * delta / 100
         }, time
       );
 
@@ -102,10 +111,10 @@ export class ScratchCatButton extends GameObject {
         y: this._maxProgressOffset
       }, 500
     );
-    this.sprite[1].moveTo(
+    this.sprite[1].setOffset(
       {
-        x: this.sprite[1].getCoords().x,
-        y: this.startY
+        x: 0,
+        y: this.sprite[1].getSize().h
       }, 500
     );
   }
@@ -128,7 +137,9 @@ export class ScratchCatButton extends GameObject {
       this.sprite[1].resize(1, 100);
 
       if (jump) {
-        this.resetProgress();
+        setTimeout(() => {
+          this.resetProgress();
+        }, 100);
         ScratchCatObj.attack(getRandom(1, 4));
       }
 
