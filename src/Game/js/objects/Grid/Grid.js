@@ -1,7 +1,7 @@
 import {GameObject} from "../../../../Engine/GameObject/GameObject";
 import { BALL_SIZE, BLUE, getColorSrc, GREEN, PINK, PURPLE, SHADOW_SIZE, YarnBall, YELLOW } from "../YarnBall/YarnBall";
 import { getRandom } from "../../utilities/random";
-import { MainCursor, ScratchCatButtonObj } from "../../scenes/CoreScene";
+import { MainCursor, ScoreBar, ScratchCatButtonObj } from "../../scenes/CoreScene";
 import {BigYarnBallObj} from "../../scenes/CoreScene";
 import { Sprite, SquareSprite } from "../../../../Engine/Sprite/Sprite";
 import { gc } from "../../game_config";
@@ -318,7 +318,8 @@ export class Grid extends GameObject {
 
       //console.log(this.selection.size);
 
-      animation && ScratchCatButtonObj.addProgress(this.selection.size * 10);
+      animation && ScratchCatButtonObj.addProgress(this.selection.size * 2);
+      animation && ScoreBar.addProgress(this.selection.size);
 
       const clearedBalls = [...this.selection];
       this.selection = new Set();

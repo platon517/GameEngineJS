@@ -11,6 +11,7 @@ import {GRID_SIZE} from "../objects/Grid/gridSize";
 import {gc} from "../game_config";
 import { Background } from "../objects/Background/Background";
 import { ScratchCatButton } from "../ui/ScratchCatButton/ScratchCatButton";
+import { ScoreProgressBar } from "../ui/ScoreProgressBar/ScoreProgressBar";
 
 Camera.moveTo({x: 0, y: 0});
 Camera.setFrames([[0, 0], [128, 128]]);
@@ -54,6 +55,18 @@ export const MainBackground = new Background(
   { x: (gc.srcSize.w - gc.srcSize.h) / 2, y: 0 }
 );
 
+const SCORE_BAR_W = 310;
+export const ScoreBar = new ScoreProgressBar(
+  {
+    w: SCORE_BAR_W * gc.modifer,
+    h: SCORE_BAR_W / 6.8 * gc.modifer
+  },
+  {
+    x: (gc.srcSize.w - SCORE_BAR_W * gc.modifer) / 2,
+    y: gridOffset.y - SCORE_BAR_W / 6.8 * gc.modifer - 20 * gc.modifer
+  }
+);
+
 export const CoreScene = new Scene(128, 128, [
   MainBackground,
   YarnGrid,
@@ -61,5 +74,6 @@ export const CoreScene = new Scene(128, 128, [
   MainCursor,
   Paw,
   ScratchCatObj,
-  ScratchCatButtonObj
+  ScratchCatButtonObj,
+  ScoreBar
 ], Camera);
