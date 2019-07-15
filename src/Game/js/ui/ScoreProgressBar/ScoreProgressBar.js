@@ -44,8 +44,11 @@ export class ScoreProgressBar extends GameObject {
     });
   }
 
-  addProgress(val){
+  getProgress(){
+    return this._progress;
+  }
 
+  addProgress(val){
     if (this._progress < 100) {
 
       const time = 400;
@@ -65,7 +68,6 @@ export class ScoreProgressBar extends GameObject {
           y: 0
         }, time
       );
-
     }
   }
 

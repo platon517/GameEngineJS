@@ -319,7 +319,6 @@ export class Grid extends GameObject {
       //console.log(this.selection.size);
 
       animation && ScratchCatButtonObj.addProgress(this.selection.size * 2);
-      animation && ScoreBar.addProgress(this.selection.size);
 
       const clearedBalls = [...this.selection];
       this.selection = new Set();
