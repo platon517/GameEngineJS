@@ -67,6 +67,8 @@ export const ScoreBar = new ScoreProgressBar(
   }
 );
 
+ScoreBar.setMaxScore(200);
+
 export const CoreScene = new Scene(128, 128, [
   MainBackground,
   YarnGrid,

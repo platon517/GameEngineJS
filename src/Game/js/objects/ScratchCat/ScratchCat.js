@@ -2,7 +2,7 @@ import { GameObject } from "../../../../Engine/GameObject/GameObject";
 import { Sprite } from "../../../../Engine/Sprite/Sprite";
 import { gc } from "../../game_config";
 import { getRandom } from "../../utilities/random";
-import {YarnGrid} from "../../scenes/CoreScene";
+import { ScoreBar, YarnGrid } from "../../scenes/CoreScene";
 import { BALL_SIZE } from "../YarnBall/YarnBall";
 
 const Z_INDEX = 99;
@@ -84,6 +84,10 @@ export class ScratchCat extends GameObject {
           });
         }, (index + 1) * (BALL_SIZE / speed));
       });
+
+      setTimeout(() => {
+        ScoreBar.addProgress(ScoreBar.getMaxScore() / 5);
+      }, fallTime / 2);
 
       setTimeout(() => {
         this.renderClear();

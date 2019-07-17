@@ -314,11 +314,12 @@ export class Grid extends GameObject {
       });
 
       this.disableColliders();
+
       animation && BigYarnBallObj.spawn(center, color, this.selection.size);
 
       //console.log(this.selection.size);
 
-      animation && ScratchCatButtonObj.addProgress(this.selection.size * 2);
+      animation && ScratchCatButtonObj.addProgress(this.selection.size * 5, color);
 
       const clearedBalls = [...this.selection];
       this.selection = new Set();

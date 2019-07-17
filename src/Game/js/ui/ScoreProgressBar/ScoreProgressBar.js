@@ -37,18 +37,47 @@ export class ScoreProgressBar extends GameObject {
     this.moveTo(coords);
 
     this._progress = 0;
+    this._maxScore = 100;
 
     this.setInit(() => {
       this.render();
       this.setRenderIndex(Z_INDEX);
+      this.spawn();
     });
+  }
+
+  spawn(){
+    const time = 300;
+    this.sprite.forEach((sprite, index) => {
+      sprite.setAlpha(0);
+      sprite.resize(0.8);
+      index !== 1 && sprite.setAlpha(1, time * 0.75);
+      index !== 1 && sprite.resize(1.025, time * 0.75);
+      setTimeout(() => {
+        index !== 1 && sprite.setAlpha(1, time * 0.25);
+        index !== 1 && sprite.resize(1, time * 0.25);
+      }, time);
+    });
+    setTimeout(() => {
+      this.sprite[1].setAlpha(1);
+      this.sprite[1].resize(1);
+    }, time);
   }
 
   getProgress(){
     return this._progress;
   }
 
-  addProgress(val){
+  setMaxScore(val){
+    this._maxScore = val;
+  }
+
+  getMaxScore(){
+    return this._maxScore;
+  }
+
+  addProgress(value){
+    const val = value / this._maxScore * 100;
     if (this._progress < 100) {
 
       const time = 400;
@@ -69,6 +98,7 @@ export class ScoreProgressBar extends GameObject {
         }, time
       );
     }
+    console.log(this._progress);
   }
 
   resetProgress() {

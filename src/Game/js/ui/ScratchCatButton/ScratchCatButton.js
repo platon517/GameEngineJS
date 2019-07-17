@@ -1,11 +1,18 @@
 import { GameObject } from "../../../../Engine/GameObject/GameObject";
 import { Sprite } from "../../../../Engine/Sprite/Sprite";
 import { Collider } from "../../../../Engine/Collider/Collider";
-import { MainCursor, ScratchCatObj } from "../../scenes/CoreScene";
+import { MainCursor, ScoreBar, ScratchCatObj } from "../../scenes/CoreScene";
 import { getRandom } from "../../utilities/random";
 import { gc } from "../../game_config";
+import { BLUE, GREEN, PINK, PURPLE, YELLOW } from "../../objects/YarnBall/YarnBall";
 
 const Z_INDEX = 10;
+
+export const PURPLE_SPRITE = '../../../img/cat_button/cat_button_purple.png';
+export const YELLOW_SPRITE = '../../../img/cat_button/cat_button_yellow.png';
+export const PINK_SPRITE = '../../../img/cat_button/cat_button_pink.png';
+export const GREEN_SPRITE = '../../../img/cat_button/cat_button_green.png';
+export const BLUE_SPRITE = '../../../img/cat_button/cat_button_blue.png';
 
 export class ScratchCatButton extends GameObject {
   constructor(
@@ -18,13 +25,13 @@ export class ScratchCatButton extends GameObject {
 
     this.sprite = [
       new Sprite(
-        '../../../img/ui/cat_button_empty.png',
+        '../../../img/cat_button/cat_button_empty.png',
         {x: 0, y: 0},
         {w: 650, h: 380},
         size
       ),
       new Sprite(
-        '../../../img/ui/cat_button.png',
+        PURPLE_SPRITE,
         {x: 0, y: 0},
         {w: 650, h: 380},
         size,
@@ -65,12 +72,50 @@ export class ScratchCatButton extends GameObject {
           y: this.sprite[1].getSize().h
         }
       );
+      this.spawn();
     });
   }
 
-  addProgress(val){
+  spawn(){
+    const time = 300;
+    this.sprite.forEach(sprite => {
+      sprite.setAlpha(0);
+      sprite.resize(0.8);
+      sprite.setAlpha(1, time * 0.75);
+      sprite.resize(1.025, time * 0.75);
+      setTimeout(() => {
+        sprite.setAlpha(1, time * 0.25);
+        sprite.resize(1, time * 0.25);
+      }, time);
+    });
+  }
 
-    if (this._progress < 100) {
+  getSrcByColor(color){
+    switch (color) {
+      case PURPLE:
+        return PURPLE_SPRITE;
+      case GREEN:
+        return GREEN_SPRITE;
+      case PINK:
+        return PINK_SPRITE;
+      case BLUE:
+        return BLUE_SPRITE;
+      case YELLOW:
+        return YELLOW_SPRITE;
+    }
+  }
+
+  addProgress(val, color = PURPLE){
+
+    if (!this._nowColor) {
+      this._nowColor = {
+        src: this.getSrcByColor(color),
+        color: color
+      };
+      this.sprite[1].setImageSrc(this._nowColor.src);
+    }
+
+    if (this._progress < 100 && color === this._nowColor.color) {
 
       const time = 400;
       const delta = this._progress + val > 100 ? 100 - this._progress : val;
@@ -145,7 +190,8 @@ export class ScratchCatButton extends GameObject {
 
       setTimeout(() => {
         this._pushed = false;
-        this._isAnimated = false
+        this._isAnimated = false;
+        this._nowColor = null;
         }, 100
       );
     }

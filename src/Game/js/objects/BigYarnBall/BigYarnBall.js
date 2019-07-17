@@ -97,7 +97,7 @@ export class BigYarnBall extends GameObject {
     Paw.collectBall(coords, BALL_SIZE * mult);
 
     for (let i = 0; i < size; i++) {
-      this.startParticles.push(new StarParticle({ w: 25 * gc.modifer, h: 25 * gc.modifer }));
+      this.startParticles.push(new StarParticle());
     }
 
     this.startParticles.forEach(star => {
