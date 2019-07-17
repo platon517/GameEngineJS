@@ -88,7 +88,7 @@ export class ScoreProgressBar extends GameObject {
   }
 
   addProgress(value, animated = false){
-    const val = value / this._maxScore * 200;
+    const val = value / this._maxScore * 100;
     if (this._progress < 100) {
 
       const animationTime = 650;
