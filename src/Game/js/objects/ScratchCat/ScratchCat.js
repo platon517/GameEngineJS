@@ -86,7 +86,7 @@ export class ScratchCat extends GameObject {
       });
 
       setTimeout(() => {
-        ScoreBar.addProgress(ScoreBar.getMaxScore() / 5);
+        ScoreBar.addProgress(ScoreBar.getMaxScore() / 5, true);
       }, fallTime / 2);
 
       setTimeout(() => {

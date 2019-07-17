@@ -2,7 +2,7 @@ import { GameObject } from "../../../../Engine/GameObject/GameObject";
 import { Sprite } from "../../../../Engine/Sprite/Sprite";
 import { gc } from "../../game_config";
 import { getRandom } from "../../utilities/random";
-import {BigYarnBallObj} from "../../scenes/CoreScene";
+import { BigYarnBallObj, ScratchCatButtonObj } from "../../scenes/CoreScene";
 import {YarnGrid} from "../../scenes/CoreScene";
 
 const Z_INDEX = 41;
@@ -29,6 +29,8 @@ export class PawCollector extends GameObject {
   }
 
   collectBall(coords, ballSize) {
+
+    ScratchCatButtonObj.disabled = true;
 
     let startPosIsRight;
 
@@ -95,6 +97,7 @@ export class PawCollector extends GameObject {
     setTimeout(() => {
       BigYarnBallObj.clear();
       YarnGrid.enableColliders();
+      ScratchCatButtonObj.disabled = false;
     }, time * 2);
   }
 

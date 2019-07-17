@@ -186,12 +186,12 @@ export class ScratchCatButton extends GameObject {
           this.resetProgress();
         }, 100);
         ScratchCatObj.attack(getRandom(1, 4));
+        this._nowColor = null;
       }
 
       setTimeout(() => {
         this._pushed = false;
         this._isAnimated = false;
-        this._nowColor = null;
         }, 100
       );
     }
