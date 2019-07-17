@@ -227,6 +227,21 @@ export class Sprite {
     }
   }
 
+  setInnerSize(innerVal, time = null) {
+    if (time) {
+      const startTime = new Date().getTime();
+
+      const startInnerVal = {w: this._innerSize.w, h: this._innerSize.h};
+      const endInnerVal = innerVal;
+
+      this._newInnerSize = { startInnerVal, endInnerVal, time, startTime };
+
+    } else {
+      this._newInnerSize = null;
+      this._innerSize = innerVal;
+    }
+  }
+
   getOffset() {
     return this._offset;
   }
@@ -244,6 +259,22 @@ export class Sprite {
     } else {
       this._nowOffset = null;
       this._offset = pos;
+    }
+  }
+
+  setSize(val = { w: 0, h: 0 }, time = null) {
+    if (time) {
+      const startTime = new Date().getTime();
+      const path = {
+        start_w: this._size.w,
+        start_h: this._size.h,
+        end_w: val.w - this._size.w,
+        end_h: val.h - this._size.h,
+      };
+      this._nowSize = { path, val, time, startTime };
+    } else {
+      this._nowSize = null;
+      this._size = val;
     }
   }
 
@@ -265,7 +296,9 @@ export class Sprite {
       _rotationPivot,
       _newInnerOffset,
       _nowOffset,
-      _offset
+      _offset,
+      _newInnerSize,
+      _nowSize
     } = this;
 
     const nowTime = new Date().getTime();
@@ -394,6 +427,26 @@ export class Sprite {
       }
     }
 
+    if (_newInnerSize) {
+      const startTime = _newInnerSize.startTime;
+      const pastTime = nowTime - startTime;
+      const time = _newInnerSize.time;
+
+      this._innerSize = {
+        w: _newInnerSize.startInnerVal.w +
+          ((_newInnerSize.endInnerVal.w - _newInnerSize.startInnerVal.w) / time) *
+          pastTime,
+        h: _newInnerSize.startInnerVal.h +
+          ((_newInnerSize.endInnerVal.h - _newInnerSize.startInnerVal.h) / time) *
+          pastTime,
+      };
+
+      if (pastTime >= time) {
+        this._innerSize = _newInnerSize.endInnerVal;
+        this._newInnerSize = null;
+      }
+    }
+
     if (_nowOffset) {
       const startTime = _nowOffset.startTime;
       const pastTime = nowTime - startTime;
@@ -407,6 +460,22 @@ export class Sprite {
         const pos = _nowOffset.pos;
         this._nowOffset = null;
         this._offset = pos;
+      }
+    }
+
+    if (_nowSize) {
+      const startTime = _nowSize.startTime;
+      const pastTime = nowTime - startTime;
+      const time = _nowSize.time;
+      const path = _nowSize.path;
+      this._size = {
+        w: path.start_w + (path.end_w / time) * pastTime,
+        h: path.start_h + (path.end_h / time) * pastTime
+      };
+      if (pastTime >= time) {
+        const val = _nowSize.val;
+        this._nowSize = null;
+        this._size = val;
       }
     }
 

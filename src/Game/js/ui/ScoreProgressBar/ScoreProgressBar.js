@@ -13,26 +13,22 @@ export class ScoreProgressBar extends GameObject {
   ) {
     super();
 
-    this._maxProgressOffset = 1360;
+    this._maxProgressWidth = 1360;
+    this._maxProgressHeight = 200;
+    this._startWidth = size.w;
+    this._fillStartX = 21;
 
     this.sprite = [
       new Sprite(
         '../../../img/ProgressBar/bar_1.png',
         {x: 0, y: 0},
-        {w: 1360, h: 200},
+        {w: this._maxProgressWidth, h: this._maxProgressHeight},
         size
       ),
       new Sprite(
         '../../../img/ProgressBar/bar_2.png',
         {x: 0, y: 0},
-        {w: 1360, h: 200},
-        size,
-        {x: 0, y: 0}
-      ),
-      new Sprite(
-        '../../../img/ProgressBar/bar_1.png',
-        {x: 0, y: 0},
-        {w: 1360, h: 200},
+        {w: this._maxProgressWidth, h: this._maxProgressHeight},
         size,
         {x: 0, y: 0}
       ),
@@ -58,21 +54,23 @@ export class ScoreProgressBar extends GameObject {
   }
 
   spawn(){
+    this.setStartPoint();
+
     const time = 300;
-    this.sprite.forEach((sprite, index) => {
-      sprite.setAlpha(0);
-      sprite.resize(0.8);
-      index !== 1 && sprite.setAlpha(1, time * 0.75);
-      index !== 1 && sprite.resize(1.025, time * 0.75);
-      setTimeout(() => {
-        index !== 1 && sprite.setAlpha(1, time * 0.25);
-        index !== 1 && sprite.resize(1, time * 0.25);
-      }, time);
-    });
+    this.sprite[0].setAlpha(0);
+    this.sprite[0].resize(0.8);
+
+    this.sprite[0].setAlpha(1, time * 0.75);
+    this.sprite[0].resize(1.05, time * 0.75);
+
     setTimeout(() => {
-      this.sprite[1].setAlpha(1);
-      this.sprite[1].resize(1);
-    }, time);
+      this.sprite[0].resize(1, time * 0.25);
+    }, time * 0.75);
+  }
+
+  setStartPoint(){
+    this.sprite[1].setInnerSize({w: this._fillStartX, h: this._maxProgressHeight});
+    this.sprite[1].setSize({w: this._fillStartX / gc.modifer, h: this.sprite[1].getSize().h});
   }
 
   getProgress(){
@@ -141,16 +139,18 @@ export class ScoreProgressBar extends GameObject {
 
         this._progress = Math.min(this._progress + val, 100);
 
-        this.sprite[2].setInnerOffset(
+        console.log(this._progress);
+
+        this.sprite[1].setInnerSize(
           {
-            x: this._maxProgressOffset * this._progress / 100,
-            y: 0
+            w: this._fillStartX + (this._maxProgressWidth - this._fillStartX) * this._progress / 100,
+            h: this._maxProgressHeight
           }, time
         );
-        this.sprite[2].setOffset(
+        this.sprite[1].setSize(
           {
-            x: this.sprite[2].getOffset().x + this.sprite[2].getSize().w * delta / 100,
-            y: 0
+            w: this.sprite[1].getSize().w + (this._startWidth - this._fillStartX / gc.modifer) * delta / 100,
+            h: this.sprite[1].getSize().h
           }, time
         );
       }, animated ? animationTime * 0.8 : 0)
@@ -161,18 +161,7 @@ export class ScoreProgressBar extends GameObject {
   resetProgress() {
     this._progress  = 0;
 
-    this.sprite[2].setInnerOffset(
-      {
-        x: 0,
-        y: 0
-      }, 500
-    );
-    this.sprite[2].setOffset(
-      {
-        x: 0,
-        y: 0
-      }, 500
-    );
+    this.setStartPoint();
   }
 
   tick() {
