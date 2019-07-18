@@ -31,6 +31,8 @@ export class Grid extends GameObject {
 
     this.selection = new Set();
 
+    this._bonus = 0;
+
     this.size = size;
     this.coords = coords;
 
@@ -280,7 +282,13 @@ export class Grid extends GameObject {
     console.log(this.checkCombos());
   }
 
-  clearSelection = (animation = true) => {
+  calculateScores(size){
+    const score =  size * (1 + 0.2 * size) * (1 + this._bonus);
+    console.log(score);
+    return score;
+  }
+
+  clearSelection(animation = true) {
 
     MainCursor.moveTo({x: 0, y: 0});
     if (this.selection.size < 2) {
@@ -315,11 +323,13 @@ export class Grid extends GameObject {
 
       this.disableColliders();
 
-      animation && BigYarnBallObj.spawn(center, color, this.selection.size);
+      const scores = this.calculateScores(this.selection.size);
+
+      animation && BigYarnBallObj.spawn(center, color, scores);
 
       //console.log(this.selection.size);
 
-      animation && ScratchCatButtonObj.addProgress(this.selection.size * 5, color);
+      animation && ScratchCatButtonObj.addProgress(scores * 5, color);
 
       const clearedBalls = [...this.selection];
       this.selection = new Set();

@@ -139,8 +139,6 @@ export class ScoreProgressBar extends GameObject {
 
         this._progress = Math.min(this._progress + val, 100);
 
-        console.log(this._progress);
-
         this.sprite[1].setInnerSize(
           {
             w: this._fillStartX + (this._maxProgressWidth - this._fillStartX) * this._progress / 100,
@@ -153,9 +151,9 @@ export class ScoreProgressBar extends GameObject {
             h: this.sprite[1].getSize().h
           }, time
         );
+        console.log(this._progress);
       }, animated ? animationTime * 0.8 : 0)
     }
-    console.log(this._progress);
   }
 
   resetProgress() {
