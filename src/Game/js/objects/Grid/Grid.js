@@ -1,9 +1,9 @@
 import {GameObject} from "../../../../Engine/GameObject/GameObject";
 import { BALL_SIZE, BLUE, getColorSrc, GREEN, PINK, PURPLE, SHADOW_SIZE, YarnBall, YELLOW } from "../YarnBall/YarnBall";
 import { getRandom } from "../../utilities/random";
-import { MainCursor, ScoreBar, ScratchCatButtonObj } from "../../scenes/CoreScene";
+import { Counter, GameStates, MainCursor, ScratchCatButtonObj } from "../../scenes/CoreScene";
 import {BigYarnBallObj} from "../../scenes/CoreScene";
-import { Sprite, SquareSprite } from "../../../../Engine/Sprite/Sprite";
+import { SquareSprite } from "../../../../Engine/Sprite/Sprite";
 import { gc } from "../../game_config";
 
 const Z_INDEX = 1;
@@ -40,7 +40,7 @@ export class Grid extends GameObject {
 
     this.moveTo({x: coords.x + gc.srcSize.w * 1.5, y: coords.y});
 
-    this.helpSpawns = 10;
+    this.helpSpawns = GameStates.turns;
 
     for (let y = 0; y < size; y++) {
       for (let x = 0; x < size; x++) {
@@ -245,8 +245,6 @@ export class Grid extends GameObject {
             }
             this.helpSpawns -= 1;
             console.log(this.helpSpawns);
-          } else {
-            alert('Донать сука!');
           }
         }
       }
@@ -330,6 +328,8 @@ export class Grid extends GameObject {
       //console.log(this.selection.size);
 
       animation && ScratchCatButtonObj.addProgress(scores * 5, color);
+
+      animation && Counter.decTurns();
 
       const clearedBalls = [...this.selection];
       this.selection = new Set();

@@ -1,7 +1,7 @@
 import {GameObject} from "../../../../Engine/GameObject/GameObject";
 import {Sprite} from "../../../../Engine/Sprite/Sprite";
 import {Collider} from "../../../../Engine/Collider/Collider";
-import {MainCursor} from "../../scenes/CoreScene";
+import { GameStates, MainCursor } from "../../scenes/CoreScene";
 import {YarnGrid} from "../../scenes/CoreScene";
 import {getRandom} from "../../utilities/random";
 import { gc } from "../../game_config";
@@ -173,7 +173,7 @@ export class YarnBall extends GameObject {
 
   tick(){
     super.tick();
-    if (this.collider.getInteractions().has(MainCursor.collider) && !this.disabled) {
+    if (this.collider.getInteractions().has(MainCursor.collider) && !this.disabled && !GameStates.gameOver) {
       if (YarnGrid.selection.size > 0 && [...YarnGrid.selection].pop().color !== this.color) {
         return false
       }

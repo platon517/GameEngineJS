@@ -12,9 +12,15 @@ import {gc} from "../game_config";
 import { Background } from "../objects/Background/Background";
 import { ScratchCatButton } from "../ui/ScratchCatButton/ScratchCatButton";
 import { ScoreProgressBar } from "../ui/ScoreProgressBar/ScoreProgressBar";
+import { TurnsCounter } from "../objects/TurnsCounter/TurnsCounter";
 
 Camera.moveTo({x: 0, y: 0});
 Camera.setFrames([[0, 0], [128, 128]]);
+
+export const GameStates = {
+  turns: 40,
+  gameOver: false
+};
 
 const gridOffset = {
   x: (gc.srcSize.w - BALL_SIZE * GRID_SIZE ) / 2,
@@ -67,6 +73,18 @@ export const ScoreBar = new ScoreProgressBar(
   }
 );
 
+export const Counter = new TurnsCounter(
+  {
+    x: ScoreBar.getCoords().x,
+    y: ScoreBar.getCoords().y - 55 * gc.modifer
+  },
+  {
+    w: 100 * gc.modifer,
+    h: 50 * gc.modifer
+  },
+  GameStates.turns
+);
+
 ScoreBar.setMaxScore(200);
 
 export const CoreScene = new Scene(128, 128, [
@@ -77,5 +95,6 @@ export const CoreScene = new Scene(128, 128, [
   Paw,
   ScratchCatObj,
   ScratchCatButtonObj,
-  ScoreBar
+  ScoreBar,
+  Counter
 ], Camera);

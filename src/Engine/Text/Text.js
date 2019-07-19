@@ -2,8 +2,6 @@ import { gc } from "../../Game/js/game_config";
 import { Camera } from "../Camera/Camera";
 
 export const ARIAL_FONT = "Arial";
-export const PIXEL_FONT = "pixel";
-export const PIXEL_ENG_FONT = "pixel_eng";
 
 export const CENTER = "center";
 export const LEFT = "left";
@@ -15,6 +13,7 @@ export class Text {
     font = ARIAL_FONT,
     size = 30,
     color = "black",
+    style = 'normal',
     coords = {
       x: gc.originSize.w / 2,
       y: gc.originSize.h / 2
@@ -27,6 +26,7 @@ export class Text {
       x: coords.x * gc.mult,
       y: coords.y * gc.mult,
     };
+    this._style = style;
     this._font = font;
     this._color = color;
     this._size = size * gc.mult;
@@ -193,10 +193,11 @@ export class Text {
       _color,
       _hidden,
       _textAllign,
-      _nowMoving
+      _nowMoving,
+      _style
     } = this;
 
-    ctx.font = `${_size}px ${_font}`;
+    ctx.font = `${_style} ${_size}px ${_font}`;
     ctx.fillStyle = _color;
 
     if (!_hidden) {
@@ -224,7 +225,7 @@ export class Text {
 
       switch (_textAllign) {
         case CENTER:
-          x = _coords.x + this._offset.x - ctx.measureText(_text).width / 2;
+          x = _coords.x + this._offset.x + (this._areaSize.w - ctx.measureText(_text).width) / 2;
           break;
         case LEFT:
           x = _coords.x + this._offset.x;
