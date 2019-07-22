@@ -5,6 +5,7 @@ import { Counter, GameStates, MainCursor, ScratchCatButtonObj } from "../../scen
 import {BigYarnBallObj} from "../../scenes/CoreScene";
 import { SquareSprite } from "../../../../Engine/Sprite/Sprite";
 import { gc } from "../../game_config";
+import { Camera } from "../../../../Engine/Camera/Camera";
 
 const Z_INDEX = 1;
 
@@ -286,6 +287,10 @@ export class Grid extends GameObject {
     return score;
   }
 
+  shakeCam(val) {
+    val >= 6 && Camera.shake(800, 6);
+  }
+
   clearSelection(animation = true) {
 
     MainCursor.moveTo({x: 0, y: 0});
@@ -328,6 +333,8 @@ export class Grid extends GameObject {
       //console.log(this.selection.size);
 
       animation && ScratchCatButtonObj.addProgress(scores * 5, color);
+
+      animation && this.shakeCam(this.selection.size);
 
       animation && Counter.decTurns();
 

@@ -4,6 +4,7 @@ import { gc } from "../../game_config";
 import { getRandom } from "../../utilities/random";
 import { ScoreBar, YarnGrid } from "../../scenes/CoreScene";
 import { BALL_SIZE } from "../YarnBall/YarnBall";
+import { Camera } from "../../../../Engine/Camera/Camera";
 
 const Z_INDEX = 99;
 
@@ -53,6 +54,8 @@ export class ScratchCat extends GameObject {
     }, 150);
 
     setTimeout(() => {
+
+      Camera.shake(300, 8);
 
       const speed = 1;
       const fallTime = (gc.srcSize.h - this.getCoords().y) / speed;

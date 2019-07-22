@@ -15,7 +15,6 @@ import { ScoreProgressBar } from "../ui/ScoreProgressBar/ScoreProgressBar";
 import { TurnsCounter } from "../objects/TurnsCounter/TurnsCounter";
 
 Camera.moveTo({x: 0, y: 0});
-Camera.setFrames([[0, 0], [128, 128]]);
 
 export const GameStates = {
   turns: 40,
