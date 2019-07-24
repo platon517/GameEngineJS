@@ -13,6 +13,7 @@ import { Background } from "../objects/Background/Background";
 import { ScratchCatButton } from "../ui/ScratchCatButton/ScratchCatButton";
 import { ScoreProgressBar } from "../ui/ScoreProgressBar/ScoreProgressBar";
 import { TurnsCounter } from "../objects/TurnsCounter/TurnsCounter";
+import { EndLevelPlate } from "../ui/EndLevelPlate/EndLevelPlate";
 
 Camera.moveTo({x: 0, y: 0});
 
@@ -84,6 +85,17 @@ export const Counter = new TurnsCounter(
   GameStates.turns
 );
 
+export const EndPlate = new EndLevelPlate(
+  {
+    x: gc.srcSize.w / 2 - 250 * gc.modifer / 2,
+    y: gc.srcSize.h / 2 - 180 * gc.modifer / 2
+  },
+  {
+    w: 250 * gc.modifer,
+    h: 180 * gc.modifer
+  }
+);
+
 ScoreBar.setMaxScore(200);
 
 export const CoreScene = new Scene(128, 128, [
@@ -95,5 +107,6 @@ export const CoreScene = new Scene(128, 128, [
   ScratchCatObj,
   ScratchCatButtonObj,
   ScoreBar,
-  Counter
+  Counter,
+  EndPlate
 ], Camera);

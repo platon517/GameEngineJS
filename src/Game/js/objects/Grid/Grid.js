@@ -326,7 +326,7 @@ export class Grid extends GameObject {
 
       this.disableColliders();
 
-      const scores = this.calculateScores(this.selection.size);
+      const scores = this.calculateScores(this.selection.size) * 10;
 
       animation && BigYarnBallObj.spawn(center, color, scores);
 

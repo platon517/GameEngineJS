@@ -511,15 +511,6 @@ export class SquareSprite extends Sprite {
     this._nowMoving = null;
   }
 
-  setAlpha(val, time = null) {
-    if (time) {
-      const startTime = new Date().getTime();
-      this._newAlpha = { val, startVal: this._alpha, time, startTime };
-    } else {
-      this._alpha = val;
-    }
-  }
-
   moveTo(pos = { x: 0, y: 0 }, time = null) {
     if (time) {
       const startTime = new Date().getTime();
@@ -544,21 +535,6 @@ export class SquareSprite extends Sprite {
     const camCoords = Camera.getCoords();
     const lastAlpha = ctx.globalAlpha;
 
-    const _newAlpha = this._newAlpha;
-    if (_newAlpha) {
-      const nowTime = new Date().getTime();
-      const startVal = _newAlpha.startVal;
-      const startTime = _newAlpha.startTime;
-      const pastTime = nowTime - startTime;
-      const time = _newAlpha.time;
-      const val = startVal + (_newAlpha.val / time) * pastTime;
-      this._alpha = val;
-      if (pastTime >= time) {
-        this._newAlpha = null;
-        this._alpha = val;
-      }
-    }
-
     if (this._nowMoving) {
       const startTime = this._nowMoving.startTime;
       const pastTime = nowTime - startTime;
@@ -574,7 +550,6 @@ export class SquareSprite extends Sprite {
         this._coords = pos;
       }
     }
-
     const r = this._radius;
     const {w, h} = this._size;
     let {x, y} = this._coords;
@@ -582,6 +557,8 @@ export class SquareSprite extends Sprite {
     x += this._offset.x;
     y += this._offset.y;
 
+    ctx.fillStyle = this._color;
+    ctx.globalAlpha = this._alpha;
     ctx.beginPath();
     ctx.moveTo(x + r, y);
     ctx.arcTo(x + w, y, x + w, y + h, r);
@@ -589,11 +566,7 @@ export class SquareSprite extends Sprite {
     ctx.arcTo(x, y + h, x, y, r);
     ctx.arcTo(x, y, x + w, y, r);
     ctx.closePath();
-
-    ctx.fillStyle = this._color;
-    ctx.globalAlpha = this._alpha;
-
-    ctx.globalAlpha = lastAlpha;
     ctx.fill();
+    ctx.globalAlpha = lastAlpha;
   }
 }

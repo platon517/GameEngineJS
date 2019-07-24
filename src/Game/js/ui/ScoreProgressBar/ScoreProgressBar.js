@@ -3,6 +3,7 @@ import { Sprite } from "../../../../Engine/Sprite/Sprite";
 import { StarParticle } from "../../objects/StarParticle/StarParticle";
 import { getRandom } from "../../utilities/random";
 import { gc } from "../../game_config";
+import { EndPlate } from "../../scenes/CoreScene";
 
 const Z_INDEX = 10;
 
@@ -151,8 +152,12 @@ export class ScoreProgressBar extends GameObject {
             h: this.sprite[1].getSize().h
           }, time
         );
+        if (this._progress >= 100) {
+          EndPlate.spawn()
+        }
         console.log(this._progress);
-      }, animated ? animationTime * 0.8 : 0)
+      }, animated ? animationTime * 0.8 : 0);
+
     }
   }
 
