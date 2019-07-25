@@ -527,6 +527,10 @@ export class SquareSprite extends Sprite {
     }
   }
 
+  setColor(color = 'white') {
+    this._color = color;
+  }
+
   draw(ctx){
 
     const nowTime = new Date().getTime();

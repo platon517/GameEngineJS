@@ -12,7 +12,7 @@ import {gc} from "../game_config";
 import { Background } from "../objects/Background/Background";
 import { ScratchCatButton } from "../ui/ScratchCatButton/ScratchCatButton";
 import { ScoreProgressBar } from "../ui/ScoreProgressBar/ScoreProgressBar";
-import { TurnsCounter } from "../objects/TurnsCounter/TurnsCounter";
+import { TurnsCounter } from "../ui/TurnsCounter/TurnsCounter";
 import { EndLevelPlate } from "../ui/EndLevelPlate/EndLevelPlate";
 
 Camera.moveTo({x: 0, y: 0});
