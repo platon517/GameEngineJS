@@ -18,7 +18,7 @@ import { EndLevelPlate } from "../ui/EndLevelPlate/EndLevelPlate";
 Camera.moveTo({x: 0, y: 0});
 
 export const GameStates = {
-  turns: 40,
+  turns: 60,
   gameOver: false
 };
 

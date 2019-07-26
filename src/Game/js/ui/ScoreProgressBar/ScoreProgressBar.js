@@ -3,7 +3,7 @@ import { Sprite } from "../../../../Engine/Sprite/Sprite";
 import { StarParticle } from "../../objects/StarParticle/StarParticle";
 import { getRandom } from "../../utilities/random";
 import { gc } from "../../game_config";
-import { EndPlate } from "../../scenes/CoreScene";
+import { Counter, EndPlate, GameStates } from "../../scenes/CoreScene";
 
 const Z_INDEX = 10;
 
@@ -153,7 +153,19 @@ export class ScoreProgressBar extends GameObject {
           }, time
         );
         if (this._progress >= 100) {
-          EndPlate.spawn()
+          let stars = 0;
+
+          const freeTurns = Counter.getTurns() / GameStates.turns;
+          if (freeTurns > 0.1) {
+            stars += 1;
+          }
+          if (freeTurns > 0.25) {
+            stars += 1;
+          }
+          if (freeTurns > 0.5) {
+            stars += 1;
+          }
+          EndPlate.spawn(true, stars)
         }
         console.log(this._progress);
       }, animated ? animationTime * 0.8 : 0);

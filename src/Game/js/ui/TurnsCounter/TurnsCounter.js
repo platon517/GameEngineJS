@@ -60,6 +60,10 @@ export class TurnsCounter extends GameObject {
     }
   }
 
+  getTurns(){
+    return this._turns;
+  }
+
   spawn(){
     const time = 300;
     this.sprite.resize(0.9);
