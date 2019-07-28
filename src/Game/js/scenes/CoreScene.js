@@ -102,22 +102,22 @@ ScoreBar.setMaxScore(200);
 export const BrushButtonObj = new BrushButton(
   {
     x: ScratchCatButtonObj.getCoords().x + ScratchCatButtonObj.sprite[0].getSize().w + 15 * gc.modifer,
-    y: ScratchCatButtonObj.getCoords().y + (ScratchCatButtonObj.sprite[0].getSize().h - 57 * gc.modifer) / 2
+    y: ScratchCatButtonObj.getCoords().y + (ScratchCatButtonObj.sprite[0].getSize().h - 65 * gc.modifer) / 2
   },
   {
-    w: 70 * gc.modifer,
-    h: 70 * gc.modifer
+    w: 65 * gc.modifer,
+    h: 65 * gc.modifer
   }
 );
 
 export const BrushButtonObj2 = new BrushButton(
   {
-    x: ScratchCatButtonObj.getCoords().x - 77 * gc.modifer,
-    y: ScratchCatButtonObj.getCoords().y + (ScratchCatButtonObj.sprite[0].getSize().h - 57 * gc.modifer) / 2
+    x: ScratchCatButtonObj.getCoords().x - 80 * gc.modifer,
+    y: ScratchCatButtonObj.getCoords().y + (ScratchCatButtonObj.sprite[0].getSize().h - 65 * gc.modifer) / 2
   },
   {
-    w: 70 * gc.modifer,
-    h: 70 * gc.modifer
+    w: 65 * gc.modifer,
+    h: 65 * gc.modifer
   }
 );
 
