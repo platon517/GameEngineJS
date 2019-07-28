@@ -14,6 +14,7 @@ import { ScratchCatButton } from "../ui/ScratchCatButton/ScratchCatButton";
 import { ScoreProgressBar } from "../ui/ScoreProgressBar/ScoreProgressBar";
 import { TurnsCounter } from "../ui/TurnsCounter/TurnsCounter";
 import { EndLevelPlate } from "../ui/EndLevelPlate/EndLevelPlate";
+import {BrushButton} from "../ui/BrushButton/BrushButton";
 
 Camera.moveTo({x: 0, y: 0});
 
@@ -98,6 +99,28 @@ export const EndPlate = new EndLevelPlate(
 
 ScoreBar.setMaxScore(200);
 
+export const BrushButtonObj = new BrushButton(
+  {
+    x: ScratchCatButtonObj.getCoords().x + ScratchCatButtonObj.sprite[0].getSize().w + 15 * gc.modifer,
+    y: ScratchCatButtonObj.getCoords().y + (ScratchCatButtonObj.sprite[0].getSize().h - 57 * gc.modifer) / 2
+  },
+  {
+    w: 70 * gc.modifer,
+    h: 70 * gc.modifer
+  }
+);
+
+export const BrushButtonObj2 = new BrushButton(
+  {
+    x: ScratchCatButtonObj.getCoords().x - 77 * gc.modifer,
+    y: ScratchCatButtonObj.getCoords().y + (ScratchCatButtonObj.sprite[0].getSize().h - 57 * gc.modifer) / 2
+  },
+  {
+    w: 70 * gc.modifer,
+    h: 70 * gc.modifer
+  }
+);
+
 export const CoreScene = new Scene(128, 128, [
   MainBackground,
   YarnGrid,
@@ -108,5 +131,7 @@ export const CoreScene = new Scene(128, 128, [
   ScratchCatButtonObj,
   ScoreBar,
   Counter,
-  EndPlate
+  EndPlate,
+  BrushButtonObj,
+  BrushButtonObj2
 ], Camera);
