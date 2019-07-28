@@ -173,7 +173,7 @@ export class YarnBall extends GameObject {
 
   tick(){
     super.tick();
-    if (this.collider.getInteractions().has(MainCursor.collider) && !this.disabled && !GameStates.gameOver) {
+    if (!GameStates.gameOver && this.collider.getInteractions().has(MainCursor.collider) && !this.disabled && !GameStates.gameOver) {
       if (YarnGrid.selection.size > 0 && [...YarnGrid.selection].pop().color !== this.color) {
         return false
       }

@@ -3,7 +3,7 @@ import { Sprite } from "../../../../Engine/Sprite/Sprite";
 import { StarParticle } from "../../objects/StarParticle/StarParticle";
 import { getRandom } from "../../utilities/random";
 import { gc } from "../../game_config";
-import { Counter, EndPlate, GameStates } from "../../scenes/CoreScene";
+import {Counter, EndPlate, GameStates, YarnGrid} from "../../scenes/CoreScene";
 
 const Z_INDEX = 10;
 
@@ -165,6 +165,7 @@ export class ScoreProgressBar extends GameObject {
           if (freeTurns > 0.5) {
             stars += 1;
           }
+          GameStates.gameOver = true;
           EndPlate.spawn(true, stars)
         }
         console.log(this._progress);
