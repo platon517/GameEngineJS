@@ -1,7 +1,18 @@
 import {GameObject} from "../../../../Engine/GameObject/GameObject";
-import { BALL_SIZE, BLUE, getColorSrc, GREEN, PINK, PURPLE, SHADOW_SIZE, YarnBall, YELLOW } from "../YarnBall/YarnBall";
+import {
+  BALL_SIZE,
+  BLUE,
+  getColorSrc,
+  GREEN,
+  MULT,
+  PINK,
+  PURPLE,
+  SHADOW_SIZE,
+  YarnBall,
+  YELLOW
+} from "../YarnBall/YarnBall";
 import { getRandom } from "../../utilities/random";
-import { Counter, GameStates, MainCursor, ScratchCatButtonObj } from "../../scenes/CoreScene";
+import { BrushButtonObj, Counter, GameStates, MainCursor, ScratchCatButtonObj, YarnGrid } from "../../scenes/CoreScene";
 import {BigYarnBallObj} from "../../scenes/CoreScene";
 import { SquareSprite } from "../../../../Engine/Sprite/Sprite";
 import { gc } from "../../game_config";
@@ -94,7 +105,7 @@ export class Grid extends GameObject {
     }, time);
   }
 
-  disableColliders(target = null){
+  disableColliders(target = null, nearBallsEnabled = true){
     if (!target) {
       this.balls.forEach(ball => ball.obj.collider.disabled = true);
       return false;
@@ -103,8 +114,10 @@ export class Grid extends GameObject {
       .filter(ball => ball.obj !== target)
       .forEach(ball => ball.obj.collider.disabled = true);
     const targetBall = this.balls.find(ball => ball.obj === target);
+
     const nearBalls = this.getBallNeighbours(targetBall);
-    nearBalls.forEach(ball => ball.obj.collider.disabled = false);
+
+    nearBallsEnabled && nearBalls.forEach(ball => ball.obj.collider.disabled = false);
   }
 
   enableColliders(){
@@ -122,13 +135,29 @@ export class Grid extends GameObject {
     return this.balls.find(ball => ball.x === x && ball.y === y);
   }
 
+  getSelectionColor = () => {
+    const colors = new Map();
+    [...this.selection].forEach(item => {
+      if (colors.has(item.color)) {
+        colors.set(item.color, colors.get(item.color) + 1);
+      } else {
+        colors.set(item.color, 1);
+      }
+    });
+    const sortedColors = [...colors.entries()].sort((a, b) => b[1] - a[1]);
+    return sortedColors[0][0];
+  };
+
   getBallNeighbours(targetBall){
+
+    const sameColor = color => color === targetBall.color || targetBall.color === MULT || color === MULT;
+
     return this.balls.filter(
       ball =>
-        ((ball.x === targetBall.x - 1) && (ball.y === targetBall.y) && ball.color === targetBall.color) ||
-        ((ball.x === targetBall.x + 1) && (ball.y === targetBall.y) && ball.color === targetBall.color) ||
-        ((ball.x === targetBall.x) && (ball.y === targetBall.y + 1) && ball.color === targetBall.color) ||
-        ((ball.x === targetBall.x) && (ball.y === targetBall.y - 1) && ball.color === targetBall.color)
+        ((ball.x === targetBall.x - 1) && (ball.y === targetBall.y) && sameColor(ball.color)) ||
+        ((ball.x === targetBall.x + 1) && (ball.y === targetBall.y) && sameColor(ball.color)) ||
+        ((ball.x === targetBall.x) && (ball.y === targetBall.y + 1) && sameColor(ball.color)) ||
+        ((ball.x === targetBall.x) && (ball.y === targetBall.y - 1) && sameColor(ball.color))
     );
   }
 
@@ -281,10 +310,23 @@ export class Grid extends GameObject {
     console.log(this.checkCombos());
   }
 
-  calculateScores(size){
+  calculateScores(){
+    const size = this.selection.size;
     const score =  size * (1 + 0.2 * size) * (1 + this._bonus);
-    console.log(score);
-    return score;
+
+    const colors = new Map();
+    [...this.selection].forEach(item => {
+      if (colors.has(item.color)) {
+        colors.set(item.color, colors.get(item.color) + 1);
+      } else {
+        colors.set(item.color, 1);
+      }
+    });
+
+    const colorsScores = [...colors.entries()]
+      .map(color => [color[0], color[1] * (1 + 0.2 * color[1]) * (1 + this._bonus)]);
+
+    return [score, colorsScores];
   }
 
   shakeCam(val) {
@@ -294,7 +336,23 @@ export class Grid extends GameObject {
   clearSelection(animation = true) {
 
     MainCursor.moveTo({x: 0, y: 0});
+
+    if (this.selection.size === 1) {
+      if (BrushButtonObj.isPainting) {
+        const ball = [...this.selection][0];
+
+        const gridBall = this.balls.find(target => target.obj === ball);
+
+        gridBall.color = MULT;
+        ball.color = MULT;
+        ball.reset(true);
+        BrushButtonObj.paint();
+        this.selection = new Set();
+      }
+    }
+
     if (this.selection.size < 2) {
+
       this.selection.forEach(ball => ball.reset());
       this.selection = new Set();
       this.enableColliders();
@@ -314,29 +372,24 @@ export class Grid extends GameObject {
         y: parseFloat((Math.min(...yArr) + ((Math.max(...yArr) + BALL_SIZE - Math.min(...yArr)) / 2)).toFixed(0)),
       };
 
-      let color = null;
+      let color = this.getSelectionColor();
 
       this.balls = this.balls.filter(ball => !this.selection.has(ball.obj));
       [...this.selection].sort((a, b) => b.gridY - a.gridY).forEach(ball => {
-        if (!color) {
-          color = ball.color;
-        }
         ball.clear(center)
       });
 
       this.disableColliders();
 
-      const scores = this.calculateScores(this.selection.size) * 10;
+      const [scores, colors] = this.calculateScores();
 
       animation && BigYarnBallObj.spawn(center, color, scores);
 
-      //console.log(this.selection.size);
-
-      animation && ScratchCatButtonObj.addProgress(scores * 5, color);
-
-      animation && this.shakeCam(this.selection.size);
-
-      animation && Counter.decTurns();
+      if (animation){
+        colors.forEach(color => ScratchCatButtonObj.addProgress(color[1] * 3, color[0]));
+        this.shakeCam(this.selection.size);
+        Counter.decTurns();
+      }
 
       const clearedBalls = [...this.selection];
       this.selection = new Set();

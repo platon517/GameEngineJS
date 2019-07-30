@@ -1,61 +1,64 @@
-import {GameObject} from "../../../../Engine/GameObject/GameObject";
-import {Sprite} from "../../../../Engine/Sprite/Sprite";
-import {Collider} from "../../../../Engine/Collider/Collider";
-import { GameStates, MainCursor } from "../../scenes/CoreScene";
-import {YarnGrid} from "../../scenes/CoreScene";
-import {getRandom} from "../../utilities/random";
+import { GameObject } from "../../../../Engine/GameObject/GameObject";
+import { Sprite } from "../../../../Engine/Sprite/Sprite";
+import { Collider } from "../../../../Engine/Collider/Collider";
+import { BrushButtonObj, GameStates, MainCursor } from "../../scenes/CoreScene";
+import { YarnGrid } from "../../scenes/CoreScene";
+import { getRandom } from "../../utilities/random";
 import { gc } from "../../game_config";
 import { GRID_SIZE } from "../Grid/gridSize";
 
-export const BLUE = 'BLUE';
-export const GREEN = 'GREEN';
-export const PINK = 'PINK';
-export const PURPLE = 'PURPLE';
-export const YELLOW = 'YELLOW';
+export const BLUE = "BLUE";
+export const GREEN = "GREEN";
+export const PINK = "PINK";
+export const PURPLE = "PURPLE";
+export const YELLOW = "YELLOW";
+export const MULT = "MULT";
 const Z_INDEX = 10;
 const GROW_ANIM_TIME = 200;
 
-export const BALL_SIZE = 60 / GRID_SIZE * 5 * gc.modifer;
-export const SHADOW_SIZE = 72 / GRID_SIZE * 5 * gc.modifer;
+export const BALL_SIZE = (60 / GRID_SIZE) * 5 * gc.modifer;
+export const SHADOW_SIZE = (72 / GRID_SIZE) * 5 * gc.modifer;
 
 export const getColorSrc = color => {
   switch (color) {
     case BLUE:
-      return 'img/YarnBalls/png/yarn_blue.png';
+      return "img/YarnBalls/png/yarn_blue.png";
     case GREEN:
-      return 'img/YarnBalls/png/yarn_green.png';
+      return "img/YarnBalls/png/yarn_green.png";
     case PINK:
-      return 'img/YarnBalls/png/yarn_pink.png';
+      return "img/YarnBalls/png/yarn_pink.png";
     case PURPLE:
-      return 'img/YarnBalls/png/yarn_purple.png';
+      return "img/YarnBalls/png/yarn_purple.png";
     case YELLOW:
-      return 'img/YarnBalls/png/yarn_yellow.png';
+      return "img/YarnBalls/png/yarn_yellow.png";
+    case MULT:
+      return "img/YarnBalls/png/yarn_all.png";
   }
 };
 
 export class YarnBall extends GameObject {
-  constructor(coords, color){
+  constructor(coords, color) {
     super();
     this.sprite = [
       new Sprite(
-        'img/YarnBalls/png/yarn_shadow.png',
+        "img/YarnBalls/png/yarn_shadow.png",
         { x: 0, y: 0 },
         { w: 500, h: 500 },
         { w: SHADOW_SIZE, h: SHADOW_SIZE },
-        { x: (BALL_SIZE - SHADOW_SIZE) / 2, y: (BALL_SIZE - SHADOW_SIZE) / 2 },
+        { x: (BALL_SIZE - SHADOW_SIZE) / 2, y: (BALL_SIZE - SHADOW_SIZE) / 2 }
       ),
       new Sprite(
         getColorSrc(color),
         { x: 0, y: 0 },
         { w: 370, h: 370 },
-        { w: BALL_SIZE, h: BALL_SIZE },
+        { w: BALL_SIZE, h: BALL_SIZE }
       )
     ];
 
     this.collider = new Collider(
       { x: 0, y: 0 },
       { w: BALL_SIZE, h: BALL_SIZE },
-      { x: 0, y: 0 },
+      { x: 0, y: 0 }
     );
 
     this.collider.addInteractionObject(MainCursor);
@@ -75,19 +78,21 @@ export class YarnBall extends GameObject {
       this.render();
       this.setRenderIndex(Z_INDEX);
     });
-
   }
 
-  _clearAnimationPlan(){
+  _clearAnimationPlan() {
     if (this._animationPlan) {
       clearTimeout(this._animationPlan);
       this._animationPlan = null;
     }
   }
 
-  grow(){
+  grow() {
     this._clearAnimationPlan();
-    this.sprite[1].rotate(this.sprite[1]._rotation + getRandom(15, 45), GROW_ANIM_TIME * 0.6);
+    this.sprite[1].rotate(
+      this.sprite[1]._rotation + getRandom(15, 45),
+      GROW_ANIM_TIME * 0.6
+    );
 
     this.sprite[0].setAlpha(1, GROW_ANIM_TIME * 0.6);
     this.sprite[0].resize(1.3, GROW_ANIM_TIME * 0.6);
@@ -100,32 +105,50 @@ export class YarnBall extends GameObject {
     }, GROW_ANIM_TIME * 0.6);
   }
 
-  reset(){
+  reset(mult = false) {
     this._clearAnimationPlan();
-    this.sprite[1].rotate(this.sprite[1]._rotation + getRandom(-45, 15), GROW_ANIM_TIME * 0.6);
 
-    this.sprite[0].resize(0.9, GROW_ANIM_TIME * 0.6);
-    this.sprite[1].resize(0.9, GROW_ANIM_TIME * 0.6);
+    if (mult) {
+      this.sprite[0].resize(0, GROW_ANIM_TIME * 0.6);
+      this.sprite[1].resize(0, GROW_ANIM_TIME * 0.6);
+      setTimeout(() => {
+        this.sprite[1].setImageSrc("img/YarnBalls/png/yarn_all.png");
+        this.sprite[0].setAlpha(0, GROW_ANIM_TIME * 0.4);
+        this.sprite[0].resize(0.5, GROW_ANIM_TIME * 0.4);
+        this.sprite[1].resize(1, GROW_ANIM_TIME * 0.4);
+      }, GROW_ANIM_TIME * 0.6);
+    } else {
+      this.sprite[1].rotate(
+        this.sprite[1]._rotation + getRandom(-45, 15),
+        GROW_ANIM_TIME * 0.6
+      );
 
-    this.setRenderIndex(Z_INDEX);
-    this._animationPlan = setTimeout(() => {
-      this.sprite[0].setAlpha(0, GROW_ANIM_TIME * 0.4);
-      this.sprite[0].resize(0.5, GROW_ANIM_TIME * 0.4);
-      this.sprite[1].resize(1, GROW_ANIM_TIME * 0.4);
-    }, GROW_ANIM_TIME * 0.6);
+      this.sprite[0].resize(0.9, GROW_ANIM_TIME * 0.6);
+      this.sprite[1].resize(0.9, GROW_ANIM_TIME * 0.6);
+
+      this.setRenderIndex(Z_INDEX);
+      this._animationPlan = setTimeout(() => {
+        this.sprite[0].setAlpha(0, GROW_ANIM_TIME * 0.4);
+        this.sprite[0].resize(0.5, GROW_ANIM_TIME * 0.4);
+        this.sprite[1].resize(1, GROW_ANIM_TIME * 0.4);
+      }, GROW_ANIM_TIME * 0.6);
+    }
     this.selected = false;
   }
 
-  setGridPos(pos){
+  setGridPos(pos) {
     this.gridX = pos.x;
     this.gridY = pos.y;
   }
 
-  fall(){
+  fall() {
     let y = 1;
     let distance = 0;
 
-    while(YarnGrid.getBallByPos(this.gridX, this.gridY + y) === undefined && y < YarnGrid.size - this.gridY) {
+    while (
+      YarnGrid.getBallByPos(this.gridX, this.gridY + y) === undefined &&
+      y < YarnGrid.size - this.gridY
+    ) {
       y += 1;
       distance += 1;
     }
@@ -135,34 +158,39 @@ export class YarnBall extends GameObject {
     const ball = YarnGrid.balls.find(ball => ball.obj === this);
 
     ball.y += distance;
-    ball.obj.setGridPos({x: ball.x, y: ball.y});
+    ball.obj.setGridPos({ x: ball.x, y: ball.y });
 
     if (topBall) {
       topBall.obj.fall();
     }
 
-    this.moveTo({
-      x: coords.x,
-      y: coords.y + BALL_SIZE * distance
-    }, distance * 100);
+    this.moveTo(
+      {
+        x: coords.x,
+        y: coords.y + BALL_SIZE * distance
+      },
+      distance * 100
+    );
 
     setTimeout(() => {
       this.sprite[1].resize(0.9, 100);
       setTimeout(() => {
         this.sprite[1].resize(1, 100);
-      }, 100)
-    }, distance * 100)
-
+      }, 100);
+    }, distance * 100);
   }
 
-  clear(center){
+  clear(center) {
     this.sprite[0].setAlpha(0, 200);
     this.sprite[1].setAlpha(0, 200);
     this.sprite[1].resize(1, 200);
-    this.moveTo({
-      x: center.x - BALL_SIZE / 2,
-      y: center.y - BALL_SIZE / 2 + 150
-    }, 200);
+    this.moveTo(
+      {
+        x: center.x - BALL_SIZE / 2,
+        y: center.y - BALL_SIZE / 2 + 150
+      },
+      200
+    );
     setTimeout(() => this.renderClear(), 200);
 
     const topBall = YarnGrid.getBallByPos(this.gridX, this.gridY - 1);
@@ -171,11 +199,24 @@ export class YarnBall extends GameObject {
     }
   }
 
-  tick(){
+  tick() {
     super.tick();
-    if (!GameStates.gameOver && this.collider.getInteractions().has(MainCursor.collider) && !this.disabled && !GameStates.gameOver) {
-      if (YarnGrid.selection.size > 0 && [...YarnGrid.selection].pop().color !== this.color) {
-        return false
+    if (
+      !GameStates.gameOver &&
+      this.collider.getInteractions().has(MainCursor.collider) &&
+      !this.disabled &&
+      !GameStates.gameOver
+    ) {
+      if (BrushButtonObj.isPainting) {
+        YarnGrid.disableColliders(this, false);
+      }
+      if (
+        YarnGrid.selection.size > 0 &&
+        [...YarnGrid.selection].pop().color !== this.color &&
+        [...YarnGrid.selection].pop().color !== MULT &&
+        this.color !== MULT
+      ) {
+        return false;
       }
       if (MainCursor.hold) {
         if (!this.selected) {
@@ -189,7 +230,9 @@ export class YarnBall extends GameObject {
           const selectionArr = [...YarnGrid.selection];
           if (
             selectionArr[selectionArr.length - 2] === this &&
-            !selectionArr[selectionArr.length - 1].collider.getInteractions().has(MainCursor.collider)
+            !selectionArr[selectionArr.length - 1].collider
+              .getInteractions()
+              .has(MainCursor.collider)
           ) {
             const lastBall = selectionArr.pop();
             lastBall.reset();

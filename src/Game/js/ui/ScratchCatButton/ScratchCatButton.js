@@ -4,7 +4,7 @@ import { Collider } from "../../../../Engine/Collider/Collider";
 import {GameStates, MainCursor, ScoreBar, ScratchCatObj} from "../../scenes/CoreScene";
 import { getRandom } from "../../utilities/random";
 import { gc } from "../../game_config";
-import { BLUE, GREEN, PINK, PURPLE, YELLOW } from "../../objects/YarnBall/YarnBall";
+import { BLUE, GREEN, MULT, PINK, PURPLE, YELLOW } from "../../objects/YarnBall/YarnBall";
 
 const Z_INDEX = 10;
 
@@ -107,6 +107,10 @@ export class ScratchCatButton extends GameObject {
 
   addProgress(val, color = PURPLE){
 
+    if (color === MULT) {
+      return false;
+    }
+
     if (!this._nowColor) {
       this._nowColor = {
         src: this.getSrcByColor(color),
@@ -199,7 +203,7 @@ export class ScratchCatButton extends GameObject {
 
   tick() {
     super.tick();
-    if (!GameStates.gameOver && this.collider.getInteractions().has(MainCursor.collider) && !this.disabled && !MainCursor.hasMoved) {
+    if (!GameStates.gameOver && this.collider.getInteractions().has(MainCursor.collider) && !this.disabled && !MainCursor.hasMoved && this._progress >= 100) {
       if (!this._pushed) {
         this.push();
       }

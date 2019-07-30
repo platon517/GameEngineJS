@@ -19,7 +19,7 @@ import {BrushButton} from "../ui/BrushButton/BrushButton";
 Camera.moveTo({x: 0, y: 0});
 
 export const GameStates = {
-  turns: 60,
+  turns: 45,
   gameOver: false
 };
 
@@ -118,7 +118,8 @@ export const BrushButtonObj2 = new BrushButton(
   {
     w: 65 * gc.modifer,
     h: 65 * gc.modifer
-  }
+  },
+  3
 );
 
 export const CoreScene = new Scene(128, 128, [
@@ -133,5 +134,5 @@ export const CoreScene = new Scene(128, 128, [
   Counter,
   EndPlate,
   BrushButtonObj,
-  BrushButtonObj2
+  //BrushButtonObj2
 ], Camera);

@@ -13,7 +13,7 @@ import {
 const Z_INDEX = 80;
 
 export class BrushButton extends GameObject {
-  constructor(coords, size) {
+  constructor(coords, size, value = 3) {
     super();
     this.sprite = [
       new Sprite(
@@ -39,8 +39,10 @@ export class BrushButton extends GameObject {
 
     this.collider.addInteractionObject(MainCursor);
 
+    this.value = value;
+
     this.text = new Text(
-      `9`,
+      `${this.value}`,
       ARIAL_FONT,
       20 * gc.modifer,
       "#9123cd",
@@ -55,6 +57,8 @@ export class BrushButton extends GameObject {
     this._pushed = false;
     this._isAnimated = false;
 
+    this.isPainting = false;
+
     this.text.textAllign(CENTER);
 
     this.ui = [this.text];
@@ -68,12 +72,18 @@ export class BrushButton extends GameObject {
   }
 
   push() {
-    if (!this._isAnimated && !this.disabled) {
+    if (!this._isAnimated && !this.disabled && this.value > 0) {
       this._pushed = true;
       this.sprite[0].resize(0.95, 100);
       this._isAnimated = true;
       setTimeout(() => (this._isAnimated = false), 100);
     }
+  }
+
+  paint(){
+    this.isPainting = false;
+    this.value -= 1;
+    this.text.text(this.value)
   }
 
   unpush(paint = false) {
@@ -83,13 +93,7 @@ export class BrushButton extends GameObject {
       this.sprite[0].resize(1, 100);
 
       if (paint) {
-        YarnGrid.balls[1].obj.sprite[1].resize(0, 200);
-        setTimeout(() => {
-          YarnGrid.balls[1].obj.sprite[1].setImageSrc(
-            "img/YarnBalls/png/yarn_all.png"
-          );
-          YarnGrid.balls[1].obj.sprite[1].resize(1, 200);
-        }, 200);
+        this.isPainting = true;
       }
 
       setTimeout(() => {

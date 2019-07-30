@@ -1,11 +1,10 @@
 import {GameObject} from "../../../../Engine/GameObject/GameObject";
 import {Sprite} from "../../../../Engine/Sprite/Sprite";
 import {getRandom} from "../../utilities/random";
-import { BLUE, getColorSrc } from "../YarnBall/YarnBall";
+import { getColorSrc } from "../YarnBall/YarnBall";
 import {Paw, ScoreBar} from "../../scenes/CoreScene";
 import { gc } from "../../game_config";
 import {StarParticle} from "../StarParticle/StarParticle";
-import {engineVisual} from "../../../../Engine/VisualRender/VisualRenderComponent";
 
 const Z_INDEX = 40;
 

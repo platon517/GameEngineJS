@@ -67,7 +67,7 @@ export class Text {
   }
 
   text(text, letterSpeed = 0) {
-    this._text = text;
+    this._text = `${text}`;
     if (letterSpeed !== 0) {
       this._animation = {
         letterSpeed,
