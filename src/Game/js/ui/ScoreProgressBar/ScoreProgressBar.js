@@ -168,7 +168,6 @@ export class ScoreProgressBar extends GameObject {
           GameStates.gameOver = true;
           EndPlate.spawn(true, stars)
         }
-        console.log(this._progress);
       }, animated ? animationTime * 0.8 : 0);
 
     }

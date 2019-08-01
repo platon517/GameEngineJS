@@ -15,8 +15,8 @@ function drawRotatedImage(ctx, degrees, image, sx, sy, sWidth, sHeight, dx, dy, 
   ctx.rotate(degrees*Math.PI / 180);
   ctx.translate(-deltaX, -deltaY);
   ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
-  ctx.globalAlpha = 1;
   ctx.restore();
+  ctx.globalAlpha = 1;
 }
 
 export class Sprite {

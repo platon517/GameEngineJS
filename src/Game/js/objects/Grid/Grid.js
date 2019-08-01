@@ -324,7 +324,8 @@ export class Grid extends GameObject {
     });
 
     const colorsScores = [...colors.entries()]
-      .map(color => [color[0], color[1] * (1 + 0.2 * color[1]) * (1 + this._bonus)]);
+      .map(color => [color[0], color[1] * (1 + 0.2 * color[1]) * (1 + this._bonus)])
+      .sort((a, b) => b[1] - a[1]);
 
     return [score, colorsScores];
   }
@@ -337,9 +338,18 @@ export class Grid extends GameObject {
 
     MainCursor.moveTo({x: 0, y: 0});
 
-    if (this.selection.size === 1) {
+    if (this.selection.size > 0) {
       if (BrushButtonObj.isPainting) {
         const ball = [...this.selection][0];
+
+        if (this.selection.size > 1) {
+          [...this.selection].forEach((ball, index) => {
+            if (index !== 0) {
+              ball.reset();
+            }
+          });
+
+        }
 
         const gridBall = this.balls.find(target => target.obj === ball);
 
@@ -383,9 +393,8 @@ export class Grid extends GameObject {
 
       const [scores, colors] = this.calculateScores();
 
-      animation && BigYarnBallObj.spawn(center, color, scores);
-
       if (animation){
+        BigYarnBallObj.spawn(center, color, scores);
         colors.forEach(color => ScratchCatButtonObj.addProgress(color[1] * 3, color[0]));
         this.shakeCam(this.selection.size);
         Counter.decTurns();

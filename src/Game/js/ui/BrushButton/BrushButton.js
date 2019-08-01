@@ -5,9 +5,7 @@ import { gc } from "../../game_config";
 import { Collider } from "../../../../Engine/Collider/Collider";
 import {
   GameStates,
-  MainCursor,
-  ScratchCatObj,
-  YarnGrid
+  MainCursor
 } from "../../scenes/CoreScene";
 
 const Z_INDEX = 80;
@@ -23,12 +21,18 @@ export class BrushButton extends GameObject {
         size
       ),
       new Sprite(
+        "img/brush_button/cancel.png",
+        { x: 0, y: 0 },
+        { w: 405, h: 405 },
+        size
+      ),
+      new Sprite(
         "img/brush_button/button_counter.png",
         { x: 0, y: 0 },
         { w: 205, h: 205 },
         { w: size.w / 2, h: size.h / 2 },
         { x: size.w - size.w * 0.4, y: size.h - size.h * 0.4 }
-      )
+      ),
     ];
 
     this.collider = new Collider(
@@ -68,22 +72,43 @@ export class BrushButton extends GameObject {
     this.setInit(() => {
       this.render();
       this.setRenderIndex(Z_INDEX);
+      this.sprite[1].resize(0);
     });
   }
 
   push() {
-    if (!this._isAnimated && !this.disabled && this.value > 0) {
+    if (!this._isAnimated && !this.disabled && (this.value > 0 || this.isPainting )) {
       this._pushed = true;
       this.sprite[0].resize(0.95, 100);
+      this.isPainting && this.sprite[1].resize(0.95, 100);
       this._isAnimated = true;
       setTimeout(() => (this._isAnimated = false), 100);
     }
   }
 
+  disable(){
+    this.sprite[0].setAlpha(0.7, 300);
+    this.sprite[2].setAlpha(0.7, 300);
+  }
+
   paint(){
     this.isPainting = false;
-    this.value -= 1;
-    this.text.text(this.value)
+    this.sprite[1].resize(0, 100);
+    if (this.value <= 0) {
+      this.disable();
+    }
+  }
+
+  activate(active = true) {
+    if (active) {
+      this.value -= 1;
+    } else {
+      this.value += 1;
+    }
+
+    this.text.text(this.value);
+
+    this.sprite[1].resize(active ? 1 : 0, 100);
   }
 
   unpush(paint = false) {
@@ -93,7 +118,14 @@ export class BrushButton extends GameObject {
       this.sprite[0].resize(1, 100);
 
       if (paint) {
-        this.isPainting = true;
+        if (!this.isPainting) {
+          this.isPainting = true;
+          this.activate(true)
+        }
+        else {
+          this.isPainting = false;
+          this.activate(false)
+        }
       }
 
       setTimeout(() => {
@@ -105,6 +137,7 @@ export class BrushButton extends GameObject {
 
   tick() {
     super.tick();
+
     if (
       !GameStates.gameOver &&
       this.collider.getInteractions().has(MainCursor.collider) &&
@@ -116,11 +149,7 @@ export class BrushButton extends GameObject {
       }
     } else {
       if (this._pushed) {
-        if (MainCursor.hold) {
-          this.unpush(false);
-        } else {
-          this.unpush(true);
-        }
+        this.unpush(!MainCursor.hold);
       }
     }
   }

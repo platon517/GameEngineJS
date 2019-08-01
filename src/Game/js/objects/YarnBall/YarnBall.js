@@ -208,6 +208,9 @@ export class YarnBall extends GameObject {
       !GameStates.gameOver
     ) {
       if (BrushButtonObj.isPainting) {
+        if (this.color === MULT) {
+          return false;
+        }
         YarnGrid.disableColliders(this, false);
       }
       if (
