@@ -103,7 +103,7 @@ export class EndLevelPlate extends GameObject {
 
       }, time * 0.75);
       this.text.text(win ? 'Level Completed': 'Level Failed', 50);
-    }, time);
+    }, time * 2);
   }
 
   tick() {
