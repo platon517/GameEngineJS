@@ -15,6 +15,7 @@ import { ScoreProgressBar } from "../ui/ScoreProgressBar/ScoreProgressBar";
 import { TurnsCounter } from "../ui/TurnsCounter/TurnsCounter";
 import { EndLevelPlate } from "../ui/EndLevelPlate/EndLevelPlate";
 import {BrushButton} from "../ui/BrushButton/BrushButton";
+import {ChangeButton} from "../ui/ChangeButton/ChangeButton";
 
 Camera.moveTo({x: 0, y: 0});
 
@@ -110,7 +111,7 @@ export const BrushButtonObj = new BrushButton(
   }
 );
 
-export const BrushButtonObj2 = new BrushButton(
+export const ChangeButtonObj = new ChangeButton(
   {
     x: ScratchCatButtonObj.getCoords().x - 80 * gc.modifer,
     y: ScratchCatButtonObj.getCoords().y + (ScratchCatButtonObj.sprite[0].getSize().h - 65 * gc.modifer) / 2
@@ -134,5 +135,5 @@ export const CoreScene = new Scene(128, 128, [
   Counter,
   EndPlate,
   BrushButtonObj,
-  //BrushButtonObj2
+  ChangeButtonObj
 ], Camera);

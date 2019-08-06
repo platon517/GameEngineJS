@@ -1,7 +1,7 @@
 import { GameObject } from "../../../../Engine/GameObject/GameObject";
 import { Sprite } from "../../../../Engine/Sprite/Sprite";
 import { Collider } from "../../../../Engine/Collider/Collider";
-import {GameStates, MainCursor, ScoreBar, ScratchCatObj} from "../../scenes/CoreScene";
+import {BrushButtonObj, ChangeButtonObj, GameStates, MainCursor, ScoreBar, ScratchCatObj} from "../../scenes/CoreScene";
 import { getRandom } from "../../utilities/random";
 import { gc } from "../../game_config";
 import { BLUE, GREEN, MULT, PINK, PURPLE, YELLOW } from "../../objects/YarnBall/YarnBall";
@@ -169,7 +169,7 @@ export class ScratchCatButton extends GameObject {
   }
 
   push(){
-    if (!this._isAnimated && !this.disabled) {
+    if (!this._isAnimated && !this.disabled && !ChangeButtonObj.isChanging && !BrushButtonObj.isPainting) {
       this._pushed = true;
       this.sprite[0].resize(0.95, 100);
       this.sprite[1].resize(0.95, 100);
