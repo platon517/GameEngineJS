@@ -1,7 +1,7 @@
 import { GameObject } from "../../../../Engine/GameObject/GameObject";
 import { Sprite } from "../../../../Engine/Sprite/Sprite";
 import { Collider } from "../../../../Engine/Collider/Collider";
-import { BrushButtonObj, GameStates, MainCursor } from "../../scenes/CoreScene";
+import { BrushButtonObj, ChangeButtonObj, GameStates, MainCursor } from "../../scenes/CoreScene";
 import { YarnGrid } from "../../scenes/CoreScene";
 import { getRandom } from "../../utilities/random";
 import { gc } from "../../game_config";
@@ -212,6 +212,31 @@ export class YarnBall extends GameObject {
           return false;
         }
         YarnGrid.disableColliders(this, false);
+      }
+      if (ChangeButtonObj.isChanging) {
+        if (!this._isGrown && YarnGrid.selection.size < 2) {
+          this.grow();
+          YarnGrid.addToSelection(this);
+          this._isGrown = true;
+        }
+        if (!this.selected && !MainCursor.hold) {
+          setTimeout(
+            () => {
+              this.selected = true;
+            }, GROW_ANIM_TIME
+          );
+        }
+        if (this.selected && !MainCursor.hold) {
+          this.reset();
+          YarnGrid.deleteFromSelection(this);
+          setTimeout(
+            () => {
+              this.selected = false;
+              this._isGrown = false;
+            }, GROW_ANIM_TIME
+          );
+        }
+        return false;
       }
       if (
         YarnGrid.selection.size > 0 &&

@@ -12,7 +12,15 @@ import {
   YELLOW
 } from "../YarnBall/YarnBall";
 import { getRandom } from "../../utilities/random";
-import { BrushButtonObj, Counter, GameStates, MainCursor, ScratchCatButtonObj, YarnGrid } from "../../scenes/CoreScene";
+import {
+  BrushButtonObj,
+  ChangeButtonObj,
+  Counter,
+  GameStates,
+  MainCursor,
+  ScratchCatButtonObj,
+  YarnGrid
+} from "../../scenes/CoreScene";
 import {BigYarnBallObj} from "../../scenes/CoreScene";
 import { SquareSprite } from "../../../../Engine/Sprite/Sprite";
 import { gc } from "../../game_config";
@@ -337,6 +345,10 @@ export class Grid extends GameObject {
   clearSelection(animation = true) {
 
     MainCursor.moveTo({x: 0, y: 0});
+
+    if (ChangeButtonObj.isChanging) {
+      return false;
+    }
 
     if (this.selection.size > 0) {
       if (BrushButtonObj.isPainting) {
