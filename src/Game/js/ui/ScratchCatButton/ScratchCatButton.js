@@ -8,11 +8,11 @@ import { BLUE, GREEN, MULT, PINK, PURPLE, YELLOW } from "../../objects/YarnBall/
 
 const Z_INDEX = 10;
 
-export const PURPLE_SPRITE = '../../../img/cat_button/cat_button_purple.png';
-export const YELLOW_SPRITE = '../../../img/cat_button/cat_button_yellow.png';
-export const PINK_SPRITE = '../../../img/cat_button/cat_button_pink.png';
-export const GREEN_SPRITE = '../../../img/cat_button/cat_button_green.png';
-export const BLUE_SPRITE = '../../../img/cat_button/cat_button_blue.png';
+export const PURPLE_SPRITE = 'img/cat_button/cat_button_purple.png';
+export const YELLOW_SPRITE = 'img/cat_button/cat_button_yellow.png';
+export const PINK_SPRITE = 'img/cat_button/cat_button_pink.png';
+export const GREEN_SPRITE = 'img/cat_button/cat_button_green.png';
+export const BLUE_SPRITE = 'img/cat_button/cat_button_blue.png';
 
 export class ScratchCatButton extends GameObject {
   constructor(
@@ -25,7 +25,7 @@ export class ScratchCatButton extends GameObject {
 
     this.sprite = [
       new Sprite(
-        '../../../img/cat_button/cat_button_empty.png',
+        'img/cat_button/cat_button_empty.png',
         {x: 0, y: 0},
         {w: 650, h: 380},
         size

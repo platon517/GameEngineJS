@@ -55,7 +55,7 @@ export const ScratchCatButtonObj =
   );
 
 export const MainBackground = new Background(
-  "../../img/background/room2.png",
+  "img/background/room2.png",
   { x: 0, y: 0 },
   { w: 2000, h: 2000 },
   { w: gc.srcSize.h, h: gc.srcSize.h },

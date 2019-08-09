@@ -21,13 +21,13 @@ export class ScoreProgressBar extends GameObject {
 
     this.sprite = [
       new Sprite(
-        '../../../img/ProgressBar/bar_1.png',
+        'img/ProgressBar/bar_1.png',
         {x: 0, y: 0},
         {w: this._maxProgressWidth, h: this._maxProgressHeight},
         size
       ),
       new Sprite(
-        '../../../img/ProgressBar/bar_2.png',
+        'img/ProgressBar/bar_2.png',
         {x: 0, y: 0},
         {w: this._maxProgressWidth, h: this._maxProgressHeight},
         size,

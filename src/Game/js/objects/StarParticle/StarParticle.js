@@ -12,7 +12,7 @@ export class StarParticle extends GameObject {
     super();
 
     this.sprite = new Sprite(
-      '../../../img/star/star_yellow.png',
+      'img/star/star_yellow.png',
       {x: 0, y: 0},
       {w: 350, h: 350},
       size
