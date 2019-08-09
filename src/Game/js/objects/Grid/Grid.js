@@ -354,8 +354,6 @@ export class Grid extends GameObject {
 
         const [ball_1Coords, ball_2Coords] = [ball_1.obj.getCoords(), ball_2.obj.getCoords()];
 
-        console.log(ball_1, ball_2);
-
         [ball_1.x, ball_2.x] = [ball_2.x, ball_1.x];
         [ball_1.y, ball_2.y] = [ball_2.y, ball_1.y];
 
