@@ -201,6 +201,14 @@ export class YarnBall extends GameObject {
 
   tick() {
     super.tick();
+
+    if (!ChangeButtonObj.isChanging && this._isGrown){
+      this.reset();
+      YarnGrid.deleteFromSelection(this);
+      this.selected = false;
+      this._isGrown = false;
+    }
+
     if (
       !GameStates.gameOver &&
       this.collider.getInteractions().has(MainCursor.collider) &&

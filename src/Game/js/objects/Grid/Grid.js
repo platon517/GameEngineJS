@@ -347,6 +347,32 @@ export class Grid extends GameObject {
     MainCursor.moveTo({x: 0, y: 0});
 
     if (ChangeButtonObj.isChanging) {
+      if (this.selection.size === 2) {
+
+
+        const [ball_1, ball_2] = [...this.selection].map(ball => this.balls.find(target => target.obj === ball));
+
+        const [ball_1Coords, ball_2Coords] = [ball_1.obj.getCoords(), ball_2.obj.getCoords()];
+
+        console.log(ball_1, ball_2);
+
+        [ball_1.x, ball_2.x] = [ball_2.x, ball_1.x];
+        [ball_1.y, ball_2.y] = [ball_2.y, ball_1.y];
+
+        [ball_1.obj.gridX, ball_2.obj.gridX] = [ball_2.obj.gridX, ball_1.obj.gridX];
+        [ball_1.obj.gridY, ball_2.obj.gridY] = [ball_2.obj.gridY, ball_1.obj.gridY];
+
+        console.log(ball_1, ball_2);
+
+        ball_1.obj.moveTo(ball_2Coords, 200);
+        ball_2.obj.moveTo(ball_1Coords, 200);
+
+        ball_1.obj.reset();
+        ball_2.obj.reset();
+
+        this.selection = new Set();
+        ChangeButtonObj.change();
+      }
       return false;
     }
 

@@ -92,7 +92,7 @@ export class ChangeButton extends GameObject {
     this.sprite[2].setAlpha(0.7, 300);
   }
 
-  paint(){
+  change(){
     this.isChanging = false;
     this.sprite[1].resize(0, 100);
     if (this.value <= 0) {
