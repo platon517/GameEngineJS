@@ -362,15 +362,12 @@ export class Grid extends GameObject {
         [ball_1.obj.gridX, ball_2.obj.gridX] = [ball_2.obj.gridX, ball_1.obj.gridX];
         [ball_1.obj.gridY, ball_2.obj.gridY] = [ball_2.obj.gridY, ball_1.obj.gridY];
 
-        console.log(ball_1, ball_2);
-
         ball_1.obj.moveTo(ball_2Coords, 200);
         ball_2.obj.moveTo(ball_1Coords, 200);
 
+        this.selection = new Set();
         ball_1.obj.reset();
         ball_2.obj.reset();
-
-        this.selection = new Set();
         ChangeButtonObj.change();
       }
       return false;

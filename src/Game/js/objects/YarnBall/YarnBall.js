@@ -225,21 +225,21 @@ export class YarnBall extends GameObject {
         if (!this._isGrown && YarnGrid.selection.size < 2) {
           this.grow();
           YarnGrid.addToSelection(this);
-          this._isGrown = true;
-        }
-        if (!this.selected && !MainCursor.hold) {
           setTimeout(
             () => {
-              this.selected = true;
+              this._isGrown = true;
             }, GROW_ANIM_TIME
           );
         }
-        if (this.selected && !MainCursor.hold) {
+        if (!this.selected && !MainCursor.hold) {
+          this.selected = true;
+        }
+        if (this.selected && !MainCursor.hold && this._isGrown) {
           this.reset();
           YarnGrid.deleteFromSelection(this);
+          this.selected = false;
           setTimeout(
             () => {
-              this.selected = false;
               this._isGrown = false;
             }, GROW_ANIM_TIME
           );
