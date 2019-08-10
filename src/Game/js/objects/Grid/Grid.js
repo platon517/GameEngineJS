@@ -297,6 +297,8 @@ export class Grid extends GameObject {
 
       spawnBall.selected = false;
 
+      spawnBall.collider.disabled = true;
+
       const startY = this.coords.y - BALL_SIZE * (this.size - y) - getRandom(0, BALL_SIZE / 2);
       spawnBall.moveTo({
         x: this.coords.x  + BALL_SIZE * x,
