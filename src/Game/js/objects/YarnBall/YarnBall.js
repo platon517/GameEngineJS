@@ -254,7 +254,7 @@ export class YarnBall extends GameObject {
       ) {
         return false;
       }
-      if (MainCursor.hold) {
+      if (MainCursor.hold && !this.collider.disabled) {
         if (!this.selected) {
           YarnGrid.disableColliders(this);
           YarnGrid.addToSelection(this);

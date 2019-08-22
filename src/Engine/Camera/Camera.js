@@ -65,6 +65,7 @@ export const Camera =  {
     }
   },
   shake(time, power = 1) {
+    const startCoords = this._coords;
     this._isShaking = true;
     const int = setInterval(() => {
       this.moveTo({
@@ -75,6 +76,9 @@ export const Camera =  {
     setTimeout(() => {
       clearInterval(int);
       this._isShaking = false;
+      setTimeout(() => {
+        this.moveTo(startCoords);
+      }, 100);
     }, time);
   }
 };
