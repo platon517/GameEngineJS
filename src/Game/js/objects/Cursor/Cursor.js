@@ -28,6 +28,8 @@ export class Cursor extends GameObject {
       this.moveTo(point);
     };
 
+    this.touches = [];
+
     this.hold = false;
     this.hasMoved = false;
 
@@ -35,17 +37,26 @@ export class Cursor extends GameObject {
       this.render();
       this.setRenderIndex(Z_INDEX);
       window.ontouchstart = e => {
-        this.hold = true;
-        this.followTouch(e);
+        if (this.touches.length < 1) {
+          this.touches.push(e.touches[0].identifier);
+          this.hold = true;
+          this.followTouch(e);
+        }
       };
       window.ontouchmove = e => {
-        this.hasMoved = true;
-        this.followTouch(e);
+        if (this.touches.length === 1) {
+          this.hasMoved = true;
+          this.followTouch(e);
+        }
       };
       window.ontouchend = e => {
-        this.hold = false;
-        this.hasMoved = false;
-        !YarnGrid.ballsDisabled && YarnGrid.clearSelection();
+        console.log(e);
+        if (this.touches.length === 1 && this.touches[0] === e.changedTouches[0].identifier) {
+          this.touches = [];
+          this.hold = false;
+          this.hasMoved = false;
+          !YarnGrid.ballsDisabled && YarnGrid.clearSelection();
+        }
       };
     });
 
