@@ -136,7 +136,7 @@ export class ScoreProgressBar extends GameObject {
 
       setTimeout(() => {
         const time = 400;
-        const delta = this._progress + val > 100 ? 100 - this._progress : val;
+        const delta = (this._progress + val) > 100 ? (100 - this._progress) : val;
 
         this._progress = Math.min(this._progress + val, 100);
 

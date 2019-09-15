@@ -172,7 +172,7 @@ export class Collider {
 
       this.collides && this._checkInteractions();
 
-      const render_rect = true;
+      const render_rect = false;
       if (render_rect) {
         ctx.beginPath();
         ctx.lineWidth   = 5;

@@ -137,7 +137,7 @@ export class BigYarnBall extends GameObject {
     });
 
     setTimeout(() => {
-      console.log(size);
+      //console.log(size);
       ScoreBar.addProgress(size);
       this.startParticles = [];
     }, 700);

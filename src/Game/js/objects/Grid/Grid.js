@@ -25,6 +25,7 @@ import {BigYarnBallObj} from "../../scenes/CoreScene";
 import { SquareSprite } from "../../../../Engine/Sprite/Sprite";
 import { gc } from "../../game_config";
 import { Camera } from "../../../../Engine/Camera/Camera";
+import {localStorageSave} from "../../utilities/localStorageSave";
 
 const Z_INDEX = 1;
 
@@ -62,9 +63,15 @@ export class Grid extends GameObject {
 
     this.helpSpawns = GameStates.turns;
 
-    for (let y = 0; y < size; y++) {
-      for (let x = 0; x < size; x++) {
-        const color = getRandomColor();
+    const savedBalls = localStorage.getItem('balls') ? JSON.parse(localStorage.getItem('balls')) : null;
+
+    for (let yPos = 0; yPos < size; yPos++) {
+      for (let xPos = 0; xPos < size; xPos++) {
+        const nowSavedBall = savedBalls ? savedBalls.shift() : null;
+        const color = nowSavedBall ? nowSavedBall.color : getRandomColor();
+        const x = nowSavedBall ? nowSavedBall.x : xPos;
+        const y = nowSavedBall ? nowSavedBall.y : yPos;
+
         const ball = new YarnBall(
           {
             x: coords.x  + BALL_SIZE * x + gc.srcSize.w * 1.5,
@@ -74,6 +81,10 @@ export class Grid extends GameObject {
         ball.setGridPos({x, y});
         this.balls.push({obj: ball, color, x, y});
       }
+    }
+
+    if (!localStorage.getItem('balls')) {
+      this.saveBalls();
     }
 
     this.setInit(() => {
@@ -86,6 +97,8 @@ export class Grid extends GameObject {
     });
 
   }
+
+  saveBalls = () => localStorageSave('balls', this.balls);
 
   spawn(){
 
@@ -317,6 +330,8 @@ export class Grid extends GameObject {
 
       this.balls.push({obj: spawnBall, color, x, y});
     });
+
+    this.saveBalls();
     console.log(this.checkCombos());
   }
 

@@ -1,0 +1,1 @@
+export const localStorageSave = (name, val) => localStorage.setItem(name, JSON.stringify(val));

@@ -50,7 +50,6 @@ export class Cursor extends GameObject {
         }
       };
       window.ontouchend = e => {
-        console.log(e);
         if (this.touches.length === 1 && this.touches[0] === e.changedTouches[0].identifier) {
           this.touches = [];
           this.hold = false;
