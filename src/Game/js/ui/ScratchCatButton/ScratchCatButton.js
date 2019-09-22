@@ -5,6 +5,8 @@ import {BrushButtonObj, ChangeButtonObj, GameStates, MainCursor, ScoreBar, Scrat
 import { getRandom } from "../../utilities/random";
 import { gc } from "../../game_config";
 import { BLUE, GREEN, MULT, PINK, PURPLE, YELLOW } from "../../objects/YarnBall/YarnBall";
+import {localStorageRead, localStorageSave} from "../../utilities/localStorageSave";
+import {GRID_SIZE} from "../../objects/Grid/gridSize";
 
 const Z_INDEX = 10;
 
@@ -72,12 +74,12 @@ export class ScratchCatButton extends GameObject {
           y: this.sprite[1].getSize().h
         }
       );
-      this.spawn();
+      this.spawn(!localStorageRead('ScratchCatButton'));
     });
   }
 
-  spawn(){
-    const time = 300;
+  spawn(animation = true){
+    const time = animation ? 300 : 0;
     this.sprite.forEach(sprite => {
       sprite.setAlpha(0);
       sprite.resize(0.8);
@@ -86,8 +88,12 @@ export class ScratchCatButton extends GameObject {
       setTimeout(() => {
         sprite.setAlpha(1, time * 0.25);
         sprite.resize(1, time * 0.25);
-      }, time);
+      }, time * 0.75);
     });
+    setTimeout(() => {
+      const localSaves = localStorageRead('ScratchCatButton');
+      localSaves && this.addProgress(localSaves.val, localSaves.color, true);
+    }, time *  1.1);
   }
 
   getSrcByColor(color){
@@ -105,7 +111,7 @@ export class ScratchCatButton extends GameObject {
     }
   }
 
-  addProgress(val, color = PURPLE){
+  addProgress(val, color = PURPLE, init = false){
 
     if (color === MULT) {
       return false;
@@ -120,6 +126,12 @@ export class ScratchCatButton extends GameObject {
     }
 
     if (this._progress < 100 && color === this._nowColor.color) {
+
+      const localSaves = localStorageRead('ScratchCatButton');
+      !init && localStorageSave(
+          'ScratchCatButton',
+          {val: localSaves ? localSaves.val + val : val, color}
+        );
 
       const time = 400;
       const delta = this._progress + val > 100 ? 100 - this._progress : val;
@@ -166,6 +178,10 @@ export class ScratchCatButton extends GameObject {
         y: this.sprite[1].getSize().h
       }, 500
     );
+    localStorageSave(
+      'ScratchCatButton',
+      null
+    );
   }
 
   push(){
@@ -189,7 +205,7 @@ export class ScratchCatButton extends GameObject {
         setTimeout(() => {
           this.resetProgress();
         }, 100);
-        ScratchCatObj.attack(getRandom(1, 4));
+        ScratchCatObj.attack(getRandom(1, GRID_SIZE - 1));
         this._nowColor = null;
       }
 

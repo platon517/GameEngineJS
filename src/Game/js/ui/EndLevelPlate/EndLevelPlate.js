@@ -90,17 +90,18 @@ export class EndLevelPlate extends GameObject {
       setTimeout(() => {
         this.sprite[plate].resize(1, time * 0.25);
 
-        this.stars.forEach((star, index) => {
-          star.init();
+        setTimeout(()=> {
+          this.stars.forEach((star, index) => {
+            star.init();
 
-          const plateCoords = this.sprite[plate].getCoords();
-          const startX = (this.sprite[plate].getSize().w - (starSize * 3 + 30 * gc.modifer)) / 2;
-          star.moveTo({
-            x: plateCoords.x + startX + starSize * index + index * 10 * gc.modifer, y: plateCoords.y + 80 * gc.modifer
+            const plateCoords = this.sprite[plate].getCoords();
+            const startX = (this.sprite[plate].getSize().w - (starSize * 3 + 20 * gc.modifer)) / 2;
+            star.moveTo({
+              x: plateCoords.x + startX + starSize * index + index * 10 * gc.modifer, y: plateCoords.y + 80 * gc.modifer
+            });
+            setTimeout(() => star.spawn(index < stars), index * 200);
           });
-          setTimeout(() => star.spawn(index < stars), index * 200);
-        });
-
+        }, time * 0.25);
       }, time * 0.75);
       this.text.text(win ? 'Level Completed': 'Level Failed', 50);
     }, time * 2);

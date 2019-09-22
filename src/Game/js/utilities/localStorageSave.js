@@ -1,1 +1,2 @@
 export const localStorageSave = (name, val) => localStorage.setItem(name, JSON.stringify(val));
+export const localStorageRead = name => localStorage.getItem(name) ? JSON.parse(localStorage.getItem(name)) : null;

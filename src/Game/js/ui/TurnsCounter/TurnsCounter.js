@@ -3,6 +3,7 @@ import { Sprite } from "../../../../Engine/Sprite/Sprite";
 import { ARIAL_FONT, CENTER, Text } from "../../../../Engine/Text/Text";
 import { gc } from "../../game_config";
 import { GameStates } from "../../scenes/CoreScene";
+import {localStorageRead, localStorageSave} from "../../utilities/localStorageSave";
 
 const Z_INDEX = 10;
 
@@ -18,7 +19,7 @@ export class TurnsCounter extends GameObject {
 
     this.moveTo(coords);
 
-    this._turns = turns;
+    this._turns = localStorageRead('turnsCounter') ? localStorageRead('turnsCounter') : turns;
 
     this.text = new Text
       (
@@ -47,6 +48,7 @@ export class TurnsCounter extends GameObject {
   incTurns(val = 1){
     this._turns = `${parseFloat(this._turns) + val}`;
     this.text.text(this._turns);
+    localStorageSave('turnsCounter', this._turns);
   }
 
   decTurns(val = 1){
@@ -58,6 +60,7 @@ export class TurnsCounter extends GameObject {
     if (this._turns <= 0) {
       GameStates.gameOver = true;
     }
+    localStorageSave('turnsCounter', this._turns);
   }
 
   getTurns(){

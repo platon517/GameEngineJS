@@ -8,6 +8,7 @@ import {
   GameStates,
   MainCursor
 } from "../../scenes/CoreScene";
+import {localStorageRead, localStorageSave} from "../../utilities/localStorageSave";
 
 const Z_INDEX = 80;
 
@@ -44,7 +45,7 @@ export class ChangeButton extends GameObject {
 
     this.collider.addInteractionObject(MainCursor);
 
-    this.value = value;
+    this.value = localStorageRead('ChangeButton') !== null ? localStorageRead('ChangeButton') : value;
 
     this.text = new Text(
       `${this.value}`,
@@ -57,7 +58,7 @@ export class ChangeButton extends GameObject {
       { w: size.w, h: 28 * gc.modifer }
     );
 
-    this.disabled = false;
+    this.disabled = this.value === 0;
 
     this._pushed = false;
     this._isAnimated = false;
@@ -74,6 +75,8 @@ export class ChangeButton extends GameObject {
       this.render();
       this.setRenderIndex(Z_INDEX);
       this.sprite[1].resize(0);
+
+      this.value === 0 && this.disable();
     });
   }
 
@@ -95,6 +98,7 @@ export class ChangeButton extends GameObject {
   change(){
     this.isChanging = false;
     this.sprite[1].resize(0, 100);
+    localStorageSave('ChangeButton', this.value);
     if (this.value <= 0) {
       this.disable();
     }
@@ -121,7 +125,7 @@ export class ChangeButton extends GameObject {
       if (change) {
         if (!this.isChanging) {
           this.isChanging = true;
-          this.activate(true)
+          this.activate(true);
         }
         else {
           this.isChanging = false;

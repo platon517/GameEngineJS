@@ -25,7 +25,7 @@ import {BigYarnBallObj} from "../../scenes/CoreScene";
 import { SquareSprite } from "../../../../Engine/Sprite/Sprite";
 import { gc } from "../../game_config";
 import { Camera } from "../../../../Engine/Camera/Camera";
-import {localStorageSave} from "../../utilities/localStorageSave";
+import {localStorageRead, localStorageSave} from "../../utilities/localStorageSave";
 
 const Z_INDEX = 1;
 
@@ -63,7 +63,7 @@ export class Grid extends GameObject {
 
     this.helpSpawns = GameStates.turns;
 
-    const savedBalls = localStorage.getItem('balls') ? JSON.parse(localStorage.getItem('balls')) : null;
+    const savedBalls = localStorageRead('balls') ? localStorageRead('balls') : null;
 
     for (let yPos = 0; yPos < size; yPos++) {
       for (let xPos = 0; xPos < size; xPos++) {
@@ -83,7 +83,7 @@ export class Grid extends GameObject {
       }
     }
 
-    if (!localStorage.getItem('balls')) {
+    if (!localStorageRead('balls')) {
       this.saveBalls();
     }
 
@@ -98,7 +98,7 @@ export class Grid extends GameObject {
 
   }
 
-  saveBalls = () => localStorageSave('balls', this.balls);
+  saveBalls = () => localStorageSave('balls', this.balls.map(ball => ({color: ball.color, x: ball.x, y: ball.y})));
 
   spawn(){
 
@@ -384,6 +384,7 @@ export class Grid extends GameObject {
         ball_1.obj.reset();
         ball_2.obj.reset();
         ChangeButtonObj.change();
+        this.saveBalls();
       }
       return false;
     }
@@ -408,6 +409,7 @@ export class Grid extends GameObject {
         ball.reset(true);
         BrushButtonObj.paint();
         this.selection = new Set();
+        this.saveBalls();
       }
     }
 

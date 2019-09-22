@@ -8,6 +8,7 @@ import {
   GameStates,
   MainCursor
 } from "../../scenes/CoreScene";
+import {localStorageRead, localStorageSave} from "../../utilities/localStorageSave";
 
 const Z_INDEX = 80;
 
@@ -44,7 +45,7 @@ export class BrushButton extends GameObject {
 
     this.collider.addInteractionObject(MainCursor);
 
-    this.value = value;
+    this.value = localStorageRead('BrushButton') !== null ? localStorageRead('BrushButton') : value;
 
     this.text = new Text(
       `${this.value}`,
@@ -74,6 +75,7 @@ export class BrushButton extends GameObject {
       this.render();
       this.setRenderIndex(Z_INDEX);
       this.sprite[1].resize(0);
+      this.value === 0 && this.disable();
     });
   }
 
@@ -95,6 +97,7 @@ export class BrushButton extends GameObject {
   paint(){
     this.isPainting = false;
     this.sprite[1].resize(0, 100);
+    localStorageSave('BrushButton', this.value);
     if (this.value <= 0) {
       this.disable();
     }

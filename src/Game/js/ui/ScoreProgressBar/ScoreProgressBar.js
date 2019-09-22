@@ -4,6 +4,7 @@ import { StarParticle } from "../../objects/StarParticle/StarParticle";
 import { getRandom } from "../../utilities/random";
 import { gc } from "../../game_config";
 import {Counter, EndPlate, GameStates, YarnGrid} from "../../scenes/CoreScene";
+import {localStorageRead, localStorageSave} from "../../utilities/localStorageSave";
 
 const Z_INDEX = 10;
 
@@ -54,6 +55,8 @@ export class ScoreProgressBar extends GameObject {
     });
   }
 
+  saveProgress = () => localStorageSave('scoreBar', this._progress);
+
   spawn(){
     this.setStartPoint();
 
@@ -72,6 +75,7 @@ export class ScoreProgressBar extends GameObject {
   setStartPoint(){
     this.sprite[1].setInnerSize({w: this._fillStartX, h: this._maxProgressHeight});
     this.sprite[1].setSize({w: this._fillStartX / gc.modifer, h: this.sprite[1].getSize().h});
+    this.addProgress(localStorageRead('scoreBar'), false, true);
   }
 
   getProgress(){
@@ -86,8 +90,9 @@ export class ScoreProgressBar extends GameObject {
     return this._maxScore;
   }
 
-  addProgress(value, animated = false){
+  addProgress(value, animated = false, init = false){
     const val = value / this._maxScore * 100;
+    !init && localStorageSave('scoreBar', localStorageRead('scoreBar') + value);
     if (this._progress < 100) {
 
       const animationTime = 650;
