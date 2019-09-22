@@ -16,6 +16,7 @@ import { TurnsCounter } from "../ui/TurnsCounter/TurnsCounter";
 import { EndLevelPlate } from "../ui/EndLevelPlate/EndLevelPlate";
 import {BrushButton} from "../ui/BrushButton/BrushButton";
 import {ChangeButton} from "../ui/ChangeButton/ChangeButton";
+import {AddTurnsButton} from "../ui/AddTurnsButton/AddTurnsButton";
 
 Camera.moveTo({x: 0, y: 0});
 
@@ -123,6 +124,17 @@ export const ChangeButtonObj = new ChangeButton(
   3
 );
 
+export const AddTurnsButtonObj = new AddTurnsButton(
+  {
+    x: Counter.getCoords().x + Counter.sprite.getSize().w +  3 * gc.modifer,
+    y: ScoreBar.getCoords().y - 55 * gc.modifer
+  },
+  {
+    w: 50 * gc.modifer,
+    h: 50 * gc.modifer
+  }
+);
+
 export const CoreScene = new Scene(128, 128, [
   MainBackground,
   YarnGrid,
@@ -135,5 +147,6 @@ export const CoreScene = new Scene(128, 128, [
   Counter,
   EndPlate,
   BrushButtonObj,
-  ChangeButtonObj
+  ChangeButtonObj,
+  AddTurnsButtonObj
 ], Camera);

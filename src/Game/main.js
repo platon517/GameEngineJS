@@ -1,8 +1,6 @@
 import {engineVisual} from "../Engine/VisualRender/VisualRenderComponent";
 import {CoreScene} from "./js/scenes/CoreScene";
 
-CoreScene.init();
-
 /*let lastUpdate = new Date().getTime();*/
 
 function update() {
@@ -17,3 +15,6 @@ function update() {
   //setTimeout(update, 100);
 }
 setTimeout(update, 0);
+
+
+CoreScene.init();
