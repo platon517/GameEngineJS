@@ -50,7 +50,7 @@ export class AddTurnsButton extends GameObject {
   }
 
   activate(active = true) {
-    this.sprite.resize(active ? 1 : 0, 100);
+
   }
 
   unpush(active = false) {
